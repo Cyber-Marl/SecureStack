@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LIMS{% endblock %}</title>
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">LIMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                        {% if user.userprofile.role == 'lims_officer' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'lims_dashboard' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'user_list' %}">User Management</a>
+                            </li>           
+                        {% elif user.userprofile.role == 'estates_officer' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'estates_dashboard' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">A1 Farms</a>
+                            </li>
+                        {% elif user.userprofile.role == 'acquisition_officer' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'acquisition_dashboard' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Farm Register</a>
+                            </li>
+                        {% elif user.userprofile.role == 'resettlement_officer' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'resettlement_dashboard' %}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'farm_register' %}">Farm Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">A2 Farms</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                {% if user.is_authenticated %}
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <span class="nav-link">Welcome, {{ user.get_full_name|default:user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}    
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Set up CSRF token for AJAX requests
+        const csrftoken = getCookie('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>         

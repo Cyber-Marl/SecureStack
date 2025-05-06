@@ -1,0 +1,16 @@
+version: '3.8'  # Use a compatible version of Docker Compose
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000  # Start Django app
+    volumes:
+      - .:/app  # Mount the current directory to /app in the container
+    ports:
+      - "8000:8000"  # Map local port 8000 to container port 8000
+    environment:
+      - DEBUG=1  # Enable debug mode (set to 0 in production)
+      - PYTHONUNBUFFERED=1  # Prevents buffering of output for better logging
+
+volumes:
+  sqlite_data:

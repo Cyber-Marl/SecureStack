@@ -1,0 +1,388 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block title %}Parent Farms{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Parent Farms</h5>
+                    <a href="{% url 'manage_parent_farm' %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-plus"></i> Add New Farm
+                    </a>
+                </div>
+                <div class="card-body">
+                    <!-- Search Form -->
+                    <form method="GET" action="{% url 'parent_farm_list' %}" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" name="search" id="searchInput" class="form-control" 
+                                   placeholder="Search by farm name, ID, owner, or location..." 
+                                   value="{{ request.GET.search }}">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            {% if request.GET.search %}
+                            <a href="{% url 'parent_farm_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Clear
+                            </a>
+                            {% endif %}
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="farmsTable">
+                            <thead>
+                                <tr>
+                                    <th>Farm ID</th>
+                                    <th>Name</th>
+                                    <th>Size</th>
+                                    <th>Unit</th>
+                                    <th>Ownership</th>
+                                    <th>Owner</th>
+                                    <th>Race</th>
+                                    <th>Company</th>
+                                    <th>Nationality</th>
+                                    <th>Gazette</th>
+                                    <th>Diagram</th>
+                                    <th>Title Type</th>
+                                    <th>Deed Number</th>
+                                    <th>General Notice Number</th>
+                                    <th>Diagram Number</th>
+                                    <th>Province</th>
+                                    <th>Prev. District</th>
+                                    <th>Curr. District</th>
+                                    <th>Farm Activity</th>
+                                    <th>BIPPA</th>
+                                    <th>BIPPA Country</th>
+                                    <th>Bonds</th>
+                                    <th>Bonding Institution</th>
+                                    <th>Carvets</th>
+                                    <th>Carvets Institution</th>
+                                    <th>Carvet Number</th>
+                                    <th>Servitudes</th>
+                                    <th>Servitudes Institution</th>
+                                    <th>Servitude Number</th>
+                                    <th>Remarks</th>
+                                    <th>Address</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for farm in farms %}
+                                <tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#viewModal{{ farm.farm_id }}" style="cursor: pointer;">
+                                    <td>{{ farm.farm_id }}</td>
+                                    <td>{{ farm.farm_name }}</td>
+                                    <td>{{ farm.area_size }}</td>
+                                    <td>{{ farm.area_units }}</td>
+                                    <td>{{ farm.ownership }}</td>
+                                    <td>{{ farm.owner_name }}</td>
+                                    <td>{{ farm.race }}</td>
+                                    <td>{{ farm.company_name }}</td>
+                                    <td>{{ farm.nationality }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if farm.gazette_status == 'gazetted' %}success{% else %}warning{% endif %}">
+                                            {{ farm.gazette_status|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ farm.diagram_number }}</td>
+                                    <td>{{ farm.title_type }}</td>
+                                    <td>{{ farm.title_deed_number }}</td>
+                                    <td>{{ farm.general_notice_number }}</td>
+                                    <td>{{ farm.diagram_number }}</td>
+                                    <td>{{ farm.province }}</td>
+                                    <td>{{ farm.previous_district }}</td>
+                                    <td>{{ farm.district }}</td>
+                                    <td>{{ farm.farm_activity }}</td>
+                                    <td>{{ farm.bippa }}</td>
+                                    <td>{{ farm.bippa_country }}</td>
+                                    <td>{{ farm.bonds }}</td>
+                                    <td>{{ farm.bonding_institution }}</td>
+                                    <td>{{ farm.carvets }}</td>
+                                    <td>{{ farm.carvet_institution }}</td>
+                                    <td>{{ farm.carvet_number }}</td>
+                                    <td>{{ farm.servitudes }}</td>
+                                    <td>{{ farm.servitude_institution }}</td>
+                                    <td>{{ farm.servitude_number }}</td>
+                                    <td>{{ farm.remarks }}</td>
+                                    <td>{{ farm.owners_address }}</td>
+                                    <td>
+                                        <div class="btn-group" onclick="event.stopPropagation();">
+                                            <button type="button" class="btn btn-sm btn-outline-info" title="View Details" data-bs-toggle="modal" data-bs-target="#viewModal{{ farm.farm_id }}">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <a href="{% url 'manage_parent_farm' farm.farm_id %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteModal{{ farm.farm_id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="32" class="text-center">No farms found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if farms.has_other_pages %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if farms.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ farms.previous_page_number }}&search={{ request.GET.search }}">Previous</a>
+                            </li>
+                            {% endif %}
+
+                            {% for num in farms.paginator.page_range %}
+                            <li class="page-item {% if farms.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}&search={{ request.GET.search }}">{{ num }}</a>
+                            </li>
+                            {% endfor %}
+
+                            {% if farms.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ farms.next_page_number }}&search={{ request.GET.search }}">Next</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Modals -->
+{% for farm in farms %}
+<div class="modal fade" id="viewModal{{ farm.farm_id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Farm Details - {{ farm.farm_name }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">Basic Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Farm ID:</th>
+                                <td>{{ farm.farm_id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Farm Name:</th>
+                                <td>{{ farm.farm_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Area Size:</th>
+                                <td>{{ farm.area_size }} {{ farm.area_units }}</td>
+                            </tr>
+                            <tr>
+                                <th>Farm Category:</th>
+                                <td>{{ farm.farm_category }}</td>
+                            </tr>
+                            <tr>
+                                <th>Natural Region:</th>
+                                <td>{{ farm.natural_region }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">Location Details</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Province:</th>
+                                <td>{{ farm.province }}</td>
+                            </tr>
+                            <tr>
+                                <th>District:</th>
+                                <td>{{ farm.district }}</td>
+                            </tr>
+                            <tr>
+                                <th>Previous District:</th>
+                                <td>{{ farm.previous_district }}</td>
+                            </tr>
+                            <tr>
+                                <th>Farm Activity:</th>
+                                <td>{{ farm.farm_activity }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">Ownership Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Ownership:</th>
+                                <td>{{ farm.ownership }}</td>
+                            </tr>
+                            <tr>
+                                <th>Owner Name:</th>
+                                <td>{{ farm.owner_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Company Name:</th>
+                                <td>{{ farm.company_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nationality:</th>
+                                <td>{{ farm.nationality }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">Title Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Title Type:</th>
+                                <td>{{ farm.title_type }}</td>
+                            </tr>
+                            <tr>
+                                <th>Title Deed Number:</th>
+                                <td>{{ farm.title_deed_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Diagram Number:</th>
+                                <td>{{ farm.diagram_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Gazette Status:</th>
+                                <td>
+                                    <span class="badge bg-{% if farm.gazette_status == 'gazetted' %}success{% else %}warning{% endif %}">
+                                        {{ farm.gazette_status|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="text-primary mb-3">Additional Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>BIPPA:</th>
+                                <td>{{ farm.bippa }}</td>
+                            </tr>
+                            <tr>
+                                <th>BIPPA Country:</th>
+                                <td>{{ farm.bippa_country }}</td>
+                            </tr>
+                            <tr>
+                                <th>Bonds:</th>
+                                <td>{{ farm.bonds }}</td>
+                            </tr>
+                            <tr>
+                                <th>Bonding Institution:</th>
+                                <td>{{ farm.bonding_institution }}</td>
+                            </tr>
+                            <tr>
+                                <th>Carvets:</th>
+                                <td>{{ farm.carvets }}</td>
+                            </tr>
+                            <tr>
+                                <th>Carvet Institution:</th>
+                                <td>{{ farm.carvet_institution }}</td>
+                            </tr>
+                            <tr>
+                                <th>Carvet Number:</th>
+                                <td>{{ farm.carvet_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Servitudes:</th>
+                                <td>{{ farm.servitudes }}</td>
+                            </tr>
+                            <tr>
+                                <th>Servitudes Institution:</th>
+                                <td>{{ farm.servitudes_institution }}</td>
+                            </tr>
+                            <tr>
+                                <th>Servitude Number:</th>
+                                <td>{{ farm.servitude_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Owner's Address:</th>
+                                <td>{{ farm.owners_address }}</td>
+                            </tr>
+                            <tr>
+                                <th>Remarks:</th>
+                                <td>{{ farm.remarks }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'manage_parent_farm' farm.farm_id %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Farm
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Delete Modals -->
+{% for farm in farms %}
+<div class="modal fade" id="deleteModal{{ farm.farm_id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete farm "{{ farm.farm_name }}"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'delete_parent_farm' farm.farm_id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Make rows clickable
+        $('.clickable-row').click(function(e) {
+            if (!$(e.target).closest('.btn-group').length) {
+                var modalId = $(this).data('bs-target');
+                $(modalId).modal('show');
+            }
+        });
+
+        // Initialize DataTables for search functionality
+        $('#farmsTable').DataTable({
+            "paging": false,
+            "searching": true,
+            "info": false,
+            "order": [[0, 'asc']],
+            "language": {
+                "search": "Search all columns:"
+            },
+            "scrollX": true
+        });
+    });
+</script>
+{% endblock %}

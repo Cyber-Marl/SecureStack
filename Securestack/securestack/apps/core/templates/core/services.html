@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Services Header -->
+<section class="services-header py-5" style="background-color: var(--light-bg);">
+    <div class="container">
+        <h1 class="display-4 text-center mb-4">Our Services</h1>
+        <p class="lead text-center">We offer comprehensive software development solutions to help your business grow</p>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="services-grid py-5">
+    <div class="container">
+        <div class="row">
+            {% for service in services %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            {% if service.image %}
+                            <img src="{{ service.image.url }}" class="img-fluid rounded-start h-100" alt="{{ service.title }}" style="object-fit: cover;">
+                            {% else %}
+                            <div class="d-flex align-items-center justify-content-center h-100" style="background-color: var(--light-bg);">
+                                <i class="{{ service.icon }} fa-3x" style="color: var(--primary-color);"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h3 class="card-title">{{ service.title }}</h3>
+                                <p class="card-text">{{ service.description|truncatewords:30 }}</p>
+                                <a href="{% url 'core:service_detail' service.slug %}" class="btn btn-primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 text-center" style="background-color: var(--light-bg);">
+    <div class="container">
+        <h2 class="mb-4">Ready to Transform Your Business?</h2>
+        <p class="lead mb-4">Let's discuss how our services can help you achieve your goals.</p>
+        <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Get in Touch</a>
+    </div>
+</section>
+{% endblock %} 

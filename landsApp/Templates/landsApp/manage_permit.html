@@ -1,0 +1,82 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{% if permit %}Edit{% else %}Add New{% endif %} A2 Permit</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <h5>Please correct the errors below:</h5>
+                            {{ form.errors }}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.permit_number.id_for_label }}">Permit Number</label>
+                                    {{ form.permit_number }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.a2_farm.id_for_label }}">A2 Farm</label>
+                                    {{ form.a2_farm }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.issue_date.id_for_label }}">Issue Date</label>
+                                    {{ form.issue_date }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.expiry_date.id_for_label }}">Expiry Date</label>
+                                    {{ form.expiry_date }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.permit_status.id_for_label }}">Permit Status</label>
+                                    {{ form.permit_status }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.is_printing_authorized.id_for_label }}">Printing Authorized</label>
+                                    {{ form.is_printing_authorized }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.notes.id_for_label }}">Notes</label>
+                            {{ form.notes }}
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Save Permit</button>
+                            <a href="{% url 'resettlement_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,69 @@
+{% extends 'landsApp/base.html' %}
+
+{% block title %}Estates Officer Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2>Estates Officer Dashboard</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">A1 Farms Management</h5>
+                <p class="card-text">Manage and view A1 farm allocations</p>
+                <a href="#" class="btn btn-primary">View A1 Farms</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Valuations</h5>
+                <p class="card-text">Manage farm valuations and reports</p>
+                <a href="#" class="btn btn-primary">View Valuations</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Documents</h5>
+                <p class="card-text">Access farm documents and records</p>
+                <a href="#" class="btn btn-primary">View Documents</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recent A1 Farm Allocations
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">No recent allocations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Pending Valuations
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">No pending valuations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

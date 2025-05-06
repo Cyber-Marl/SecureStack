@@ -1,0 +1,115 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Subdivisions for {{ farm.farm_name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Parent Farm Details</h4>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Farm Number:</th>
+                                    <td>{{ farm.farm_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Category:</th>
+                                    <td>{{ farm.category }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Area Size:</th>
+                                    <td>{{ farm.area_size }} {{ farm.area_units }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Province:</th>
+                                    <td>{{ farm.province }}</td>
+                                </tr>
+                                <tr>
+                                    <th>District:</th>
+                                    <td>{{ farm.district }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h4>Subdivisions</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Subdivision Number</th>
+                                            <th>Type</th>
+                                            <th>Area Size</th>
+                                            <th>Status</th>
+                                            <th>Planned By</th>
+                                            <th>Planned Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for subdivision in subdivisions %}
+                                        <tr>
+                                            <td>{{ subdivision.subdivision_number }}</td>
+                                            <td>{{ subdivision.subdivision_type }}</td>
+                                            <td>{{ subdivision.area_size }} {{ subdivision.area_units }}</td>
+                                            <td>{{ subdivision.status }}</td>
+                                            <td>{{ subdivision.planned_by.get_full_name }}</td>
+                                            <td>{{ subdivision.planned_date }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#notesModal{{ subdivision.id }}">
+                                                    View Notes
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">No subdivisions planned</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <a href="{% url 'plan_subdivision' farm.id %}" class="btn btn-primary">Plan New Subdivision</a>
+                            <a href="{% url 'farm_register' %}" class="btn btn-secondary">Back to Farm Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for subdivision in subdivisions %}
+<div class="modal fade" id="notesModal{{ subdivision.id }}" tabindex="-1" role="dialog" aria-labelledby="notesModalLabel{{ subdivision.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notesModalLabel{{ subdivision.id }}">Notes for Subdivision {{ subdivision.subdivision_number }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{ subdivision.notes|default:"No notes available."|linebreaks }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %} 

@@ -1,0 +1,67 @@
+{% extends 'landsApp/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ title }}</h4>
+                    <div>
+                        <a href="{% url 'upload_farm_document' farm_id=farm.id %}" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload New Document
+                        </a>
+                        <a href="{% url 'view_farm' pk=farm.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Farm
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if documents %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Document Type</th>
+                                    <th>Document Number</th>
+                                    <th>Upload Date</th>
+                                    <th>Uploaded By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in documents %}
+                                <tr>
+                                    <td>{{ doc.get_document_type_display }}</td>
+                                    <td>{{ doc.document_number }}</td>
+                                    <td>{{ doc.upload_date|date:"Y-m-d H:i" }}</td>
+                                    <td>{{ doc.uploaded_by.get_full_name }}</td>
+                                    <td>
+                                        <a href="{{ doc.file_path.url }}" class="btn btn-sm btn-info" target="_blank">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <a href="{{ doc.file_path.url }}" class="btn btn-sm btn-success" download>
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                        <a href="{% url 'delete_farm_document' document_id=doc.id %}" 
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Are you sure you want to delete this document?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">No documents uploaded yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

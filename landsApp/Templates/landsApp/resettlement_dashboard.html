@@ -1,0 +1,155 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block title %}Resettlement Officer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">Resettlement Dashboard</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Farm Register</h5>
+                    <p class="card-text">View and manage the farm register, including planning subdivisions.</p>
+                    <a href="{% url 'farm_register' %}" class="btn btn-primary">View Farm Register</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">A2 Farms</h5>
+                    <p class="card-text">Manage A2 farms, including adding new farms and editing existing ones.</p>
+                    <a href="{% url 'manage_a2_farm' %}" class="btn btn-primary">Manage A2 Farms</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Permits</h5>
+                    <p class="card-text">Manage A2 permits, including issuing new permits and printing authorized permits.</p>
+                    <a href="{% url 'manage_permit' %}" class="btn btn-primary">Manage Permits</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent A2 Farms</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Farm Name</th>
+                                    <th>Farm Number</th>
+                                    <th>Area Size</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for farm in recent_a2_farms %}
+                                <tr>
+                                    <td>{{ farm.farm_name }}</td>
+                                    <td>{{ farm.farm_number }}</td>
+                                    <td>{{ farm.area_size }} {{ farm.area_units }}</td>
+                                    <td>{{ farm.allocation_status }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No recent A2 farms</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Permits</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Permit Number</th>
+                                    <th>Farm Name</th>
+                                    <th>Issue Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for permit in recent_permits %}
+                                <tr>
+                                    <td>{{ permit.permit_number }}</td>
+                                    <td>{{ permit.a2_farm.farm_name }}</td>
+                                    <td>{{ permit.issue_date }}</td>
+                                    <td>{{ permit.permit_status }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No recent permits</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3>{{ total_a2_farms }}</h3>
+                                <p>Total A2 Farms</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3>{{ allocated_farms }}</h3>
+                                <p>Allocated Farms</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3>{{ total_permits }}</h3>
+                                <p>Total Permits</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3>{{ active_permits }}</h3>
+                                <p>Active Permits</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

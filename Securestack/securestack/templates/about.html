@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Securestack{% endblock %}
+
+{% block content %}
+<!-- About Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2 class="section-title">About Securestack</h2>
+                <p class="lead">We are a team of passionate technology professionals dedicated to helping businesses transform and grow through innovative solutions.</p>
+                <p>Founded in 2024, Securestack has been at the forefront of delivering cutting-edge technology solutions to businesses of all sizes. Our team combines technical expertise with business acumen to create solutions that drive real results.</p>
+                <p>We believe in building long-term relationships with our clients and are committed to their success. Our approach is collaborative, transparent, and focused on delivering value at every step.</p>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded" alt="Our Team">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center section-title">Our Team</h2>
+        <div class="row">
+            {% for member in team_members %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if member.image %}
+                    <img src="{{ member.image.url }}" class="card-img-top" alt="{{ member.name }}">
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ member.name }}</h5>
+                        <p class="text-muted">{{ member.position }}</p>
+                        <p class="card-text">{{ member.bio }}</p>
+                        <div class="social-links">
+                            {% if member.linkedin %}
+                            <a href="{{ member.linkedin }}" class="social-icon" target="_blank"><i class="fab fa-linkedin"></i></a>
+                            {% endif %}
+                            {% if member.twitter %}
+                            <a href="{{ member.twitter }}" class="social-icon" target="_blank"><i class="fab fa-twitter"></i></a>
+                            {% endif %}
+                            {% if member.github %}
+                            <a href="{{ member.github }}" class="social-icon" target="_blank"><i class="fab fa-github"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center section-title">What Our Clients Say</h2>
+        <div class="row">
+            {% for testimonial in testimonials %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        {% if testimonial.image %}
+                        <img src="{{ testimonial.image.url }}" class="rounded-circle mb-3" style="width: 80px; height: 80px; object-fit: cover;" alt="{{ testimonial.client_name }}">
+                        {% endif %}
+                        <p class="card-text">{{ testimonial.content }}</p>
+                        <h5 class="card-title">{{ testimonial.client_name }}</h5>
+                        <p class="text-muted">{{ testimonial.company }}</p>
+                        <div class="text-warning">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= testimonial.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5 bg-dark text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Work With Us?</h2>
+        <p class="lead mb-4">Let's discuss how we can help you achieve your goals.</p>
+        <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Contact Us Today</a>
+    </div>
+</section>
+{% endblock %} 

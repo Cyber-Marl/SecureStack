@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Team Header -->
+<section class="team-header py-5" style="background-color: var(--light-bg);">
+    <div class="container">
+        <h1 class="display-4 text-center mb-4">Our Team</h1>
+        <p class="lead text-center">Meet the talented professionals behind SecureStack's success</p>
+    </div>
+</section>
+
+<!-- Team Grid -->
+<section class="team-grid py-5">
+    <div class="container">
+        <div class="row">
+            {% for member in team_members %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ member.image.url }}" class="card-img-top" alt="{{ member.name }}">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">{{ member.name }}</h3>
+                        <p class="text-muted">{{ member.position }}</p>
+                        <p class="card-text">{{ member.bio|truncatewords:30 }}</p>
+                        <div class="social-links">
+                            {% if member.linkedin_url %}
+                            <a href="{{ member.linkedin_url }}" class="text-dark me-2" target="_blank">
+                                <i class="fab fa-linkedin fa-2x"></i>
+                            </a>
+                            {% endif %}
+                            {% if member.twitter_url %}
+                            <a href="{{ member.twitter_url }}" class="text-dark" target="_blank">
+                                <i class="fab fa-twitter fa-2x"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="lead">No team members available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Join Our Team Section -->
+<section class="join-team py-5" style="background-color: var(--light-bg);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="section-title">Join Our Team</h2>
+                <p class="lead">We're always looking for talented individuals to join our growing team. If you're passionate about technology and want to work on exciting projects, we'd love to hear from you.</p>
+                <div class="mt-4">
+                    <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Contact Us</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Why Work With Us?</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle me-2" style="color: var(--primary-color);"></i>
+                                Competitive salary and benefits
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle me-2" style="color: var(--primary-color);"></i>
+                                Flexible work environment
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle me-2" style="color: var(--primary-color);"></i>
+                                Opportunities for growth
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle me-2" style="color: var(--primary-color);"></i>
+                                Exciting projects
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle me-2" style="color: var(--primary-color);"></i>
+                                Collaborative team culture
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

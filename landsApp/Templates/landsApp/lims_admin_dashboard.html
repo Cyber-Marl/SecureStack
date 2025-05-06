@@ -1,0 +1,120 @@
+{% extends 'landsApp/base.html' %}
+
+{% block title %}LIMS Administrator Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2>LIMS Administrator Dashboard</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <!-- User Management Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">User Management</h5>
+                <a href="{% url 'add_user' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Add New User
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{% url 'user_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users"></i> View All Users
+                    </a>
+                    <a href="{% url 'add_user' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-plus"></i> Create New User
+                    </a>
+                    <a href="{% url 'user_roles' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-tag"></i> Manage Roles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Administration -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">System Administration</h5>
+                <div class="list-group">
+                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-cogs"></i> System Settings
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-database"></i> Database Backup
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Management -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Data Management</h5>
+                <div class="list-group">
+                    <a href="{% url 'admin:landsApp_farm_changelist' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-home"></i> Farms Database
+                    </a>
+                    <a href="{% url 'admin:landsApp_farmowner_changelist' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> Farm Owners
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- System Statistics -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                System Statistics
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="text-center">
+                            <h3 class="text-primary">{{ total_users|default:"0" }}</h3>
+                            <p>Active Users</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-center">
+                            <h3 class="text-success">{{ total_farms|default:"0" }}</h3>
+                            <p>Registered Farms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recent System Activity
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% if recent_activities %}
+                        {% for activity in recent_activities %}
+                            <li class="list-group-item">{{ activity }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item">No recent activities</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

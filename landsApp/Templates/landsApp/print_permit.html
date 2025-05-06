@@ -1,0 +1,96 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Print A2 Permit</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Permit Details</h4>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Permit Number:</th>
+                                    <td>{{ permit.permit_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Farm Name:</th>
+                                    <td>{{ permit.a2_farm.farm_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Farm Number:</th>
+                                    <td>{{ permit.a2_farm.farm_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Area Size:</th>
+                                    <td>{{ permit.a2_farm.area_size }} {{ permit.a2_farm.area_units }}</td>
+                                </tr>
+                                <tr>
+                                    <th>District:</th>
+                                    <td>{{ permit.a2_farm.district }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Province:</th>
+                                    <td>{{ permit.a2_farm.province }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Issue Date:</th>
+                                    <td>{{ permit.issue_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Expiry Date:</th>
+                                    <td>{{ permit.expiry_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>{{ permit.permit_status }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Print History</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Printed By</th>
+                                        <th>Printed Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for history in print_history %}
+                                    <tr>
+                                        <td>{{ history.printed_by.get_full_name }}</td>
+                                        <td>{{ history.printed_date }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2" class="text-center">No print history available</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <form method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary" {% if not permit.is_printing_authorized %}disabled{% endif %}>
+                                    <i class="fas fa-print"></i> Print Permit
+                                </button>
+                                <a href="{% url 'resettlement_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

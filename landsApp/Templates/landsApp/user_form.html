@@ -1,0 +1,16 @@
+{% extends 'landsApp/form_base.html' %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    /* Add any user-specific styles here */
+    #id_username, #id_email {
+        width: 300px;
+    }
+    .password-group {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %} 

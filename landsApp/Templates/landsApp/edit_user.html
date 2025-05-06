@@ -1,0 +1,77 @@
+{% extends 'landsApp/base.html' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Edit User: {{ user.username }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="lims_officer" {% if user.userprofile.role == 'lims_officer' %}selected{% endif %}>LIMS Officer</option>
+                                <option value="estates_officer" {% if user.userprofile.role == 'estates_officer' %}selected{% endif %}>Estates and Valuations Officer</option>
+                                <option value="acquisition_officer" {% if user.userprofile.role == 'acquisition_officer' %}selected{% endif %}>Acquisition Officer</option>
+                                <option value="resettlement_officer" {% if user.userprofile.role == 'resettlement_officer' %}selected{% endif %}>Resettlement Officer</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{ user.userprofile.phone_number }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">Active Account</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="{% url 'user_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

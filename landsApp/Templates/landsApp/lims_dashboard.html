@@ -1,0 +1,194 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block title %}LIMS Administrator Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="h3 mb-4 text-primary">LIMS Administrator Dashboard</h1>
+            <p class="text-muted">Welcome to the Land Information Management System. Use the tools below to manage farms, users, and more.</p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-primary h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-tractor fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Parent Farms</h5>
+                    <p class="card-text text-muted">Manage parent farms, including adding new farms and editing existing ones.</p>
+                    <a href="{% url 'parent_farm_list' %}" class="btn btn-primary btn-sm">View Parent Farms</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-success h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-map fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Farm Subdivisions</h5>
+                    <p class="card-text text-muted">View and manage farm subdivisions planned by resettlement officers.</p>
+                    <a href="#" class="btn btn-success btn-sm">View Subdivisions</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-warning h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-file-alt fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">A2 Permits</h5>
+                    <p class="card-text text-muted">Review and authorize A2 permits for printing.</p>
+                    <a href="#" class="btn btn-warning btn-sm">Manage Permits</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-info h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">User Management</h5>
+                    <p class="card-text text-muted">Manage system users, roles, and permissions.</p>
+                    <a href="{% url 'user_list' %}" class="btn btn-info btn-sm">Manage Users</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Recent Parent Farms -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Recent Parent Farms</h5>
+                    <a href="{% url 'parent_farm_list' %}" class="btn btn-sm btn-light">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Farm ID</th>
+                                    <th>Farm Name</th>
+                                    <th>Area Size</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for farm in recent_farms %}
+                                <tr>
+                                    <td>{{ farm.farm_id }}</td>
+                                    <td>{{ farm.farm_name }}</td>
+                                    <td>{{ farm.area_size }} {{ farm.area_units }} ({{ farm.size_hectares }} ha)</td>
+                                    <td>
+                                        <span class="badge bg-{% if farm.is_planned == 'planned' %}success{% else %}warning{% endif %}">
+                                            {{ farm.is_planned|title }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'manage_parent_farm' farm_id=farm.farm_id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No recent farms</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h3 class="text-primary">{{ total_farms }}</h3>
+                            <p class="text-muted">Total Farms</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-success">{{ planned_farms }}</h3>
+                            <p class="text-muted">Planned Farms</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-warning">{{ unplanned_farms }}</h3>
+                            <p class="text-muted">Unplanned Farms</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-info">{{ a1_farms }}</h3>
+                            <p class="text-muted">A1 Farms</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3 text-center">
+                        <div class="col-md-12">
+                            <h3 class="text-danger">{{ a2_farms }}</h3>
+                            <p class="text-muted">A2 Farms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card mt-4 shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for log in recent_logs %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ log.get_action_flag_display }}</h6>
+                                <small class="text-muted">{{ log.action_time|timesince }} ago</small>
+                            </div>
+                            <p class="mb-1 text-muted">{{ log.change_message }}</p>
+                            <small class="text-muted">By {{ log.user.get_full_name|default:log.user.username }}</small>
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item text-center text-muted">No recent activity</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function(){
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Add keyboard navigation
+        $(document).on('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch(e.which) {
+                    case 49: // Ctrl + 1
+                        window.location.href = "{% url 'parent_farm_list' %}";
+                        break;
+                    case 50: // Ctrl + 2
+                        window.location.href = "{% url 'user_list' %}";
+                        break;
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

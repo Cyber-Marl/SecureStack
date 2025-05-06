@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Project Header -->
+<section class="project-header py-5" style="background-color: var(--light-bg);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-4">{{ project.title }}</h1>
+                <p class="lead">{{ project.description }}</p>
+                <div class="mb-4">
+                    <span class="badge bg-primary me-2">{{ project.client }}</span>
+                </div>
+                <p class="text-muted">Completed: {{ project.completion_date|date:"F Y" }}</p>
+            </div>
+            <div class="col-lg-4">
+                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Details -->
+<section class="project-details py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="section-title">Project Overview</h2>
+                <div class="project-content">
+                    {{ project.description|linebreaks }}
+                </div>
+                
+                <h2 class="section-title mt-5">Key Features</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-check-circle fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>Custom Solution</h4>
+                                <p>Tailored to meet the specific needs of the client.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-shield-alt fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>Secure Architecture</h4>
+                                <p>Built with security as a top priority.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-mobile-alt fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>Responsive Design</h4>
+                                <p>Works seamlessly across all devices.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-tachometer-alt fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>High Performance</h4>
+                                <p>Optimized for speed and efficiency.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if project.project_url %}
+                <div class="mt-4">
+                    <a href="{{ project.project_url }}" class="btn btn-primary" target="_blank">Visit Project</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Client</h3>
+                        <p class="lead">{{ project.client_name }}</p>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Services Used</h3>
+                        <ul class="list-unstyled">
+                            {% for service in project.services.all %}
+                            <li class="mb-2">
+                                <a href="{% url 'core:service_detail' service.slug %}" class="text-decoration-none">
+                                    <i class="fas fa-arrow-right me-2" style="color: var(--primary-color);"></i>
+                                    {{ service.title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 text-center" style="background-color: var(--light-bg);">
+    <div class="container">
+        <h2 class="mb-4">Ready to Start Your Project?</h2>
+        <p class="lead mb-4">Let's discuss how we can help you achieve similar results.</p>
+        <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Contact Us</a>
+    </div>
+</section>
+{% endblock %} 

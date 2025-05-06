@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{% block title %}Our Services - Securestack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">Our Services</h1>
+        <p class="lead text-muted" data-aos="fade-up" data-aos-delay="100">
+            Comprehensive technology solutions tailored to your business needs
+        </p>
+    </div>
+
+    <!-- Service Filters -->
+    <div class="text-center mb-5" data-aos="fade-up">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-primary active" data-filter="all">
+                All Services
+            </button>
+            <button type="button" class="btn btn-outline-primary" data-filter="security">
+                Security Solutions
+            </button>
+            <button type="button" class="btn btn-outline-primary" data-filter="development">
+                Development Services
+            </button>
+            <button type="button" class="btn btn-outline-primary" data-filter="consulting">
+                Consulting Services
+            </button>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="row g-4">
+        <!-- Security Solutions -->
+        <div class="col-md-6 col-lg-4" data-category="security" data-aos="fade-up">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-shield-alt fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Cybersecurity Solutions</h3>
+                <p class="text-muted mb-4">Comprehensive protection against digital threats and vulnerabilities.</p>
+                <a href="{% url 'core:service_detail' slug='cybersecurity-solutions' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-category="security" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-lock fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Network Security</h3>
+                <p class="text-muted mb-4">Secure your network infrastructure with advanced protection.</p>
+                <a href="{% url 'core:service_detail' slug='network-security' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-category="security" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-user-shield fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Identity & Access Management</h3>
+                <p class="text-muted mb-4">Control and secure access to your systems and data.</p>
+                <a href="{% url 'core:service_detail' slug='identity-access-management' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Development Services -->
+        <div class="col-md-6 col-lg-4" data-category="development" data-aos="fade-up">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-code fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Web Development</h3>
+                <p class="text-muted mb-4">Custom web applications built with modern technologies.</p>
+                <a href="{% url 'core:service_detail' slug='web-development' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-category="development" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-mobile-alt fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Mobile Development</h3>
+                <p class="text-muted mb-4">Native and cross-platform mobile applications.</p>
+                <a href="{% url 'core:service_detail' slug='mobile-development' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-category="development" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-cogs fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">ERP Development</h3>
+                <p class="text-muted mb-4">Custom enterprise resource planning solutions.</p>
+                <a href="{% url 'core:service_detail' slug='erp-development' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Consulting Services -->
+        <div class="col-md-6 col-lg-4" data-category="consulting" data-aos="fade-up">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-chart-line fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">IT Strategy</h3>
+                <p class="text-muted mb-4">Strategic planning for technology implementation.</p>
+                <a href="{% url 'core:service_detail' slug='it-strategy' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-category="consulting" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-users fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Digital Transformation</h3>
+                <p class="text-muted mb-4">Guide your business through digital evolution.</p>
+                <a href="{% url 'core:service_detail' slug='digital-transformation' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4" data-category="consulting" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-card h-100">
+                <div class="service-icon mb-4" style="color: #fc914e;">
+                    <i class="fas fa-lightbulb fa-3x"></i>
+                </div>
+                <h3 class="h4 mb-3">Technology Consulting</h3>
+                <p class="text-muted mb-4">Expert advice for technology decisions.</p>
+                <a href="{% url 'core:service_detail' slug='technology-consulting' %}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Service Card Styles */
+    .service-card {
+        border: none;
+        border-radius: 20px;
+        transition: all 0.5s ease;
+        background-color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        position: relative;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(135deg, #fc914e 0%, #e67e3d 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 15px 30px rgba(252, 145, 78, 0.1);
+    }
+
+    /* Service Icon Styles */
+    .service-icon {
+        color: #fc914e;
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.5s ease;
+        display: inline-block;
+    }
+
+    .service-card:hover .service-icon {
+        transform: scale(1.2) rotate(5deg);
+    }
+
+    /* Filter Button Styles */
+    .btn-outline-primary {
+        color: #fc914e;
+        border-color: #fc914e;
+        margin: 0 5px;
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary.active {
+        background-color: #fc914e;
+        color: white;
+        border-color: #fc914e;
+        transform: translateY(-2px);
+    }
+
+    /* Service Filter Animation */
+    [data-category] {
+        transition: all 0.5s ease;
+    }
+
+    [data-category].hidden {
+        opacity: 0;
+        transform: scale(0.9);
+        pointer-events: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        const serviceCards = document.querySelectorAll('[data-category]');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                const filter = this.getAttribute('data-filter');
+
+                serviceCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %} 

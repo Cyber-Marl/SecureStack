@@ -1,0 +1,69 @@
+{% extends 'landsApp/base.html' %}
+
+{% block title %}Acquisition Officer Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h2>Acquisition Officer Dashboard</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Farm Register</h5>
+                <p class="card-text">View and manage all registered farms</p>
+                <a href="#" class="btn btn-primary">View Register</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Gazette Status</h5>
+                <p class="card-text">Manage gazetted and non-gazetted farms</p>
+                <a href="#" class="btn btn-primary">View Status</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Farm Documents</h5>
+                <p class="card-text">Access and manage farm documentation</p>
+                <a href="#" class="btn btn-primary">View Documents</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recently Added Farms
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">No recent additions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Pending Gazette Actions
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">No pending actions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

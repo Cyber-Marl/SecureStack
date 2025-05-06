@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Service Header -->
+<section class="service-header py-5" style="background-color: var(--light-bg);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-4">{{ service.title }}</h1>
+                <p class="lead">{{ service.description }}</p>
+            </div>
+            <div class="col-lg-4 text-center">
+                {% if service.image %}
+                <img src="{{ service.image.url }}" alt="{{ service.title }}" class="img-fluid rounded">
+                {% else %}
+                <i class="{{ service.icon }} fa-5x" style="color: var(--primary-color);"></i>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Details -->
+<section class="service-details py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="section-title">Service Overview</h2>
+                <div class="service-content">
+                    {{ service.description|linebreaks }}
+                </div>
+                
+                <h2 class="section-title mt-5">Why Choose Us</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-check-circle fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>Expert Team</h4>
+                                <p>Our experienced professionals deliver high-quality solutions tailored to your needs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-clock fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>Timely Delivery</h4>
+                                <p>We ensure projects are completed on time and within budget.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-shield-alt fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>Secure Solutions</h4>
+                                <p>Security is our top priority in all our development processes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-headset fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <h4>24/7 Support</h4>
+                                <p>Round-the-clock support to address your concerns and queries.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Get Started</h3>
+                        <p>Ready to take your business to the next level? Contact us today to discuss your project requirements.</p>
+                        <a href="{% url 'core:contact' %}?service={{ service.id }}" class="btn btn-primary btn-lg w-100">Contact Us</a>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Related Services</h3>
+                        <ul class="list-unstyled">
+                            {% for related_service in services %}
+                            {% if related_service.id != service.id %}
+                            <li class="mb-2">
+                                <a href="{% url 'core:service_detail' related_service.slug %}" class="text-decoration-none">
+                                    <i class="fas fa-arrow-right me-2" style="color: var(--primary-color);"></i>
+                                    {{ related_service.title }}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 text-center" style="background-color: var(--light-bg);">
+    <div class="container">
+        <h2 class="mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">Let's discuss how we can help you achieve your goals with our {{ service.title }} service.</p>
+        <a href="{% url 'core:contact' %}?service={{ service.id }}" class="btn btn-primary btn-lg">Contact Us</a>
+    </div>
+</section>
+{% endblock %} 

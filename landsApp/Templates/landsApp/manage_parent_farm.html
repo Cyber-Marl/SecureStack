@@ -1,0 +1,261 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block title %}{% if is_edit %}Edit{% else %}Add{% endif %} Parent Farm{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">{% if is_edit %}Edit{% else %}Add New{% endif %} Parent Farm</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% if is_edit %}{% url 'manage_parent_farm' farm.farm_id %}{% else %}{% url 'manage_parent_farm' %}{% endif %}">
+                        {% csrf_token %}
+                        
+                        <!-- Location Information -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Location Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="province" class="form-label">Province</label>
+                                        {{ form.province }}
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="previous_district" class="form-label">Old District</label>
+                                        {{ form.previous_district }}
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="district" class="form-label">Current District</label>
+                                        {{ form.district }}
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="natural_region" class="form-label">Natural Region</label>
+                                        {{ form.natural_region }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Farm Information -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Farm Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="farm_number" class="form-label">Farm Number</label>
+                                        {{ form.farm_number }}
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="farm_id" class="form-label">Farm ID</label>
+                                        {{ form.farm_id }}
+                                    </div>
+                                    
+                                    <div class="col-md-3 mb-3">
+                                        <label for="farm_name" class="form-label">Farm Name</label>
+                                        {{ form.farm_name }}
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="area_size" class="form-label">Size</label>
+                                        {{ form.area_size }}
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="area_units" class="form-label">Unit of Measure</label>
+                                        {{ form.area_units }}
+                                    </div>
+                                    
+                                    <div class="col-md-3 mb-3">
+                                        <label for="farm_activity" class="form-label">Farm Activity</label>
+                                        {{ form.farm_activity }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="is_planned" class="form-label">Planning Status</label>
+                                        {{ form.is_planned }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Farm Ownership -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Farm Ownership</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="ownership" class="form-label">Ownership Type</label>
+                                        {{ form.ownership }}
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="owner_name" class="form-label">Owner Name</label>
+                                        {{ form.owner_name }}
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="race" class="form-label">Race</label>
+                                        {{ form.race }}
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="company_name" class="form-label">Company Name</label>
+                                        {{ form.company_name }}
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="nationality" class="form-label">Nationality</label>
+                                        {{ form.nationality }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Title Information -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Title Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="title_type" class="form-label">Title Type</label>
+                                        {{ form.title_type }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="title_deed_number" class="form-label">Title Deed Number</label>
+                                        {{ form.title_deed_number }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="diagram_number" class="form-label">Diagram Number</label>
+                                        {{ form.diagram_number }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="gazette_status" class="form-label">Gazette Status</label>
+                                        {{ form.gazette_status }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Additional Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="bippa" class="form-label">BIPPA</label>
+                                        {{ form.bippa }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="bippa_country" class="form-label">BIPPA Country</label>
+                                        {{ form.bippa_country }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="bonds" class="form-label">Bonds</label>
+                                        {{ form.bonds }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="bonding_institution" class="form-label">Bonding Institution</label>
+                                        {{ form.bonding_institution }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="carvets" class="form-label">Carvets</label>
+                                        {{ form.carvets }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="carvet_institution" class="form-label">Carvet Institution</label>
+                                        {{ form.carvet_institution }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="carvet_number" class="form-label">Carvet Number</label>
+                                        {{ form.carvet_number }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="servitudes" class="form-label">Servitudes</label>
+                                        {{ form.servitudes }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="servitude_institution" class="form-label">Servitude Institution</label>
+                                        {{ form.servitude_institution }}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="servitude_number" class="form-label">Servitude Number</label>
+                                        {{ form.servitude_number }}
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="remarks" class="form-label">Remarks</label>
+                                        {{ form.remarks }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'parent_farm_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">{% if is_edit %}Update{% else %}Save{% endif %} Farm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Initialize form fields with existing data
+        {% if farm %}
+            // Set province and trigger district update
+            $('#province').val('{{ farm.province }}').trigger('change');
+            // Set other fields
+            $('#previous_district').val('{{ farm.previous_district }}');
+            $('#district').val('{{ farm.district }}');
+            $('#natural_region').val('{{ farm.natural_region }}');
+            $('#farm_number').val('{{ farm.farm_number }}');
+            $('#farm_id').val('{{ farm.farm_id }}');
+            $('#farm_name').val('{{ farm.farm_name }}');
+            $('#area_size').val('{{ farm.area_size }}');
+            $('#area_units').val('{{ farm.area_units }}');
+            $('#farm_activity').val('{{ farm.farm_activity }}');
+            $('#is_planned').val('{{ farm.is_planned }}');
+            $('#ownership').val('{{ farm.ownership }}');
+            $('#owner_name').val('{{ farm.owner_name }}');
+            $('#race').val('{{ farm.race }}');
+            $('#company_name').val('{{ farm.company_name }}');
+            $('#nationality').val('{{ farm.nationality }}');
+            $('#title_type').val('{{ farm.title_type }}');
+            $('#title_deed_number').val('{{ farm.title_deed_number }}');
+            $('#diagram_number').val('{{ farm.diagram_number }}');
+            $('#gazette_status').val('{{ farm.gazette_status }}');
+            $('#bippa').prop('checked', {{ farm.bippa|lower }});
+            $('#bippa_country').val('{{ farm.bippa_country }}');
+            $('#bonds').prop('checked', {{ farm.bonds|lower }});
+            $('#bonding_institution').val('{{ farm.bonding_institution }}');
+            $('#carvets').prop('checked', {{ farm.carvets|lower }});
+            $('#carvet_institution').val('{{ farm.carvet_institution }}');
+            $('#carvet_number').val('{{ farm.carvet_number }}');
+            $('#servitudes').prop('checked', {{ farm.servitudes|lower }});
+            $('#servitude_institution').val('{{ farm.servitude_institution }}');
+            $('#servitude_number').val('{{ farm.servitude_number }}');
+            $('#remarks').val('{{ farm.remarks }}');
+        {% endif %}
+    });
+</script>
+{% endblock %}

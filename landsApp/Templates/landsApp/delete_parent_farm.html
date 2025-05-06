@@ -1,0 +1,53 @@
+{% extends 'landsApp/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">Delete Parent Farm</h5>
+                </div>
+                <div class="card-body">
+                    <p class="alert alert-warning">
+                        Are you sure you want to delete the parent farm "{{ farm.farm_name }}" (ID: {{ farm.farm_id }})?
+                        This action cannot be undone.
+                    </p>
+                    
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">Farm Details</h6>
+                            <dl class="row">
+                                <dt class="col-sm-4">Farm Name</dt>
+                                <dd class="col-sm-8">{{ farm.farm_name }}</dd>
+                                
+                                <dt class="col-sm-4">Farm ID</dt>
+                                <dd class="col-sm-8">{{ farm.farm_id }}</dd>
+                                
+                                <dt class="col-sm-4">Location</dt>
+                                <dd class="col-sm-8">{{ farm.district }}, {{ farm.province }}</dd>
+                                
+                                <dt class="col-sm-4">Area Size</dt>
+                                <dd class="col-sm-8">{{ farm.area_size }} {{ farm.area_units }}</dd>
+                                
+                                <dt class="col-sm-4">Farm Category</dt>
+                                <dd class="col-sm-8">{{ farm.farm_category }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'parent_farm_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Delete Farm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

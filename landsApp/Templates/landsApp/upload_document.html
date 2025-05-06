@@ -1,0 +1,63 @@
+{% extends 'landsApp/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="document_type">Document Type</label>
+                            <select name="document_type" id="document_type" class="form-control" required>
+                                <option value="">Select Document Type</option>
+                                <option value="title_deed">Title Deed</option>
+                                <option value="survey_diagram">Survey Diagram</option>
+                                <option value="gazette_notice">Gazette Notice</option>
+                                <option value="valuation_report">Valuation Report</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document_number">Document Number</label>
+                            <input type="text" name="document_number" id="document_number" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document">Document File</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="document" name="document" required>
+                                <label class="custom-file-label" for="document">Choose file</label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Accepted formats: PDF, DOC, DOCX, JPG, PNG (Max size: 10MB)
+                            </small>
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary">Upload Document</button>
+                            <a href="{% url 'view_farm_documents' farm_id=farm.id %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Update file input label with selected filename
+    document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        var label = e.target.nextElementSibling;
+        label.innerHTML = fileName;
+    });
+</script>
+{% endblock %} 

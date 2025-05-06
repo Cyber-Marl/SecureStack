@@ -1,0 +1,14 @@
+{% extends 'landsApp/form_base.html' %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    /* Add any farm-specific styles here */
+    #id_size {
+        width: 150px;
+    }
+    #id_registration_date {
+        width: 200px;
+    }
+</style>
+{% endblock %} 

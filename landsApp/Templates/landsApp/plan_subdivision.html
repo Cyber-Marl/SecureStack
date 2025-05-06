@@ -1,0 +1,87 @@
+{% extends 'landsApp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Plan Subdivision for {{ farm.farm_name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Parent Farm Details</h4>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Farm Number:</th>
+                                    <td>{{ farm.farm_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Category:</th>
+                                    <td>{{ farm.category }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Area Size:</th>
+                                    <td>{{ farm.area_size }} {{ farm.area_units }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Province:</th>
+                                    <td>{{ farm.province }}</td>
+                                </tr>
+                                <tr>
+                                    <th>District:</th>
+                                    <td>{{ farm.district }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Plan Subdivision</h4>
+                            <form method="post">
+                                {% csrf_token %}
+                                {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    <h5>Please correct the errors below:</h5>
+                                    {{ form.errors }}
+                                </div>
+                                {% endif %}
+
+                                <div class="form-group">
+                                    <label for="{{ form.subdivision_number.id_for_label }}">Subdivision Number</label>
+                                    {{ form.subdivision_number }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.subdivision_type.id_for_label }}">Subdivision Type</label>
+                                    {{ form.subdivision_type }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.area_size.id_for_label }}">Area Size</label>
+                                    {{ form.area_size }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.area_units.id_for_label }}">Area Units</label>
+                                    {{ form.area_units }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{ form.notes.id_for_label }}">Notes</label>
+                                    {{ form.notes }}
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Plan Subdivision</button>
+                                    <a href="{% url 'farm_register' %}" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

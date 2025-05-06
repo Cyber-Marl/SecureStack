@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Securestack - Your Trusted Technology Partner{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #fc914e;
+            --secondary-color: #000000;
+            --text-color: #333333;
+            --light-bg: #f8f9fa;
+            --gradient: linear-gradient(135deg, #fc914e 0%, #e67e3d 100%);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-color: #fafafa;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e67e3d;
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(252, 145, 78, 0.3);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(252, 145, 78, 0.4);
+        }
+        
+        /* Enhanced Navbar */
+        .navbar {
+            background-color: var(--secondary-color);
+            padding: 1rem 0;
+            transition: all 0.5s ease;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        /* Enhanced Buttons */
+        .btn-primary {
+            background: var(--gradient);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(252, 145, 78, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(252, 145, 78, 0.3);
+        }
+        
+        /* Enhanced Cards */
+        .service-card {
+            border: none;
+            border-radius: 20px;
+            transition: all 0.5s ease;
+            background-color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            position: relative;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+        
+        /* Enhanced Footer */
+        footer {
+            background: linear-gradient(to bottom, #000000, #1a1a1a);
+            color: white;
+            padding: 4rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .footer-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+        }
+        
+        /* Enhanced Social Icons */
+        .social-icon {
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1.5rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            position: relative;
+            width: 45px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-icon:hover {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+            background: white;
+        }
+        
+        /* Enhanced Form Elements */
+        .form-control {
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(252, 145, 78, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        /* Enhanced Section Titles */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+        
+        /* Enhanced Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Responsive Improvements */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .service-card {
+                padding: 1.5rem;
+            }
+            
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+        
+        /* Global Link Styles */
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        /* Navbar Links */
+        .navbar .nav-link {
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar .nav-link:hover {
+            color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer Links */
+        footer a {
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+        
+        /* Quick Links in Footer */
+        .quick-links a {
+            position: relative;
+            padding-left: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-links a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .quick-links a:hover::before {
+            width: 100%;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Loading screen -->
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">Securestack</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:services' %}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:projects' %}">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="footer-title">Securestack</h4>
+                    <p>Your trusted partner in technology solutions. We help businesses transform and grow through innovative technology solutions.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="list-unstyled quick-links">
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'core:services' %}">Services</a></li>
+                        <li><a href="{% url 'core:projects' %}">Projects</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
+                        <li><a href="{% url 'core:contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="footer-title">Contact Us</h4>
+                    <p>
+                        <i class="fas fa-map-marker-alt"></i> 3964 Nharira Norton<br>
+                        <i class="fas fa-phone"></i> +263 775 634 182<br>
+                        <i class="fas fa-envelope"></i> info@securestack.com
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center">
+                <p class="mb-0">&copy; {% now "Y" %} Securestack. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS with more noticeable settings
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-out-back',
+            once: false,
+            mirror: true,
+            offset: 100
+        });
+
+        // Loading screen
+        window.addEventListener('load', function() {
+            document.querySelector('.loading').classList.add('fade-out');
+            setTimeout(() => {
+                document.querySelector('.loading').style.display = 'none';
+            }, 500);
+        });
+
+        // Back to Top Button
+        const backToTop = document.querySelector('.back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.querySelector('.navbar').classList.add('scrolled');
+            } else {
+                document.querySelector('.navbar').classList.remove('scrolled');
+            }
+        });
+
+        // Fade-in animation for content
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        fadeElements.forEach(element => {
+            fadeInObserver.observe(element);
+        });
+
+        // Add hover effect to all buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add animation to form inputs
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            input.addEventListener('blur', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ service.title }} - Securestack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Service Header -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="service-icon mb-4" style="color: #fc914e;">
+                <i class="{{ service.icon }} fa-3x"></i>
+            </div>
+            <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">{{ service.title }}</h1>
+            <p class="lead text-muted" data-aos="fade-up" data-aos-delay="100">
+                {{ service.short_description }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Service Content -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="service-content" data-aos="fade-up">
+                {{ service.content|safe }}
+            </div>
+
+            <!-- Key Features -->
+            <div class="mt-5" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="h4 mb-4">Key Features</h3>
+                <div class="row g-4">
+                    {% for feature in service.features.all %}
+                    <div class="col-md-6">
+                        <div class="feature-card p-4 h-100">
+                            <div class="feature-icon mb-3" style="color: #fc914e;">
+                                <i class="{{ feature.icon }} fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-3">{{ feature.title }}</h4>
+                            <p class="text-muted mb-0">{{ feature.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Benefits -->
+            <div class="mt-5" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="h4 mb-4">Benefits</h3>
+                <div class="benefits-list">
+                    {% for benefit in service.benefits.all %}
+                    <div class="benefit-item mb-3">
+                        <i class="fas fa-check-circle me-2" style="color: #fc914e;"></i>
+                        {{ benefit.description }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+                <h3 class="h4 mb-4">Ready to Get Started?</h3>
+                <p class="lead mb-4">Contact us today to learn how we can help you with {{ service.title|lower }}.</p>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary btn-lg">Contact Us</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .service-content {
+        line-height: 1.8;
+        color: #333;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(252, 145, 78, 0.1);
+    }
+
+    .benefit-item {
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .benefit-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(252, 145, 78, 0.1);
+    }
+</style>
+{% endblock %} 
