@@ -1,6 +1,6 @@
 name: Build & Deploy to cPanel
 
-# Triggering deployment after updating FTP credentials
+# Force rebuild/redeploy trigger
 on:
   push:
     branches:
