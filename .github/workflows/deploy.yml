@@ -12,21 +12,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Trigger cPanel to pull latest code and run .cpanel.yml
       - name: 📡 Trigger cPanel Deployment
         run: |
-          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
+          echo "🔄 Calling cPanel UAPI to trigger git deployment..."
+
+          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" \
+            --max-time 60 \
             -X POST "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy" \
             -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
-            -d "repository_root=/home/securest/SecureStack")
+            --data-urlencode "repository_root=/home/securest/SecureStack")
 
-          echo "HTTP Status: $RESPONSE"
-          echo "Response body:"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "HTTP Status Code: $HTTP_STATUS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "API Response:"
           cat response.txt
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-          if [ "$RESPONSE" != "200" ]; then
-            echo "❌ Deployment failed with HTTP $RESPONSE"
-            exit 1
+          # Check for success - cPanel returns errors array
+          if echo "$(cat response.txt)" | grep -q '"errors":null'; then
+            echo "✅ Deployment triggered successfully!"
+          elif echo "$(cat response.txt)" | grep -q '"status":1'; then
+            echo "✅ Deployment triggered successfully!"
+          else
+            echo "❌ Deployment may have failed. Check response above."
+            if [ "$HTTP_STATUS" != "200" ]; then
+              exit 1
+            fi
           fi
-
-          echo "✅ cPanel deployment triggered successfully!"
