@@ -38,6 +38,12 @@ jobs:
           mkdir -p securestack-backend/tmp
           touch securestack-backend/tmp/restart.txt
 
+      # 4.5 Add server to known_hosts
+      - name: 🔒 Add Server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 22 -H ${{ secrets.FTP_SERVER }} >> ~/.ssh/known_hosts
+
       # 5. Deploy Frontend to public_html (via SFTP/SSH)
       - name: 🚀 Deploy Frontend to public_html
         uses: wlixcc/SFTP-Deploy-Action@v1.2.6
