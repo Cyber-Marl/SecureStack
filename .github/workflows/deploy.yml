@@ -38,11 +38,11 @@ jobs:
           mkdir -p securestack-backend/tmp
           touch securestack-backend/tmp/restart.txt
 
-      # 4.5 Add server to known_hosts
-      - name: 🔒 Add Server to known_hosts
+      # 4.5 Disable Strict Host Key Checking in SSH configuration
+      - name: 🔒 Configure SSH to bypass host key verification
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 22 -H ${{ secrets.FTP_SERVER }} >> ~/.ssh/known_hosts
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null" > ~/.ssh/config
 
       # 5. Deploy Frontend to public_html (via SFTP/SSH)
       - name: 🚀 Deploy Frontend to public_html
