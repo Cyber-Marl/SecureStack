@@ -20,7 +20,8 @@ jobs:
             --max-time 60 \
             -X POST "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy" \
             -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
-            --data-urlencode "repository_root=/home/securest/SecureStack")
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "repository_root=%2Fhome%2Fsecurest%2FSecureStack")
 
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "HTTP Status Code: $HTTP_STATUS"
@@ -30,14 +31,9 @@ jobs:
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-          # Check for success - cPanel returns errors array
-          if echo "$(cat response.txt)" | grep -q '"errors":null'; then
-            echo "✅ Deployment triggered successfully!"
-          elif echo "$(cat response.txt)" | grep -q '"status":1'; then
-            echo "✅ Deployment triggered successfully!"
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ cPanel API responded with 200!"
           else
-            echo "❌ Deployment may have failed. Check response above."
-            if [ "$HTTP_STATUS" != "200" ]; then
-              exit 1
-            fi
+            echo "❌ HTTP $HTTP_STATUS - check response above"
+            exit 1
           fi
