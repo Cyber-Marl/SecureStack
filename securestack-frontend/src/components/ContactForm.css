@@ -1,0 +1,269 @@
+.cf-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  color: #24292f;
+  max-width: 600px;
+  width: 100%;
+}
+
+.cf-premium-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Floating Label Fields */
+.cf-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.cf-underline-input,
+.cf-underline-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #dcdcdc;
+  border-radius: 0;
+  padding: 12px 0 6px 0;
+  width: 100%;
+  font-size: 16px;
+  color: #24292f;
+  transition: border-color var(--transition);
+  font-family: inherit;
+}
+
+.cf-underline-textarea {
+  resize: none;
+  overflow-y: hidden;
+  min-height: 44px;
+}
+
+.cf-underline-input:focus,
+.cf-underline-textarea:focus {
+  outline: none;
+  border-bottom-color: var(--orange);
+}
+
+.cf-floating-label {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  font-size: 16px;
+  color: #8892a5;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating logic based on input placeholder state */
+.cf-underline-input:focus ~ .cf-floating-label,
+.cf-underline-input:not(:placeholder-shown) ~ .cf-floating-label,
+.cf-underline-textarea:focus ~ .cf-floating-label,
+.cf-underline-textarea:not(:placeholder-shown) ~ .cf-floating-label {
+  top: -12px;
+  font-size: 12px;
+  color: var(--orange);
+  font-weight: 600;
+}
+
+/* File Upload block */
+.cf-file-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1.5px solid #dcdcdc;
+  padding-bottom: 20px;
+  margin-top: 8px;
+}
+
+.cf-attach-btn {
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.cf-attach-btn:hover {
+  background: #f6f8fa;
+  border-color: #8892a5;
+}
+
+.cf-file-caption {
+  font-size: 11px;
+  color: #8892a5;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.cf-file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cf-file-tag {
+  background: #f1f3f5;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+  border: 1px solid #e9ecef;
+}
+
+/* NDA Checkbox */
+.cf-nda-wrapper {
+  margin-top: -4px;
+}
+
+.cf-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cf-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--orange);
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.cf-checkbox-text {
+  font-size: 13px;
+  color: #57606a;
+  line-height: 1.4;
+}
+
+.cf-info-icon {
+  color: #8892a5;
+  margin-left: 4px;
+  cursor: help;
+}
+
+/* Submit Block */
+.cf-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.cf-submit-btn {
+  background: var(--orange);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 36px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 4px 14px rgba(254, 145, 76, 0.35);
+}
+
+.cf-submit-btn:hover:not(:disabled) {
+  background: var(--orange-d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(254, 145, 76, 0.45);
+}
+
+.cf-submit-btn:disabled {
+  background: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.cf-privacy-badge {
+  font-size: 13px;
+  color: #2e7d32;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cf-shield-check {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Success & Error State styling */
+.cf-success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  gap: 20px;
+}
+
+.cf-success-icon {
+  width: 60px;
+  height: 60px;
+  background: #e8f5e9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2e7d32;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.cf-success-state h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #24292f;
+}
+
+.cf-success-state p {
+  font-size: 14px;
+  color: #57606a;
+  line-height: 1.6;
+}
+
+.cf-cta-reset {
+  margin-top: 12px;
+}
+
+.cf-error {
+  font-size: 13px;
+  color: #d32f2f;
+  margin: -10px 0;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .cf-card {
+    padding: 32px 24px;
+  }
+  .cf-submit-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .cf-submit-btn {
+    width: 100%;
+  }
+  .cf-privacy-badge {
+    justify-content: center;
+  }
+}

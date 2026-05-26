@@ -1,0 +1,300 @@
+/* ── Trust & Compliance Page Premium Styles ── */
+
+.trust-page-root {
+  padding-bottom: 80px;
+}
+
+/* Hero Section override for Trust center */
+.sec-hero-section {
+  padding: 140px 0 60px 0;
+}
+
+.sec-hero-subtitle {
+  font-size: 20px;
+  line-height: 1.75;
+  color: var(--text-2);
+  max-width: 800px;
+  margin-top: 24px;
+}
+
+/* SDLC Timeline Layout */
+.sdlc-timeline-wrapper {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  margin-top: 48px;
+}
+
+.sdlc-timeline-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 0 320px;
+}
+
+.sdlc-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sdlc-nav-btn:hover {
+  background: var(--surface-h);
+}
+
+/* Theme sensitive active tabs */
+.sdlc-nav-btn.active {
+  background: var(--surface);
+}
+
+[data-theme="light"] .sdlc-nav-btn.active {
+  background: #eaeef6;
+}
+
+[data-theme="dark"] .sdlc-nav-btn.active {
+  background: rgba(254, 145, 76, 0.08);
+  box-shadow: inset 3px 0 0 var(--orange);
+}
+
+.sdlc-nav-step {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--orange);
+  background: rgba(254, 145, 76, 0.12);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sdlc-nav-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Timeline Display Card */
+.sdlc-timeline-display {
+  flex: 1;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.sdlc-display-num {
+  position: absolute;
+  top: -24px;
+  right: -8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 160px;
+  font-weight: 900;
+  color: var(--text);
+  opacity: 0.025;
+  pointer-events: none;
+}
+
+.sdlc-timeline-display h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.sdlc-timeline-display p {
+  font-size: 16px;
+  color: var(--text-2);
+  line-height: 1.8;
+  margin-bottom: 32px;
+  max-width: 620px;
+}
+
+.sdlc-display-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--orange);
+  background: rgba(254, 145, 76, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  display: inline-block;
+  box-shadow: 0 0 8px var(--orange);
+}
+
+/* Compliance standards grid */
+.sec-standard-card {
+  display: flex;
+  gap: 28px;
+  padding: 40px;
+  align-items: flex-start;
+  transition: all 0.25s ease;
+}
+
+.standard-icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius);
+  background: rgba(254, 145, 76, 0.08);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(254, 145, 76, 0.03);
+}
+
+.sec-standard-card h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.sec-standard-card p {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* Guardrails grid */
+.sec-guardrail-card {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+.guardrail-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--orange);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.guardrail-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.guardrail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guardrail-key {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.55;
+  letter-spacing: 0.5px;
+}
+
+.guardrail-val,
+.guardrail-desc {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+/* ── Responsive Adaptations ── */
+@media (max-width: 1024px) {
+  .sdlc-timeline-wrapper {
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  .sdlc-timeline-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 12px;
+    scrollbar-width: none;
+  }
+  
+  .sdlc-timeline-nav::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .sdlc-nav-btn {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 0 0 160px;
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .sdlc-nav-label {
+    font-size: 13px;
+  }
+  
+  [data-theme="dark"] .sdlc-nav-btn.active {
+    box-shadow: inset 0 -3px 0 var(--orange);
+  }
+}
+
+@media (max-width: 768px) {
+  .sec-hero-subtitle {
+    font-size: 16px;
+  }
+  
+  .sdlc-timeline-display {
+    padding: 32px 24px;
+    min-height: auto;
+  }
+  
+  .sdlc-timeline-display h3 {
+    font-size: 24px;
+  }
+  
+  .sdlc-timeline-display p {
+    font-size: 14.5px;
+    margin-bottom: 24px;
+  }
+  
+  .sec-standard-card {
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px;
+  }
+  
+  .sec-guardrail-card {
+    padding: 28px;
+  }
+}

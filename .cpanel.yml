@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/securest/public_html
+    - /bin/rsync -rav --exclude '.git' --exclude 'node_modules' ./securestack-frontend/dist/ $DEPLOYPATH
+    - export BACKENDPATH=/home/securest/securestack-backend
+    - /bin/rsync -rav --exclude '.git' --exclude 'venv' --exclude 'db.sqlite3' --exclude '.env' ./securestack-backend/ $BACKENDPATH
+    - mkdir -p $BACKENDPATH/tmp
+    - touch $BACKENDPATH/tmp/restart.txt

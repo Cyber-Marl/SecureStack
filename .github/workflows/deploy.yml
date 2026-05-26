@@ -1,0 +1,63 @@
+name: Build & Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js for frontend building
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-dir: 'securestack-frontend'
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: securestack-frontend/package-lock.json
+
+      # 3. Install frontend dependencies & build React app
+      - name: 🛠️ Build React Frontend
+        run: |
+          cd securestack-frontend
+          npm install
+          npm run build
+
+      # 4. Create the cPanel Passenger restart trigger file
+      # Touching securestack-backend/tmp/restart.txt tells the cPanel Python server to reload.
+      - name: 🔄 Create Restart Trigger for Django
+        run: |
+          mkdir -p securestack-backend/tmp
+          touch securestack-backend/tmp/restart.txt
+
+      # 5. Deploy Frontend to public_html
+      # Uses FTP/FTPS to upload compiled frontend files
+      - name: 🚀 Deploy Frontend to public_html
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./securestack-frontend/dist/
+          server-dir: ./public_html/
+          state-name: .ftp-deploy-frontend-state.json
+
+      # 6. Deploy Backend to securestack-backend
+      # Excludes local environments and databases using .gitignore automatically
+      - name: 🚀 Deploy Backend to securestack-backend
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./securestack-backend/
+          server-dir: ./securestack-backend/
+          state-name: .ftp-deploy-backend-state.json

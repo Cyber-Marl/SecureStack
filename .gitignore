@@ -1,0 +1,34 @@
+# Node/React dependencies and builds
+node_modules/
+securestack-frontend/dist/
+securestack-frontend/node_modules/
+
+# Python/Django dependencies and builds
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+*.tar.gz
+*.zip
+securestack-backend/securestack-backend.tar.gz
+securestack-backend/securestack-backend.zip
+securestack-frontend/securestack-frontend-dist.tar.gz
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Databases
+db.sqlite3
+db.sqlite3-journal
+
+# Editor / System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,18 @@
+.ind-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.ind-card { display: flex; flex-direction: column; gap: 16px; }
+.ind-header { display: flex; align-items: center; gap: 12px; }
+.ind-icon { font-size: 32px; }
+.ind-header h2 { font-size: 18px; font-weight: 700; }
+.ind-desc { font-size: 14px; color: var(--text-2); line-height: 1.7; flex: 1; }
+.ind-services { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+.ind-service-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+}
+@media (max-width: 900px) { .ind-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .ind-grid { grid-template-columns: 1fr; } }

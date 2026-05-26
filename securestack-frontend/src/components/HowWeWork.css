@@ -1,0 +1,93 @@
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+  position: relative;
+}
+
+.how-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.how-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--blue-glow);
+  box-shadow: var(--shadow-lg);
+}
+
+.how-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(254, 145, 76, 0.08);
+  border: 1px solid rgba(254, 145, 76, 0.2);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 20px;
+  transition: all var(--transition);
+}
+
+.how-card:hover .how-number {
+  background: var(--orange);
+  color: #ffffff;
+  border-color: var(--orange);
+}
+
+.how-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-heading);
+}
+
+.how-card p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.how-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.how-items li {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.how-check {
+  color: var(--blue);
+  font-weight: bold;
+}
+
+/* Connectors on wide screens */
+@media (min-width: 1024px) {
+  .how-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

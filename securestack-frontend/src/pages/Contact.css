@@ -1,0 +1,62 @@
+/* ── Dedicated Contact Page Premium Styles ── */
+
+.contact-page-root {
+  padding-bottom: 80px;
+}
+
+/* Page Hero layout */
+.contact-hero-section {
+  padding: 140px 0 60px 0;
+}
+
+.contact-hero-subtitle {
+  font-size: 20px;
+  line-height: 1.75;
+  color: var(--text-2);
+  max-width: 800px;
+  margin-top: 24px;
+}
+
+/* Direct contact methods */
+.contact-direct-info {
+  margin-top: 36px;
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-direct-info h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.contact-direct-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.contact-direct-item svg {
+  color: var(--orange);
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-hero-section {
+    padding: 120px 0 40px 0;
+  }
+  
+  .contact-hero-subtitle {
+    font-size: 16px;
+  }
+}
