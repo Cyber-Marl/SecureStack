@@ -1,4 +1,4 @@
-name: 🚀 Deploy to cPanel via API
+name: 🚀 Deploy to cPanel
 
 on:
   push:
@@ -12,29 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📡 Trigger cPanel Deployment
+      - name: 📡 Trigger cPanel to Pull & Deploy
         run: |
-          echo "🔄 Calling cPanel UAPI (plain GET, no body)..."
-
-          # URL-encode the path manually
           REPO_PATH=$(python3 -c "import urllib.parse; print(urllib.parse.quote('/home/securest/SecureStack'))")
-          echo "Encoded path: $REPO_PATH"
 
-          HTTP_STATUS=$(curl -v -o response.txt -w "%{http_code}" \
+          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" \
             --max-time 60 \
             "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy?repository_root=$REPO_PATH" \
             -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
-            -H "Accept: application/json") 2>&1 || true
+            -H "Accept: application/json")
 
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "HTTP Status Code: $HTTP_STATUS"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "Response:"
-          cat response.txt || true
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "HTTP Status: $HTTP_STATUS"
+          cat response.txt
 
-          if [ "$HTTP_STATUS" = "200" ]; then
-            echo "✅ Success!"
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "❌ Deployment API call failed with HTTP $HTTP_STATUS"
+            exit 1
+          fi
+
+          # Check cPanel returned success
+          if cat response.txt | python3 -c "import sys,json; d=json.load(sys.stdin); exit(0 if d.get('status')==1 else 1)" 2>/dev/null; then
+            echo "✅ cPanel deployment triggered successfully!"
           else
-            echo "⚠️ HTTP $HTTP_STATUS — switching to fallback PHP webhook approach"
+            echo "⚠️ API responded 200 but check cPanel Git Version Control for deployment status"
+            cat response.txt
           fi
