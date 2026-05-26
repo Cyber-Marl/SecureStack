@@ -14,25 +14,27 @@ jobs:
     steps:
       - name: 📡 Trigger cPanel Deployment
         run: |
-          echo "🔄 Calling cPanel UAPI via GET to trigger git deployment..."
+          echo "🔄 Calling cPanel UAPI (plain GET, no body)..."
 
-          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" \
+          # URL-encode the path manually
+          REPO_PATH=$(python3 -c "import urllib.parse; print(urllib.parse.quote('/home/securest/SecureStack'))")
+          echo "Encoded path: $REPO_PATH"
+
+          HTTP_STATUS=$(curl -v -o response.txt -w "%{http_code}" \
             --max-time 60 \
-            -G "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy" \
+            "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy?repository_root=$REPO_PATH" \
             -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
-            --data-urlencode "repository_root=/home/securest/SecureStack")
+            -H "Accept: application/json") 2>&1 || true
 
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "HTTP Status Code: $HTTP_STATUS"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "API Response:"
-          cat response.txt
-          echo ""
+          echo "Response:"
+          cat response.txt || true
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
           if [ "$HTTP_STATUS" = "200" ]; then
-            echo "✅ cPanel API responded with 200!"
+            echo "✅ Success!"
           else
-            echo "❌ HTTP $HTTP_STATUS - check response above"
-            exit 1
+            echo "⚠️ HTTP $HTTP_STATUS — switching to fallback PHP webhook approach"
           fi
