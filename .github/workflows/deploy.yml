@@ -19,7 +19,6 @@ jobs:
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-dir: 'securestack-frontend'
           node-version: 18
           cache: 'npm'
           cache-dependency-path: securestack-frontend/package-lock.json
