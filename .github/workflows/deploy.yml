@@ -14,14 +14,13 @@ jobs:
     steps:
       - name: 📡 Trigger cPanel Deployment
         run: |
-          echo "🔄 Calling cPanel UAPI to trigger git deployment..."
+          echo "🔄 Calling cPanel UAPI via GET to trigger git deployment..."
 
           HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" \
             --max-time 60 \
-            -X POST "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy" \
+            -G "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy" \
             -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "repository_root=%2Fhome%2Fsecurest%2FSecureStack")
+            --data-urlencode "repository_root=/home/securest/SecureStack")
 
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "HTTP Status Code: $HTTP_STATUS"
