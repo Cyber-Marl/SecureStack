@@ -1,6 +1,5 @@
-name: Build & Deploy to cPanel
+name: 🚀 Deploy to cPanel via API
 
-# Force FTP deployment rebuild trigger
 on:
   push:
     branches:
@@ -8,56 +7,26 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  deploy:
+    name: Trigger cPanel Git Deployment
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the repository
-      - name: 📂 Checkout Code
-        uses: actions/checkout@v4
-
-      # 2. Set up Node.js for frontend building
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: securestack-frontend/package-lock.json
-
-      # 3. Install frontend dependencies & build React app
-      - name: 🛠️ Build React Frontend
+      # 1. Trigger cPanel to pull latest code and run .cpanel.yml
+      - name: 📡 Trigger cPanel Deployment
         run: |
-          cd securestack-frontend
-          npm install
-          npm run build
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" \
+            -X POST "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy" \
+            -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
+            -d "repository_root=/home/securest/SecureStack")
 
-      # 4. Create the cPanel Passenger restart trigger file
-      # Touching securestack-backend/tmp/restart.txt tells the cPanel Python server to reload.
-      - name: 🔄 Create Restart Trigger for Django
-        run: |
-          mkdir -p securestack-backend/tmp
-          touch securestack-backend/tmp/restart.txt
+          echo "HTTP Status: $RESPONSE"
+          echo "Response body:"
+          cat response.txt
 
-      # 5. Deploy Frontend to public_html
-      # Uses FTP/FTPS to upload compiled frontend files
-      - name: 🚀 Deploy Frontend to public_html
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./securestack-frontend/dist/
-          server-dir: ./public_html/
-          state-name: .ftp-deploy-frontend-state.json
+          if [ "$RESPONSE" != "200" ]; then
+            echo "❌ Deployment failed with HTTP $RESPONSE"
+            exit 1
+          fi
 
-      # 6. Deploy Backend to securestack-backend
-      # Excludes local environments and databases using .gitignore automatically
-      - name: 🚀 Deploy Backend to securestack-backend
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./securestack-backend/
-          server-dir: ./securestack-backend/
-          state-name: .ftp-deploy-backend-state.json
+          echo "✅ cPanel deployment triggered successfully!"
