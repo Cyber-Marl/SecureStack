@@ -38,26 +38,26 @@ jobs:
           mkdir -p securestack-backend/tmp
           touch securestack-backend/tmp/restart.txt
 
-      # 5. Deploy Frontend to public_html
-      # Uses FTP/FTPS to upload compiled frontend files
+      # 5. Deploy Frontend to public_html (via SFTP/SSH)
       - name: 🚀 Deploy Frontend to public_html
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./securestack-frontend/dist/
-          server-dir: ./public_html/
-          state-name: .ftp-deploy-frontend-state.json
+          port: 22
+          local_path: './securestack-frontend/dist/'
+          remote_path: './public_html/'
+          rsyncArgs: '--exclude=.git'
 
-      # 6. Deploy Backend to securestack-backend
-      # Excludes local environments and databases using .gitignore automatically
+      # 6. Deploy Backend to securestack-backend (via SFTP/SSH)
       - name: 🚀 Deploy Backend to securestack-backend
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./securestack-backend/
-          server-dir: ./securestack-backend/
-          state-name: .ftp-deploy-backend-state.json
+          port: 22
+          local_path: './securestack-backend/'
+          remote_path: './securestack-backend/'
+          rsyncArgs: '--exclude=venv --exclude=db.sqlite3 --exclude=.env --exclude=.git'
