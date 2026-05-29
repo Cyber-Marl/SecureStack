@@ -1,4 +1,4 @@
-name: 🚀 Deploy to cPanel
+name: 🚀 Build & Deploy to cPanel
 
 on:
   push:
@@ -7,33 +7,46 @@ on:
       - master
 
 jobs:
-  deploy:
-    name: Trigger cPanel Git Deployment
+  build-and-deploy:
+    name: Build React & Deploy via FTP
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📡 Trigger cPanel to Pull & Deploy
-        run: |
-          REPO_PATH=$(python3 -c "import urllib.parse; print(urllib.parse.quote('/home/securest/SecureStack'))")
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
 
-          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" \
-            --max-time 60 \
-            "https://hz4.vps.webdevworld.com:2083/execute/VersionControl/deploy?repository_root=$REPO_PATH" \
-            -H "Authorization: cpanel securest:${{ secrets.CPANEL_API_TOKEN }}" \
-            -H "Accept: application/json")
+      # ── 2. Setup Node ──────────────────────────────────────────────────────
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: securestack-frontend/package-lock.json
 
-          echo "HTTP Status: $HTTP_STATUS"
-          cat response.txt
+      # ── 3. Install Dependencies ────────────────────────────────────────────
+      - name: 📦 Install Dependencies
+        working-directory: securestack-frontend
+        run: npm ci
 
-          if [ "$HTTP_STATUS" != "200" ]; then
-            echo "❌ Deployment API call failed with HTTP $HTTP_STATUS"
-            exit 1
-          fi
+      # ── 4. Build React App ─────────────────────────────────────────────────
+      - name: 🔨 Build React App
+        working-directory: securestack-frontend
+        run: npm run build
 
-          # Check cPanel returned success
-          if cat response.txt | python3 -c "import sys,json; d=json.load(sys.stdin); exit(0 if d.get('status')==1 else 1)" 2>/dev/null; then
-            echo "✅ cPanel deployment triggered successfully!"
-          else
-            echo "⚠️ API responded 200 but check cPanel Git Version Control for deployment status"
-            cat response.txt
-          fi
+      # ── 5. Deploy dist/ → public_html via FTP ─────────────────────────────
+      - name: 📡 Deploy Frontend to public_html
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: securestack-frontend/dist/
+          server-dir: public_html/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
