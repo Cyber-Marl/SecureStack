@@ -35,12 +35,12 @@ jobs:
         working-directory: securestack-frontend
         run: npm run build
 
-      # ── 5. Package dist into tar.gz ────────────────────────────────────────
-      - name: 📦 Package dist folder
+      # ── 5. Package dist into deploy.zip ────────────────────────────────────
+      - name: 📦 Package dist folder (ZIP)
         run: |
           cd securestack-frontend/dist
-          tar -czf ../../deploy.tar.gz .
-          echo "✅ Package size: $(du -sh ../../deploy.tar.gz | cut -f1)"
+          zip -r ../../deploy.zip .
+          echo "✅ Package size: $(du -sh ../../deploy.zip | cut -f1)"
 
       # ── 6. Run robust Node.js Deployer ─────────────────────────────────────
       - name: 🚀 Deploy to cPanel Server
