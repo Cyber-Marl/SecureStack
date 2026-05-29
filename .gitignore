@@ -1,6 +1,5 @@
 # Node/React dependencies and builds
 node_modules/
-securestack-frontend/dist/
 securestack-frontend/node_modules/
 
 # Python/Django dependencies and builds
