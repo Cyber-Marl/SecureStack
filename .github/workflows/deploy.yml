@@ -21,13 +21,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: securestack-frontend/package-lock.json
 
       # ── 3. Install Dependencies ────────────────────────────────────────────
       - name: 📦 Install Dependencies
         working-directory: securestack-frontend
-        run: npm ci
+        run: npm install
 
       # ── 4. Build React App ─────────────────────────────────────────────────
       - name: 🔨 Build React App
