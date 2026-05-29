@@ -1,18 +1,25 @@
-📦 Found deploy.tar.gz. Size: 0.15 MB
+📦 Found deploy.zip. Size: 0.15 MB
 
-📤 Step 1: Uploading deploy.tar.gz via WebDAV (cPanel Web Disk)...
-Attempting binary PUT to WebDAV endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.tar.gz
+📤 Step 1: Uploading deploy.zip via WebDAV (cPanel Web Disk)...
+Attempting binary PUT to WebDAV zip endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.zip
 HTTP Status: 201 Created
 ✅ Archive uploaded successfully via WebDAV!
 
-📂 Step 2: Extracting deploy.tar.gz via cPanel API 2...
-Calling cPanel API 2 URL: https://hz4.vps.webdevworld.com:2083/json-api/cpanel?cpanel_jsonapi_user=securest&cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=Fileman&cpanel_jsonapi_func=fileop&op=extract&sourcefiles=%2Fhome%2Fsecurest%2Fpublic_html%2Fdeploy.tar.gz&destfiles=%2Fhome%2Fsecurest%2Fpublic_html&doubledecode=1
-HTTP Status: 415
-ERROR: Failed to parse extraction response as JSON. Raw response:
-ERROR: <html>
-<head><title>415 Unsupported Media Type</title></head>
-<body>
-<center><h1>415 Unsupported Media Type</h1></center>
-<hr><center>openresty/1.29.2.3</center>
-</body>
-</html>
+📤 Step 2: Uploading extract_zip.php via WebDAV...
+Attempting PHP PUT to WebDAV php endpoint: https://hz4.vps.webdevworld.com:2078/public_html/extract_zip.php
+HTTP Status: 201 Created
+✅ Extraction script uploaded successfully via WebDAV!
+
+🚀 Step 3: Triggering ZipArchive extraction via live site URL...
+Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
+HTTP Status: 200 OK
+
+--- Server Output ---
+📦 Found deploy.zip (159699 bytes)
+📂 Extracting archive via ZipArchive...
+✅ Extraction succeeded via ZipArchive!
+🧹 Self-deleted extract_zip.php. Process complete!
+
+---------------------
+
+✅ Deployment completed successfully! 🎉
