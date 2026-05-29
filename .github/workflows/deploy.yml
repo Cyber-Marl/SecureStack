@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Build React & Deploy via FTP
+    name: Build React & Deploy via cPanel API
     runs-on: ubuntu-latest
 
     steps:
@@ -32,20 +32,77 @@ jobs:
         working-directory: securestack-frontend
         run: npm run build
 
-      # ── 5. Deploy dist/ → public_html via FTPS ────────────────────────────
-      - name: 📡 Deploy Frontend to public_html
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftp
-          local-dir: securestack-frontend/dist/
-          server-dir: public_html/
-          dangerous-clean-slate: false
-          log-level: verbose
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+      # ── 5. Package dist into tar.gz ────────────────────────────────────────
+      - name: 📦 Package dist folder
+        run: |
+          cd securestack-frontend/dist
+          tar -czf ../../deploy.tar.gz .
+          echo "Package size: $(du -sh ../../deploy.tar.gz | cut -f1)"
+
+      # ── 6. Upload tar.gz to cPanel via HTTPS File Manager API ─────────────
+      - name: 📤 Upload to cPanel
+        run: |
+          echo "Uploading deploy.tar.gz to cPanel..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+            --max-time 120 \
+            -k \
+            -H "Authorization: cpanel ${{ secrets.FTP_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+            -F "dir=/home/${{ secrets.FTP_USERNAME }}/public_html" \
+            -F "file=@deploy.tar.gz" \
+            "https://hz4.vps.webdevworld.com:2083/execute/Fileman/upload_files")
+
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_STATUS:")
+
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "❌ Upload failed with HTTP $HTTP_STATUS"
+            exit 1
+          fi
+
+          if echo "$BODY" | grep -q '"status":0'; then
+            echo "❌ cPanel API returned an error"
+            echo "$BODY"
+            exit 1
+          fi
+
+          echo "✅ Upload successful!"
+
+      # ── 7. Extract tar.gz on server via cPanel API ─────────────────────────
+      - name: 📂 Extract archive on server
+        run: |
+          echo "Extracting deploy.tar.gz on server..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+            --max-time 60 \
+            -k \
+            -G \
+            -H "Authorization: cpanel ${{ secrets.FTP_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+            --data-urlencode "destdir=/home/${{ secrets.FTP_USERNAME }}/public_html" \
+            --data-urlencode "file=/home/${{ secrets.FTP_USERNAME }}/public_html/deploy.tar.gz" \
+            "https://hz4.vps.webdevworld.com:2083/execute/Fileman/extract_an_archive")
+
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_STATUS:")
+
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "❌ Extract failed with HTTP $HTTP_STATUS"
+            exit 1
+          fi
+
+          echo "✅ Extraction triggered!"
+
+      # ── 8. Clean up tar.gz from server ─────────────────────────────────────
+      - name: 🧹 Remove deploy archive from server
+        run: |
+          curl -s -k \
+            -G \
+            -H "Authorization: cpanel ${{ secrets.FTP_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+            --data-urlencode "path=/home/${{ secrets.FTP_USERNAME }}/public_html" \
+            --data-urlencode "names-0=deploy.tar.gz" \
+            "https://hz4.vps.webdevworld.com:2083/execute/Fileman/delete_files" > /dev/null
+          echo "✅ Cleanup done. Deployment complete!"
