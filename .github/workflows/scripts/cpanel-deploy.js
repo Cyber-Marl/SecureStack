@@ -1,11 +1,30 @@
 const fs = require('fs');
 const path = require('path');
 
+const logFile = path.join(process.cwd(), 'deploy.log');
+const logBuffer = [];
+
+function log(msg) {
+  console.log(msg);
+  logBuffer.push(msg);
+}
+
+function logError(msg) {
+  console.error(msg);
+  logBuffer.push('ERROR: ' + msg);
+}
+
+function writeLogFile() {
+  fs.writeFileSync(logFile, logBuffer.join('\n'));
+}
+
 const username = process.env.CPANEL_USER;
 const password = process.env.CPANEL_PASS;
 
 if (!username || !password) {
-  console.error('❌ Error: CPANEL_USER and CPANEL_PASS environment variables must be set.');
+  logError('❌ Error: CPANEL_USER and CPANEL_PASS environment variables must be set.');
+  log(`User exists: ${!!username}, Pass exists: ${!!password}`);
+  writeLogFile();
   process.exit(1);
 }
 
@@ -14,45 +33,46 @@ const uploadUrl = `https://${host}:2083/execute/Fileman/upload_files`;
 const api2Url = `https://${host}:2083/json-api/cpanel`;
 
 async function deploy() {
-  const archivePath = path.join(process.cwd(), 'deploy.tar.gz');
-  if (!fs.existsSync(archivePath)) {
-    console.error(`❌ Error: Archive file not found at ${archivePath}`);
-    process.exit(1);
-  }
-
-  const stats = fs.statSync(archivePath);
-  console.log(`📦 Found deploy.tar.gz. Size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
-
-  // 1. 📤 Upload deploy.tar.gz
-  console.log('\n📤 Step 1: Uploading deploy.tar.gz via cPanel UAPI...');
-  const boundary = '----WebKitFormBoundarySecureStackDeploy';
-  const fileBuffer = fs.readFileSync(archivePath);
-  const parts = [];
-
-  parts.push(
-    Buffer.from(
-      `--${boundary}\r\n` +
-      `Content-Disposition: form-data; name="dir"\r\n\r\n` +
-      `public_html\r\n`
-    )
-  );
-
-  parts.push(
-    Buffer.from(
-      `--${boundary}\r\n` +
-      `Content-Disposition: form-data; name="file-1"; filename="deploy.tar.gz"\r\n` +
-      `Content-Type: application/x-gzip\r\n\r\n`
-    )
-  );
-  parts.push(fileBuffer);
-  parts.push(Buffer.from('\r\n'));
-  parts.push(Buffer.from(`--${boundary}--\r\n`));
-
-  const body = Buffer.concat(parts);
-  const auth = Buffer.from(`${username}:${password}`).toString('base64');
-
-  let uploadSucceeded = false;
   try {
+    const archivePath = path.join(process.cwd(), 'deploy.tar.gz');
+    if (!fs.existsSync(archivePath)) {
+      logError(`❌ Error: Archive file not found at ${archivePath}`);
+      writeLogFile();
+      process.exit(1);
+    }
+
+    const stats = fs.statSync(archivePath);
+    log(`📦 Found deploy.tar.gz. Size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
+
+    // 1. 📤 Upload deploy.tar.gz
+    log('\n📤 Step 1: Uploading deploy.tar.gz via cPanel UAPI...');
+    const boundary = '----WebKitFormBoundarySecureStackDeploy';
+    const fileBuffer = fs.readFileSync(archivePath);
+    const parts = [];
+
+    parts.push(
+      Buffer.from(
+        `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="dir"\r\n\r\n` +
+        `public_html\r\n`
+      )
+    );
+
+    parts.push(
+      Buffer.from(
+        `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="file-1"; filename="deploy.tar.gz"\r\n` +
+        `Content-Type: application/x-gzip\r\n\r\n`
+      )
+    );
+    parts.push(fileBuffer);
+    parts.push(Buffer.from('\r\n'));
+    parts.push(Buffer.from(`--${boundary}--\r\n`));
+
+    const body = Buffer.concat(parts);
+    const auth = Buffer.from(`${username}:${password}`).toString('base64');
+
+    log(`Attempting fetch to UAPI upload endpoint: ${uploadUrl}`);
     const res = await fetch(uploadUrl, {
       method: 'POST',
       headers: {
@@ -65,45 +85,42 @@ async function deploy() {
     });
 
     const resText = await res.text();
-    console.log(`HTTP Status: ${res.status}`);
+    log(`HTTP Status: ${res.status}`);
 
     let data;
     try {
       data = JSON.parse(resText);
     } catch (e) {
-      console.error('Failed to parse response as JSON. Raw response:');
-      console.error(resText);
+      logError('Failed to parse response as JSON. Raw response:');
+      logError(resText);
+      writeLogFile();
       process.exit(1);
     }
 
     if (res.status === 200 && data.status === 1) {
-      console.log('✅ Archive uploaded successfully!');
-      uploadSucceeded = true;
+      log('✅ Archive uploaded successfully!');
     } else {
-      console.error('❌ Upload failed. UAPI errors:');
-      console.error(JSON.stringify(data.errors || data, null, 2));
+      logError('❌ Upload failed. UAPI errors:');
+      logError(JSON.stringify(data.errors || data, null, 2));
+      writeLogFile();
       process.exit(1);
     }
-  } catch (err) {
-    console.error('❌ Network error during upload:', err);
-    process.exit(1);
-  }
 
-  // 2. 📂 Extract archive
-  console.log('\n📂 Step 2: Extracting deploy.tar.gz via cPanel API 2...');
-  const extractParams = new URLSearchParams({
-    cpanel_jsonapi_user: username,
-    cpanel_jsonapi_apiversion: '2',
-    cpanel_jsonapi_module: 'Fileman',
-    cpanel_jsonapi_func: 'fileop',
-    op: 'extract',
-    sourcefiles: '/home/securest/public_html/deploy.tar.gz',
-    destfiles: '/home/securest/public_html',
-    doubledecode: '1'
-  });
+    // 2. 📂 Extract archive
+    log('\n📂 Step 2: Extracting deploy.tar.gz via cPanel API 2...');
+    const extractParams = new URLSearchParams({
+      cpanel_jsonapi_user: username,
+      cpanel_jsonapi_apiversion: '2',
+      cpanel_jsonapi_module: 'Fileman',
+      cpanel_jsonapi_func: 'fileop',
+      op: 'extract',
+      sourcefiles: '/home/securest/public_html/deploy.tar.gz',
+      destfiles: '/home/securest/public_html',
+      doubledecode: '1'
+    });
 
-  try {
-    const res = await fetch(`${api2Url}?${extractParams.toString()}`, {
+    log(`Calling cPanel API 2 URL: ${api2Url}?${extractParams.toString().replace(password, 'HIDDEN')}`);
+    const extractRes = await fetch(`${api2Url}?${extractParams.toString()}`, {
       method: 'GET',
       headers: {
         'Authorization': `Basic ${auth}`,
@@ -111,55 +128,52 @@ async function deploy() {
       }
     });
 
-    const resText = await res.text();
-    console.log(`HTTP Status: ${res.status}`);
+    const extractResText = await extractRes.text();
+    log(`HTTP Status: ${extractRes.status}`);
 
-    let data;
+    let extractData;
     try {
-      data = JSON.parse(resText);
+      extractData = JSON.parse(extractResText);
     } catch (e) {
-      console.error('Failed to parse response as JSON. Raw response:');
-      console.error(resText);
+      logError('Failed to parse extraction response as JSON. Raw response:');
+      logError(extractResText);
+      writeLogFile();
       process.exit(1);
     }
 
-    const cpanelResult = data.cpanelresult || {};
+    const cpanelResult = extractData.cpanelresult || {};
     const operationData = cpanelResult.data && cpanelResult.data[0];
 
     if (operationData && operationData.result === 1) {
-      // Check if gtar reported any errors (gtar exit code is returned in the output or status)
       const output = operationData.output || '';
       if (output.includes('Cannot open') || output.includes('Error is not recoverable')) {
-        console.error('❌ Extraction completed with internal tar errors:');
-        console.error(output);
+        logError('❌ Extraction completed with internal tar errors:');
+        logError(output);
+        writeLogFile();
         process.exit(1);
       }
-      console.log('✅ Archive extracted successfully!');
-      console.log(output);
+      log('✅ Archive extracted successfully!');
+      log(output);
     } else {
-      console.error('❌ Extraction failed. API 2 response:');
-      console.error(JSON.stringify(data, null, 2));
+      logError('❌ Extraction failed. API 2 response:');
+      logError(JSON.stringify(extractData, null, 2));
+      writeLogFile();
       process.exit(1);
     }
-  } catch (err) {
-    console.error('❌ Network error during extraction:', err);
-    process.exit(1);
-  }
 
-  // 3. 🧹 Cleanup archive
-  console.log('\n🧹 Step 3: Cleaning up deploy.tar.gz from server...');
-  const cleanupParams = new URLSearchParams({
-    cpanel_jsonapi_user: username,
-    cpanel_jsonapi_apiversion: '2',
-    cpanel_jsonapi_module: 'Fileman',
-    cpanel_jsonapi_func: 'fileop',
-    op: 'trash',
-    sourcefiles: '/home/securest/public_html/deploy.tar.gz',
-    doubledecode: '1'
-  });
+    // 3. 🧹 Cleanup archive
+    log('\n🧹 Step 3: Cleaning up deploy.tar.gz from server...');
+    const cleanupParams = new URLSearchParams({
+      cpanel_jsonapi_user: username,
+      cpanel_jsonapi_apiversion: '2',
+      cpanel_jsonapi_module: 'Fileman',
+      cpanel_jsonapi_func: 'fileop',
+      op: 'trash',
+      sourcefiles: '/home/securest/public_html/deploy.tar.gz',
+      doubledecode: '1'
+    });
 
-  try {
-    const res = await fetch(`${api2Url}?${cleanupParams.toString()}`, {
+    const cleanupRes = await fetch(`${api2Url}?${cleanupParams.toString()}`, {
       method: 'GET',
       headers: {
         'Authorization': `Basic ${auth}`,
@@ -167,26 +181,30 @@ async function deploy() {
       }
     });
 
-    const resText = await res.text();
-    let data;
+    const cleanupResText = await cleanupRes.text();
+    let cleanupData;
     try {
-      data = JSON.parse(resText);
+      cleanupData = JSON.parse(cleanupResText);
+      const cleanupResult = cleanupData.cpanelresult || {};
+      const cleanupOpData = cleanupResult.data && cleanupResult.data[0];
+
+      if (cleanupOpData && cleanupOpData.result === 1) {
+        log('✅ Server cleanup done. Deployment complete! 🎉');
+      } else {
+        log('⚠️ Warning: Server cleanup returned unsuccessful status.');
+      }
     } catch (e) {
-      // Non-fatal error since extraction completed
-      console.warn('⚠️ Warning: Failed to parse cleanup response as JSON.');
-      return;
+      log('⚠️ Warning: Failed to parse cleanup response as JSON.');
     }
 
-    const cpanelResult = data.cpanelresult || {};
-    const operationData = cpanelResult.data && cpanelResult.data[0];
-
-    if (operationData && operationData.result === 1) {
-      console.log('✅ Server cleanup done. Deployment complete! 🎉');
-    } else {
-      console.warn('⚠️ Warning: Server cleanup returned unsuccessful status.');
+    writeLogFile();
+  } catch (globalErr) {
+    logError(`❌ Unhandled error during deploy lifecycle: ${globalErr.message}`);
+    if (globalErr.stack) {
+      logError(globalErr.stack);
     }
-  } catch (err) {
-    console.warn('⚠️ Warning: Network error during server cleanup:', err);
+    writeLogFile();
+    process.exit(1);
   }
 }
 
