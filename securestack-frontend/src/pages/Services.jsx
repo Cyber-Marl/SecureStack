@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { 
+  Brain, Database, Cpu, Bot, Shield, Lock, Terminal, Server, Smartphone, 
+  Cloud, Layers, Code2, ShoppingBag, Globe, Repeat, Settings, Zap,
+  ShieldCheck, AlertTriangle, Users
+} from 'lucide-react';
 import ContactForm from '../components/ContactForm';
 import './Services.css';
 
@@ -93,6 +98,56 @@ const tabs = [
   },
 ];
 
+function getServiceIcon(name, tabId) {
+  const n = name.toLowerCase();
+  if (n.includes('artificial intelligence') || n.includes('ai consulting') || n.includes('generative ai')) return <Brain size={22} />;
+  if (n.includes('database') || n.includes('data science')) return <Database size={22} />;
+  if (n.includes('robotics') || n.includes('bot') || n.includes('automation')) return <Bot size={22} />;
+  if (n.includes('mobile') || n.includes('cross-platform')) return <Smartphone size={22} />;
+  if (n.includes('web') || n.includes('pwa') || n.includes('front-end') || n.includes('cms')) return <Globe size={22} />;
+  if (n.includes('cloud') || n.includes('aws') || n.includes('oracle')) return <Cloud size={22} />;
+  if (n.includes('penetration') || n.includes('pentest')) return <Lock size={22} />;
+  if (n.includes('compliance') || n.includes('auditing') || n.includes('soc 2') || n.includes('policy')) return <ShieldCheck size={22} />;
+  if (n.includes('incident') || n.includes('remediation')) return <AlertTriangle size={22} />;
+  if (n.includes('awareness') || n.includes('training')) return <Users size={22} />;
+  if (n.includes('legacy') || n.includes('migration')) return <Repeat size={22} />;
+  if (n.includes('integration') || n.includes('systems')) return <Layers size={22} />;
+  if (n.includes('workflow') || n.includes('engine') || n.includes('process')) return <Settings size={22} />;
+  if (n.includes('.net') || n.includes('c#')) return <Code2 size={22} />;
+  if (n.includes('php') || n.includes('laravel')) return <Layers size={22} />;
+  if (n.includes('python')) return <Terminal size={22} />;
+  if (n.includes('node')) return <Zap size={22} />;
+  if (n.includes('c++')) return <Cpu size={22} />;
+  if (n.includes('back-end') || n.includes('server')) return <Server size={22} />;
+  if (n.includes('e-commerce') || n.includes('magento') || n.includes('woo')) return <ShoppingBag size={22} />;
+  if (n.includes('erp')) return <Settings size={22} />;
+  if (n.includes('performance') || n.includes('iot')) return <Cpu size={22} />;
+  
+  // Fallbacks by category
+  if (tabId === 'ai-data') return <Brain size={22} />;
+  if (tabId === 'app-dev') return <Globe size={22} />;
+  if (tabId === 'cloud') return <Cloud size={22} />;
+  if (tabId === 'cybersecurity') return <Shield size={22} />;
+  if (tabId === 'digital-transformation') return <Repeat size={22} />;
+  if (tabId === 'software-engineering') return <Code2 size={22} />;
+  if (tabId === 'enterprise-applications') return <Settings size={22} />;
+  
+  return <Code2 size={22} />;
+}
+
+function getServiceTag(name) {
+  const n = name.toLowerCase();
+  if (n.includes('compliance') || n.includes('auditing') || n.includes('policy')) return 'Compliance';
+  if (n.includes('penetration') || n.includes('incident response') || n.includes('security management')) return 'Cyber Ops';
+  if (n.includes('artificial intelligence') || n.includes('bot') || n.includes('robotics')) return 'AI & Data';
+  if (n.includes('.net') || n.includes('c++') || n.includes('performance-critical')) return 'High Perf';
+  if (n.includes('aws') || n.includes('cloud') || n.includes('migration')) return 'Cloud Native';
+  if (n.includes('mobile') || n.includes('cross-platform')) return 'Mobile App';
+  if (n.includes('e-commerce') || n.includes('magento') || n.includes('woo') || n.includes('erp')) return 'Enterprise';
+  if (n.includes('data science') || n.includes('database')) return 'Analytics';
+  return 'Modern Dev';
+}
+
 export default function Services() {
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
@@ -166,13 +221,25 @@ export default function Services() {
                   className="svc-card-clickable"
                   onClick={() => setSelectedService(s)}
                 >
-                  <span className="svc-card-text">{s.name}</span>
-                  <span className="svc-card-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </span>
+                  <div className="svc-card-header">
+                    <div className="svc-card-icon-wrapper">
+                      {getServiceIcon(s.name, currentTab.id)}
+                    </div>
+                    <span className="svc-card-badge">{getServiceTag(s.name)}</span>
+                  </div>
+                  <div className="svc-card-body">
+                    <h3 className="svc-card-title">{s.name}</h3>
+                    <p className="svc-card-desc-preview">{s.desc}</p>
+                  </div>
+                  <div className="svc-card-footer">
+                    <span className="svc-card-action">Learn more</span>
+                    <span className="svc-card-arrow">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
