@@ -6,6 +6,9 @@ on:
       - main
       - master
 
+permissions:
+  statuses: write
+
 jobs:
   build-and-deploy:
     name: Build React & Deploy via cPanel API
@@ -46,10 +49,32 @@ jobs:
           CPANEL_PASS: ${{ secrets.FTP_PASSWORD }}
         run: node .github/workflows/scripts/cpanel-deploy.js
 
-      # ── 7. Upload deploy log artifact ──────────────────────────────────────
-      - name: 📤 Upload Deploy Log
+      # ── 7. Publish Deploy Status and Logs ──────────────────────────────────
+      - name: 📢 Publish Status & Log URL
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy-log
-          path: deploy.log
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f deploy.log ]; then
+            # Upload log to termbin.com
+            LOG_URL=$(cat deploy.log | nc termbin.com 9999 | tr -d '\r\n')
+            echo "📋 Log URL: $LOG_URL"
+            
+            # Extract last line (or error message) from log
+            ERROR_MSG=$(grep "ERROR:" deploy.log | tail -n 1 | sed 's/ERROR: //' | cut -c 1-130)
+            if [ -z "$ERROR_MSG" ]; then
+              ERROR_MSG="Deployment finished with status: ${{ job.status }}"
+            fi
+            
+            # Post status to GitHub Commit Status API
+            STATUS_STATE="success"
+            if [ "${{ job.status }}" != "success" ]; then
+              STATUS_STATE="failure"
+            fi
+            
+            curl -s -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
+              -d "{\"state\": \"$STATUS_STATE\", \"target_url\": \"$LOG_URL\", \"description\": \"$ERROR_MSG\", \"context\": \"Deployment Log Channel\"}"
+          fi
