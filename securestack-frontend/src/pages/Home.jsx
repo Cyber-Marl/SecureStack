@@ -139,7 +139,7 @@ const industries = [
 const stats = [
   { value: '99%', label: 'Uptime SLA' },
   { value: '100%', label: 'OWASP Aligned' },
-  { value: '24', label: 'Threat Protection' },
+  { value: '24/7', label: 'Threat Protection' },
   { value: '10+', label: 'Sectors Supported' },
 ];
 

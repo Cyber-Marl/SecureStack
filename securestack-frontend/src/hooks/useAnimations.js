@@ -36,8 +36,12 @@ export function useCountUp(target, active, duration = 1800) {
   useEffect(() => {
     if (!active) return;
     let start = null;
-    const num = parseInt(target.replace(/\D/g, ''), 10);
-    const suffix = target.replace(/[0-9]/g, '');
+    
+    // Match leading numbers and capture the remainder as suffix (e.g. "24/7" -> "24" and "/7")
+    const match = target.match(/^(\d+)(.*)$/);
+    const num = match ? parseInt(match[1], 10) : (parseInt(target.replace(/\D/g, ''), 10) || 0);
+    const suffix = match ? match[2] : target.replace(/[0-9]/g, '');
+
     const step = (ts) => {
       if (!start) start = ts;
       const progress = Math.min((ts - start) / duration, 1);
