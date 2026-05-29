@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
 import './Services.css';
 
@@ -94,9 +94,35 @@ const tabs = [
 ];
 
 export default function Services() {
-  const [active, setActive] = useState('ai-data');
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const serviceParam = searchParams.get('service');
+
+  const initialTab = tabs.some(t => t.id === tabParam) ? tabParam : 'ai-data';
+  const [active, setActive] = useState(initialTab);
   const [selectedService, setSelectedService] = useState(null);
-  const currentTab = tabs.find(t => t.id === active);
+
+  useEffect(() => {
+    if (tabParam && tabs.some(t => t.id === tabParam)) {
+      setActive(tabParam);
+      
+      if (serviceParam) {
+        const foundTab = tabs.find(t => t.id === tabParam);
+        const foundService = foundTab?.services.find(
+          s => s.name.toLowerCase() === serviceParam.toLowerCase()
+        );
+        if (foundService) {
+          // Add a minor delay to ensure standard React DOM rendering finishes smoothly before showing the modal
+          const timer = setTimeout(() => {
+            setSelectedService(foundService);
+          }, 100);
+          return () => clearTimeout(timer);
+        }
+      }
+    }
+  }, [tabParam, serviceParam]);
+
+  const currentTab = tabs.find(t => t.id === active) || tabs[0];
 
   return (
     <main className="svc-page-root">

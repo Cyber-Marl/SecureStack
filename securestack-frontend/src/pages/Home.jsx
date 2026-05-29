@@ -32,67 +32,67 @@ const services = [
     icon: <Shield size={24} strokeWidth={2} />, 
     title: 'IT Security Management', 
     desc: 'Security policy development, vulnerability assessments, and awareness training to protect your entire IT ecosystem.', 
-    to: '/services' 
+    to: '/services?tab=cybersecurity&service=IT Security Management' 
   },
   { 
     icon: <Braces size={24} strokeWidth={2} />, 
     title: '.NET Development', 
     desc: 'Robust, cross-platform .NET solutions with consulting, project planning, and end-to-end software development & QA.', 
-    to: '/services' 
+    to: '/services?tab=software-engineering&service=.NET Development' 
   },
   { 
     icon: <Layers size={24} strokeWidth={2} />, 
     title: 'PHP Development', 
     desc: 'Top-performance PHP applications with seamless integrations and enhanced compatibility by skilled engineers.', 
-    to: '/services' 
+    to: '/services?tab=software-engineering&service=PHP Development' 
   },
   { 
     icon: <Terminal size={24} strokeWidth={2} />, 
     title: 'Python Development', 
     desc: 'Scalable Python solutions for data processing, automation, web APIs, and AI/ML integrations.', 
-    to: '/services' 
+    to: '/services?tab=software-engineering&service=Python Development' 
   },
   { 
     icon: <Zap size={24} strokeWidth={2} />, 
     title: 'Node.js Development', 
     desc: 'Fast, event-driven Node.js backends for real-time applications, REST APIs and microservices architectures.', 
-    to: '/services' 
+    to: '/services?tab=software-engineering&service=Node.js Development' 
   },
   { 
     icon: <Cpu size={24} strokeWidth={2} />, 
     title: 'C++ Development', 
     desc: 'High-performance C++ systems programming for embedded systems, game engines, and performance-critical software.', 
-    to: '/services' 
+    to: '/services?tab=software-engineering&service=C%2B%2B Development' 
   },
   {
     icon: <Cloud size={24} strokeWidth={2} />,
     title: 'Cloud & DevOps Engineering',
     desc: 'Bespoke AWS/Azure setup, containerization (Kubernetes), infrastructure as code (Terraform), and secure CI/CD automation.',
-    to: '/services'
+    to: '/services?tab=cloud&service=Cloud Development'
   },
   {
     icon: <Lock size={24} strokeWidth={2} />,
     title: 'Penetration Testing & Compliance',
     desc: 'Bespoke web application pentesting, SOC 2/ISO 27001 audit prep, and offensive security analysis.',
-    to: '/services'
+    to: '/services?tab=cybersecurity&service=Penetration Testing'
   },
   {
     icon: <Smartphone size={24} strokeWidth={2} />,
     title: 'Mobile App Development',
     desc: 'High-performance native Swift/Kotlin applications and responsive cross-platform (React Native/Flutter) products.',
-    to: '/services'
+    to: '/services?tab=app-dev&service=Mobile Development'
   },
   {
     icon: <Palette size={24} strokeWidth={2} />,
     title: 'UI/UX Design & Prototyping',
     desc: 'Research-driven Figma wireframing, high-fidelity prototypes, user journey mapping, and comprehensive testing.',
-    to: '/services'
+    to: '/services?tab=software-engineering&service=Front-End Engineering'
   },
   {
     icon: <Brain size={24} strokeWidth={2} />,
     title: 'AI, Machine Learning & Data',
     desc: 'Intelligent LLM integrations, customized machine learning pipelines, predictive modeling, and analytics.',
-    to: '/services'
+    to: '/services?tab=ai-data&service=Artificial Intelligence'
   },
 ];
 
