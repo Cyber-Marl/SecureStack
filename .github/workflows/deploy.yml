@@ -32,7 +32,7 @@ jobs:
         working-directory: securestack-frontend
         run: npm run build
 
-      # ── 5. Deploy dist/ → public_html via FTP ─────────────────────────────
+      # ── 5. Deploy dist/ → public_html via FTPS ────────────────────────────
       - name: 📡 Deploy Frontend to public_html
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -40,10 +40,11 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          protocol: ftp
+          protocol: ftps
           local-dir: securestack-frontend/dist/
           server-dir: public_html/
           dangerous-clean-slate: false
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**

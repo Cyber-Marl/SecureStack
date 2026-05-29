@@ -1,27 +1,5 @@
 ---
 deployment:
   tasks:
-    # ── 1. Build React Frontend ──────────────────────────────────────────
-    - export NODE_PATH=/usr/local/bin
-    - cd securestack-frontend && /usr/local/bin/npm ci --prefer-offline
-    - cd securestack-frontend && /usr/local/bin/npm run build
-
-    # ── 2. Deploy Frontend to public_html ───────────────────────────────
-    - export DEPLOYPATH=/home/securest/public_html
-    - /bin/rsync -av --delete --exclude '.git' ./securestack-frontend/dist/ $DEPLOYPATH/
-
-    # ── 3. Sync Django Backend ───────────────────────────────────────────
-    - export BACKENDPATH=/home/securest/securestack-backend
-    - mkdir -p $BACKENDPATH
-    - /bin/rsync -av --delete --exclude '.git' --exclude 'venv' --exclude 'db.sqlite3' --exclude '.env' --exclude '__pycache__' ./securestack-backend/ $BACKENDPATH/
-
-    # ── 4. Install Python Dependencies ──────────────────────────────────
-    - cd $BACKENDPATH && /usr/bin/pip3 install -r requirements.txt --quiet
-
-    # ── 5. Run Django Migrations & Collect Static ────────────────────────
-    - cd $BACKENDPATH && /usr/bin/python3 manage.py migrate --noinput
-    - cd $BACKENDPATH && /usr/bin/python3 manage.py collectstatic --noinput
-
-    # ── 6. Restart Application ───────────────────────────────────────────
-    - mkdir -p $BACKENDPATH/tmp
-    - touch $BACKENDPATH/tmp/restart.txt
+    # Pre-built dist/ is committed to git — just sync it to public_html
+    - /bin/rsync -av --delete ./securestack-frontend/dist/ /home/securest/public_html/
