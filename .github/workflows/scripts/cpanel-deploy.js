@@ -29,7 +29,7 @@ if (!username || !password) {
 }
 
 const host = 'hz4.vps.webdevworld.com';
-const uploadUrl = `https://${host}:2083/execute/Fileman/upload_files`;
+const webdavUrl = `https://${host}:2078/public_html/deploy.tar.gz`;
 const api2Url = `https://${host}:2083/json-api/cpanel`;
 
 async function deploy() {
@@ -44,69 +44,35 @@ async function deploy() {
     const stats = fs.statSync(archivePath);
     log(`📦 Found deploy.tar.gz. Size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
 
-    // 1. 📤 Upload deploy.tar.gz
-    log('\n📤 Step 1: Uploading deploy.tar.gz via cPanel UAPI...');
-    const boundary = '----WebKitFormBoundarySecureStackDeploy';
+    // 1. 📤 Upload deploy.tar.gz via WebDAV PUT
+    log('\n📤 Step 1: Uploading deploy.tar.gz via WebDAV (cPanel Web Disk)...');
     const fileBuffer = fs.readFileSync(archivePath);
-    const parts = [];
-
-    parts.push(
-      Buffer.from(
-        `--${boundary}\r\n` +
-        `Content-Disposition: form-data; name="dir"\r\n\r\n` +
-        `public_html\r\n`
-      )
-    );
-
-    parts.push(
-      Buffer.from(
-        `--${boundary}\r\n` +
-        `Content-Disposition: form-data; name="file-1"; filename="deploy.tar.gz"\r\n` +
-        `Content-Type: application/x-gzip\r\n\r\n`
-      )
-    );
-    parts.push(fileBuffer);
-    parts.push(Buffer.from('\r\n'));
-    parts.push(Buffer.from(`--${boundary}--\r\n`));
-
-    const body = Buffer.concat(parts);
     const auth = Buffer.from(`${username}:${password}`).toString('base64');
 
-    log(`Attempting fetch to UAPI upload endpoint: ${uploadUrl}`);
-    const res = await fetch(uploadUrl, {
-      method: 'POST',
+    log(`Attempting binary PUT to WebDAV endpoint: ${webdavUrl}`);
+    const res = await fetch(webdavUrl, {
+      method: 'PUT',
       headers: {
         'Authorization': `Basic ${auth}`,
-        'Content-Type': `multipart/form-data; boundary=${boundary}`,
-        'User-Agent': 'GitHub-Actions-Deployer',
-        'Content-Length': body.length.toString()
+        'Content-Type': 'application/x-gzip',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Content-Length': fileBuffer.length.toString()
       },
-      body: body
+      body: fileBuffer
     });
 
-    const resText = await res.text();
-    log(`HTTP Status: ${res.status}`);
+    log(`HTTP Status: ${res.status} ${res.statusText}`);
 
-    let data;
-    try {
-      data = JSON.parse(resText);
-    } catch (e) {
-      logError('Failed to parse response as JSON. Raw response:');
-      logError(resText);
-      writeLogFile();
-      process.exit(1);
-    }
-
-    if (res.status === 200 && data.status === 1) {
-      log('✅ Archive uploaded successfully!');
+    if (res.status === 200 || res.status === 201) {
+      log('✅ Archive uploaded successfully via WebDAV!');
     } else {
-      logError('❌ Upload failed. UAPI errors:');
-      logError(JSON.stringify(data.errors || data, null, 2));
+      const resText = await res.text();
+      logError(`❌ Upload failed. WebDAV response (first 200 chars): ${resText.slice(0, 200)}`);
       writeLogFile();
       process.exit(1);
     }
 
-    // 2. 📂 Extract archive
+    // 2. 📂 Extract archive via cPanel API 2
     log('\n📂 Step 2: Extracting deploy.tar.gz via cPanel API 2...');
     const extractParams = new URLSearchParams({
       cpanel_jsonapi_user: username,
@@ -124,7 +90,7 @@ async function deploy() {
       method: 'GET',
       headers: {
         'Authorization': `Basic ${auth}`,
-        'User-Agent': 'GitHub-Actions-Deployer'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
       }
     });
 
@@ -161,40 +127,25 @@ async function deploy() {
       process.exit(1);
     }
 
-    // 3. 🧹 Cleanup archive
-    log('\n🧹 Step 3: Cleaning up deploy.tar.gz from server...');
-    const cleanupParams = new URLSearchParams({
-      cpanel_jsonapi_user: username,
-      cpanel_jsonapi_apiversion: '2',
-      cpanel_jsonapi_module: 'Fileman',
-      cpanel_jsonapi_func: 'fileop',
-      op: 'trash',
-      sourcefiles: '/home/securest/public_html/deploy.tar.gz',
-      doubledecode: '1'
-    });
-
-    const cleanupRes = await fetch(`${api2Url}?${cleanupParams.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'User-Agent': 'GitHub-Actions-Deployer'
-      }
-    });
-
-    const cleanupResText = await cleanupRes.text();
-    let cleanupData;
+    // 3. 🧹 Cleanup archive via WebDAV DELETE
+    log('\n🧹 Step 3: Cleaning up deploy.tar.gz from server via WebDAV DELETE...');
     try {
-      cleanupData = JSON.parse(cleanupResText);
-      const cleanupResult = cleanupData.cpanelresult || {};
-      const cleanupOpData = cleanupResult.data && cleanupResult.data[0];
+      const cleanupRes = await fetch(webdavUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+        }
+      });
 
-      if (cleanupOpData && cleanupOpData.result === 1) {
+      log(`HTTP Status: ${cleanupRes.status} ${cleanupRes.statusText}`);
+      if (cleanupRes.status === 200 || cleanupRes.status === 204) {
         log('✅ Server cleanup done. Deployment complete! 🎉');
       } else {
         log('⚠️ Warning: Server cleanup returned unsuccessful status.');
       }
     } catch (e) {
-      log('⚠️ Warning: Failed to parse cleanup response as JSON.');
+      log('⚠️ Warning: Failed to perform WebDAV cleanup.');
     }
 
     writeLogFile();
