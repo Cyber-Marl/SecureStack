@@ -1,0 +1,18 @@
+📦 Found deploy.tar.gz. Size: 0.15 MB
+
+📤 Step 1: Uploading deploy.tar.gz via WebDAV (cPanel Web Disk)...
+Attempting binary PUT to WebDAV endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.tar.gz
+HTTP Status: 201 Created
+✅ Archive uploaded successfully via WebDAV!
+
+📂 Step 2: Extracting deploy.tar.gz via cPanel API 2...
+Calling cPanel API 2 URL: https://hz4.vps.webdevworld.com:2083/json-api/cpanel?cpanel_jsonapi_user=securest&cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=Fileman&cpanel_jsonapi_func=fileop&op=extract&sourcefiles=%2Fhome%2Fsecurest%2Fpublic_html%2Fdeploy.tar.gz&destfiles=%2Fhome%2Fsecurest%2Fpublic_html&doubledecode=1
+HTTP Status: 415
+ERROR: Failed to parse extraction response as JSON. Raw response:
+ERROR: <html>
+<head><title>415 Unsupported Media Type</title></head>
+<body>
+<center><h1>415 Unsupported Media Type</h1></center>
+<hr><center>openresty/1.29.2.3</center>
+</body>
+</html>
