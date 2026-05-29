@@ -12,6 +12,7 @@ import Contact from './pages/Contact';
 import ContactModal from './components/ContactModal';
 import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
+import TawkChat from './components/TawkChat';
 import './index.css';
 
 function ScrollToHashAndTop() {
@@ -51,6 +52,7 @@ export default function App() {
       </Routes>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />
+      <TawkChat />
     </BrowserRouter>
   );
 }
