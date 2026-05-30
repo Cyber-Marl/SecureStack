@@ -13,7 +13,31 @@ import ContactModal from './components/ContactModal';
 import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
 import TawkChat from './components/TawkChat';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import axios from 'axios';
 import './index.css';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+
+function PageviewTracker() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const logPageView = async () => {
+      try {
+        await axios.post(`${API_URL}/analytics/log/`, {
+          path: pathname,
+          referrer: document.referrer || 'Direct'
+        });
+      } catch (err) {
+        console.error('Failed to log pageview:', err);
+      }
+    };
+    logPageView();
+  }, [pathname]);
+
+  return null;
+}
 
 function ScrollToHashAndTop() {
   const { pathname, hash } = useLocation();
@@ -39,6 +63,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollProgress />
       <ScrollToHashAndTop />
+      <PageviewTracker />
       <Navbar />
       <ContactModal />
       <Routes>
@@ -49,6 +74,7 @@ export default function App() {
         <Route path="/back-end-development-services" element={<BackEnd />} />
         <Route path="/security-compliance" element={<TrustCenter />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
       </Routes>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />
