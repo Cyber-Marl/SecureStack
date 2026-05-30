@@ -136,7 +136,7 @@ export default function AnalyticsDashboard() {
         )}
 
         {/* 1. Core Summary Stats */}
-        {data && (
+        {data && typeof data === 'object' && data.summary && (
           <>
             <section className="db-summary-grid">
               <div className="db-stat-card">
