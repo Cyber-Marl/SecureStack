@@ -1,7 +1,8 @@
 .whatsapp-btn {
   position: fixed;
-  bottom: 110px; /* Shifted up to sit beautifully above Tawk.to */
-  right: 32px;
+  bottom: 32px;
+  left: 32px; /* Positioned in the bottom-left corner */
+  right: auto;
   z-index: 999;
   display: flex;
   align-items: center;
@@ -41,7 +42,9 @@
 }
 @media (max-width: 600px) {
   .whatsapp-btn { 
-    bottom: 95px; /* Offset above the mobile Tawk.to circular widget */
+    bottom: 24px; /* standard mobile corner padding */
+    left: 24px;
+    right: auto;
     padding: 14px; 
     border-radius: 50%; 
   }
