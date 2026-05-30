@@ -1,4 +1,4 @@
-📦 Found deploy.zip. Size: 0.15 MB
+📦 Found deploy.zip. Size: 0.16 MB
 
 📤 Step 1: Uploading deploy.zip via WebDAV (cPanel Web Disk)...
 Attempting binary PUT to WebDAV zip endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.zip
@@ -15,7 +15,7 @@ Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
 HTTP Status: 200 OK
 
 --- Server Output ---
-📦 Found deploy.zip (159962 bytes)
+📦 Found deploy.zip (163728 bytes)
 📂 Extracting archive via ZipArchive...
 ✅ Extraction succeeded via ZipArchive!
 🧹 Self-deleted extract_zip.php. Process complete!
