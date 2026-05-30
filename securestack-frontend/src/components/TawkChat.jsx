@@ -3,9 +3,8 @@ import { useEffect } from 'react';
 export default function TawkChat() {
   useEffect(() => {
     // 📢 Tawk.to Property and Widget Configuration
-    // Replace these values with your actual IDs from the tawk.to dashboard!
-    const PROPERTY_ID = '67e810a9c8d59a72e811fc75'; // Active demo property ID so they can see it work!
-    const WIDGET_ID = 'default';
+    const PROPERTY_ID = '6200f2aab9e4e21181bdd155';
+    const WIDGET_ID = '1jpsa3se2';
 
     if (!PROPERTY_ID || PROPERTY_ID === 'YOUR_PROPERTY_ID') {
       console.warn('Tawk.to Chat: Please configure your PROPERTY_ID in TawkChat.jsx');
