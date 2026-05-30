@@ -6,6 +6,7 @@ import ParticleCanvas from '../components/ParticleCanvas';
 import HowWeWork from '../components/HowWeWork';
 import Testimonials from '../components/Testimonials';
 import { useScrollReveal, useCountUp } from '../hooks/useAnimations';
+import DomainScanner from '../components/DomainScanner';
 import { 
   Shield, 
   Braces, 
@@ -216,6 +217,13 @@ export default function Home() {
               <StatItem key={s.label} value={s.value} label={s.label} />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Domain Scanner Section ── */}
+      <section className="section-sm" style={{ paddingTop: 0, paddingBottom: '40px' }}>
+        <div className="container">
+          <DomainScanner />
         </div>
       </section>
 
