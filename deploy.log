@@ -2,24 +2,8 @@
 
 📤 Step 1: Uploading deploy.zip via WebDAV (cPanel Web Disk)...
 Attempting binary PUT to WebDAV zip endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.zip
-HTTP Status: 201 Created
-✅ Archive uploaded successfully via WebDAV!
-
-📤 Step 2: Uploading extract_zip.php via WebDAV...
-Attempting PHP PUT to WebDAV php endpoint: https://hz4.vps.webdevworld.com:2078/public_html/extract_zip.php
-HTTP Status: 201 Created
-✅ Extraction script uploaded successfully via WebDAV!
-
-🚀 Step 3: Triggering ZipArchive extraction via live site URL...
-Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
-HTTP Status: 200 OK
-
---- Server Output ---
-📦 Found deploy.zip (167399 bytes)
-📂 Extracting archive via ZipArchive...
-✅ Extraction succeeded via ZipArchive!
-🧹 Self-deleted extract_zip.php. Process complete!
-
----------------------
-
-✅ Deployment completed successfully! 🎉
+ERROR: ❌ Unhandled error during deploy lifecycle: fetch failed
+ERROR: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14976:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async deploy (/home/runner/work/SecureStack/SecureStack/.github/workflows/scripts/cpanel-deploy.js:80:20)
