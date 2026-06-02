@@ -3,7 +3,7 @@ import axios from 'axios';
 import ContactForm from './ContactForm';
 import './ProjectEstimator.css';
 
-const API_BASE = 'http://localhost:8001/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
 
 const projectTypes = [
   { id: 'web', label: 'Web Application', baseTime: 6, baseComplexity: 30, desc: 'SPAs, custom portals, high-performance dashboards.' },
