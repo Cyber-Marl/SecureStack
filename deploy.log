@@ -15,7 +15,7 @@ Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
 HTTP Status: 200 OK
 
 --- Server Output ---
-📦 Found deploy.zip (167412 bytes)
+📦 Found deploy.zip (167399 bytes)
 📂 Extracting archive via ZipArchive...
 ✅ Extraction succeeded via ZipArchive!
 🧹 Self-deleted extract_zip.php. Process complete!
