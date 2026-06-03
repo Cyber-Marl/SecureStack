@@ -16,6 +16,7 @@ const navLinks = [
   { label: 'Industries', to: '/industries' },
   { label: 'Services', to: '/services' },
   { label: 'Security & Trust', to: '/security-compliance' },
+  { label: 'Blog', to: '/blog' },
   { label: 'Contact', to: '/contact' },
 ];
 

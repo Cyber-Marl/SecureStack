@@ -15,6 +15,8 @@ import WhatsAppButton from './components/WhatsAppButton';
 import TawkChat from './components/TawkChat';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import NotFound from './pages/NotFound';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import { logPageView } from './utils/analyticsService';
 import './index.css';
 
@@ -64,6 +66,8 @@ export default function App() {
         <Route path="/security-compliance" element={<TrustCenter />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
