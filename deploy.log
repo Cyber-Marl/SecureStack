@@ -3,24 +3,9 @@
 🌐 Target: https://hz4.vps.webdevworld.com:2078/public_html/
 
 📁 Step 1: Ensuring remote directories exist...
-📁 Directory already exists: assets/
-
-📤 Step 2: Uploading all files...
-📤 Uploading: .htaccess (0.7 KB)
-   ✅ Uploaded: .htaccess
-📁 Directory already exists: assets/
-📤 Uploading: assets/index-CU_OR0Oj.js (350.5 KB)
-   ✅ Uploaded: assets/index-CU_OR0Oj.js
-📤 Uploading: assets/index-zdWbaSep.css (60.3 KB)
-   ✅ Uploaded: assets/index-zdWbaSep.css
-📤 Uploading: diagnose.php (4.3 KB)
-   ✅ Uploaded: diagnose.php
-📤 Uploading: favicon.png (34.4 KB)
-   ✅ Uploaded: favicon.png
-📤 Uploading: icons.svg (4.9 KB)
-   ✅ Uploaded: icons.svg
-📤 Uploading: index.html (1.0 KB)
-   ✅ Uploaded: index.html
-
-✅ All files uploaded successfully! 🎉
-🌐 Site is live at: https://securestack.co.zw
+ERROR: ❌ Unhandled error: fetch failed
+ERROR: TypeError: fetch failed
+    at node:internal/deps/undici/undici:14976:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ensureDirectory (/home/runner/work/SecureStack/SecureStack/.github/workflows/scripts/cpanel-deploy.js:62:15)
+    at async deploy (/home/runner/work/SecureStack/SecureStack/.github/workflows/scripts/cpanel-deploy.js:135:5)
