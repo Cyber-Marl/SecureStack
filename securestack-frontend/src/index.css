@@ -299,3 +299,28 @@ main {
     transform: translateY(0);
   }
 }
+
+/* ── Premium Scrollbar ── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius);
+  border: 2px solid var(--bg-2);
+  transition: background var(--transition);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+}
+
+/* ── Custom Selection ── */
+::selection {
+  background: rgba(254, 145, 76, 0.25);
+  color: var(--orange);
+}
+
