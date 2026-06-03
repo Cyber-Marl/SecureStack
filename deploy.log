@@ -12,17 +12,14 @@ HTTP Status: 201 Created
 
 🚀 Step 3: Triggering ZipArchive extraction via live site URL...
 Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
-HTTP Status: 415 Unsupported Media Type
+HTTP Status: 200 OK
 
 --- Server Output ---
-<html>
-<head><title>415 Unsupported Media Type</title></head>
-<body>
-<center><h1>415 Unsupported Media Type</h1></center>
-<hr><center>openresty/1.29.2.3</center>
-</body>
-</html>
+📦 Found deploy.zip (169083 bytes)
+📂 Extracting archive via ZipArchive...
+✅ Extraction succeeded via ZipArchive!
+🧹 Self-deleted extract_zip.php. Process complete!
 
 ---------------------
-ERROR: 
-❌ Extraction failed on the server. Read the Server Output above for details.
+
+✅ Deployment completed successfully! 🎉
