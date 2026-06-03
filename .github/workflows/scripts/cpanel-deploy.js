@@ -57,9 +57,21 @@ function getMimeType(filePath) {
   return types[ext] || 'application/octet-stream';
 }
 
+async function fetchWithRetry(url, options, retries = 3, delay = 1500) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fetch(url, options);
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      log(`⚠️ Request failed (attempt ${i + 1}/${retries}). Retrying in ${delay}ms... Error: ${err.message}`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
 async function ensureDirectory(remotePath) {
   const url = `${webdavBase}/${remotePath}/`;
-  const res = await fetch(url, {
+  const res = await fetchWithRetry(url, {
     method: 'MKCOL',
     headers: {
       'Authorization': getAuth(),
@@ -82,7 +94,7 @@ async function uploadFile(localPath, remotePath) {
 
   log(`📤 Uploading: ${remotePath} (${(fileBuffer.length / 1024).toFixed(1)} KB)`);
 
-  const res = await fetch(url, {
+  const res = await fetchWithRetry(url, {
     method: 'PUT',
     headers: {
       'Authorization': getAuth(),
