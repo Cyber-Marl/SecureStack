@@ -1,25 +1,26 @@
-📦 Found deploy.zip. Size: 0.16 MB
+🚀 SecureStack Direct WebDAV Deployment
+📁 Source: /home/runner/work/SecureStack/SecureStack/securestack-frontend/dist
+🌐 Target: https://hz4.vps.webdevworld.com:2078/public_html/
 
-📤 Step 1: Uploading deploy.zip via WebDAV (cPanel Web Disk)...
-Attempting binary PUT to WebDAV zip endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.zip
-HTTP Status: 201 Created
-✅ Archive uploaded successfully via WebDAV!
+📁 Step 1: Ensuring remote directories exist...
+📁 Directory already exists: assets/
 
-📤 Step 2: Uploading extract_zip.php via WebDAV...
-Attempting PHP PUT to WebDAV php endpoint: https://hz4.vps.webdevworld.com:2078/public_html/extract_zip.php
-HTTP Status: 201 Created
-✅ Extraction script uploaded successfully via WebDAV!
+📤 Step 2: Uploading all files...
+📤 Uploading: .htaccess (0.3 KB)
+   ✅ Uploaded: .htaccess
+📁 Directory already exists: assets/
+📤 Uploading: assets/index-BPuG18CF.js (378.7 KB)
+   ✅ Uploaded: assets/index-BPuG18CF.js
+📤 Uploading: assets/index-mvjW60Q_.css (57.4 KB)
+   ✅ Uploaded: assets/index-mvjW60Q_.css
+📤 Uploading: diagnose.php (4.3 KB)
+   ✅ Uploaded: diagnose.php
+📤 Uploading: favicon.png (34.4 KB)
+   ✅ Uploaded: favicon.png
+📤 Uploading: icons.svg (4.9 KB)
+   ✅ Uploaded: icons.svg
+📤 Uploading: index.html (1.0 KB)
+   ✅ Uploaded: index.html
 
-🚀 Step 3: Triggering ZipArchive extraction via live site URL...
-Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
-HTTP Status: 200 OK
-
---- Server Output ---
-📦 Found deploy.zip (169083 bytes)
-📂 Extracting archive via ZipArchive...
-✅ Extraction succeeded via ZipArchive!
-🧹 Self-deleted extract_zip.php. Process complete!
-
----------------------
-
-✅ Deployment completed successfully! 🎉
+✅ All files uploaded successfully! 🎉
+🌐 Site is live at: https://securestack.co.zw
