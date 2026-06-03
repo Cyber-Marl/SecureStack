@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
+import DomainScanner from '../components/DomainScanner';
 import { useScrollReveal } from '../hooks/useAnimations';
 import './TrustCenter.css';
 
@@ -126,6 +127,9 @@ export default function TrustCenter() {
           </p>
         </div>
       </section>
+
+      {/* ── Domain Scanner Section ── */}
+      <DomainScanner />
 
       {/* ── Secure SDLC Timeline Section ── */}
       <section ref={secSdlcRef} className={`section reveal-section ${secSdlcRevealed ? 'revealed' : ''}`}>
