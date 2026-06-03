@@ -284,3 +284,18 @@ h1, h2, h3, h4, h5, h6 {
   transition-delay: var(--reveal-delay);
 }
 
+/* ── Page Load Fade-in Transitions ── */
+main {
+  animation: pageFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

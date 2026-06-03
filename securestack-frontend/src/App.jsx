@@ -14,6 +14,7 @@ import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
 import TawkChat from './components/TawkChat';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import NotFound from './pages/NotFound';
 import { logPageView } from './utils/analyticsService';
 import './index.css';
 
@@ -63,6 +64,7 @@ export default function App() {
         <Route path="/security-compliance" element={<TrustCenter />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />
