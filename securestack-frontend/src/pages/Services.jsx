@@ -6,6 +6,7 @@ import {
   ShieldCheck, AlertTriangle, Users
 } from 'lucide-react';
 import ContactForm from '../components/ContactForm';
+import SEO from '../components/SEO';
 import './Services.css';
 
 const tabs = [
@@ -181,6 +182,12 @@ export default function Services() {
 
   return (
     <main className="svc-page-root">
+      <SEO 
+        title="Enterprise IT & Security Services" 
+        description="Explore SecureStack's professional services: Penetration Testing, Secure Software Engineering, Compliance Hardening, and Cloud DevOps Solutions."
+        keywords="pentesting Zimbabwe, custom software development, secure cloud architecture, cybersecurity services Zimbabwe"
+        path="/services"
+      />
       {/* ── Breadcrumb & Title ── */}
       <section className="svc-breadcrumb-section">
         <div className="container">

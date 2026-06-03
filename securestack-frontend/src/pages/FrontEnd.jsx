@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
+import SEO from '../components/SEO';
 
 const techs = ['React', 'Vue.js', 'Angular', 'Next.js', 'TypeScript', 'Tailwind CSS', 'HTML5 / CSS3', 'Webpack / Vite'];
 const features = [
@@ -38,6 +39,12 @@ const features = [
 export default function FrontEnd() {
   return (
     <main>
+      <SEO 
+        title="Secure Front-End Web Development" 
+        description="High-performance, secure front-end applications built with React and modern UI/UX design systems. We engineer fast, responsive, and secure SPAs."
+        keywords="react web development zimbabwe, secure front end, modern web developer, custom UI/UX Harare"
+        path="/front-end-development"
+      />
       <section className="page-hero">
         <div className="container">
           <p className="section-label">Tech Stack → Front-End</p>

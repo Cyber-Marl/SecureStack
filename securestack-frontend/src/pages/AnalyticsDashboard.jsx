@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDashboardData } from '../utils/analyticsService';
+import SEO from '../components/SEO';
 import './AnalyticsDashboard.css';
 
 export default function AnalyticsDashboard() {
@@ -64,6 +65,7 @@ export default function AnalyticsDashboard() {
   if (!isAuthenticated) {
     return (
       <main className="analytics-lock-container">
+        <SEO title="Console Authorization" description="Authorized personnel administrative dashboard lock screen." path="/admin/dashboard" />
         <div className="analytics-lock-bg-blobs">
           <div className="lock-blob blob-1"></div>
           <div className="lock-blob blob-2"></div>
@@ -100,6 +102,7 @@ export default function AnalyticsDashboard() {
 
   return (
     <main className="analytics-dashboard-root">
+      <SEO title="Analytics Terminal" description="Privacy-first B2B traffic monitoring console." path="/admin/dashboard" />
       <div className="dashboard-container">
         {/* Header Block */}
         <header className="db-header">

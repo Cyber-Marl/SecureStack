@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
+import SEO from '../components/SEO';
 import { triggerContactModal } from '../components/ContactModal';
 import ParticleCanvas from '../components/ParticleCanvas';
 import HowWeWork from '../components/HowWeWork';
@@ -180,6 +181,12 @@ export default function Home() {
 
   return (
     <main>
+      <SEO 
+        title="Cybersecurity & Software Development Zimbabwe" 
+        description="SecureStack delivers premium software development, cybersecurity audits, penetration testing, and secure cloud migration services in Harare, Zimbabwe."
+        keywords="cybersecurity Zimbabwe, software development Harare, penetration testing Zimbabwe, cloud solutions Harare, SecureStack"
+        path="/"
+      />
       {/* ── Hero ── */}
       <section className="hero">
         <div className="hero-bg">
