@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getDashboardData } from '../utils/analyticsService';
 import './AnalyticsDashboard.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
 
 export default function AnalyticsDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,6 +9,26 @@ export default function AnalyticsDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      // Simulate network request loading time for a premium interactive feel
+      await new Promise(resolve => setTimeout(resolve, 600));
+      const dashboardData = getDashboardData();
+      if (dashboardData) {
+        setData(dashboardData);
+      } else {
+        throw new Error('No dashboard data found');
+      }
+    } catch (err) {
+      console.error('Failed to fetch analytics:', err);
+      setError('Unable to fetch live analytics data.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Check if already authenticated in this session
   useEffect(() => {
@@ -33,20 +51,6 @@ export default function AnalyticsDashboard() {
     } else {
       setLoginError(true);
       setTimeout(() => setLoginError(false), 600); // Shaking animation duration
-    }
-  };
-
-  const fetchDashboardData = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const response = await axios.get(`${API_URL}/analytics/dashboard/`);
-      setData(response.data);
-    } catch (err) {
-      console.error('Failed to fetch analytics:', err);
-      setError('Unable to fetch live analytics data. Please ensure the backend is running.');
-    } finally {
-      setLoading(false);
     }
   };
 

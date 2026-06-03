@@ -1,8 +1,6 @@
 import { useState, useRef } from 'react';
-import axios from 'axios';
+import { submitContactForm } from '../utils/contactService';
 import './ContactForm.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
@@ -30,24 +28,23 @@ export default function ContactForm() {
     setStatus('sending');
     setError('');
     
-    // Build submit form payload (standard JSON)
-    const payload = {
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      service: nda ? 'NDA Requested' : 'General Inquiry',
-      message: form.message,
-    };
-
     try {
-      await axios.post(`${API_URL}/contact/`, payload);
+      await submitContactForm({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        service: nda ? 'NDA Requested' : 'General Inquiry',
+        message: form.message,
+        files: files,
+        nda: nda
+      });
       setStatus('success');
       setForm({ name: '', email: '', phone: '', message: '' });
       setFiles([]);
       setNda(false);
     } catch (err) {
       setStatus('error');
-      setError(err.response?.data?.detail || 'Something went wrong. Please try again.');
+      setError(err.message || 'Something went wrong. Please try again.');
     }
   };
 

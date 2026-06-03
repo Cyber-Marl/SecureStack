@@ -14,26 +14,14 @@ import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
 import TawkChat from './components/TawkChat';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import axios from 'axios';
+import { logPageView } from './utils/analyticsService';
 import './index.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 function PageviewTracker() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const logPageView = async () => {
-      try {
-        await axios.post(`${API_URL}/analytics/log/`, {
-          path: pathname,
-          referrer: document.referrer || 'Direct'
-        });
-      } catch (err) {
-        console.error('Failed to log pageview:', err);
-      }
-    };
-    logPageView();
+    logPageView(pathname, document.referrer);
   }, [pathname]);
 
   return null;
