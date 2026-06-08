@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { getDashboardData } from '../utils/analyticsService';
+import axios from 'axios';
 import SEO from '../components/SEO';
 import './AnalyticsDashboard.css';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
 
 export default function AnalyticsDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,25 +19,7 @@ export default function AnalyticsDashboard() {
   const [loadingAffiliates, setLoadingAffiliates] = useState(false);
   const [editingRewards, setEditingRewards] = useState({}); // leadId -> rewardVal
 
-  const fetchDashboardData = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      // Simulate network request loading time for a premium interactive feel
-      await new Promise(resolve => setTimeout(resolve, 600));
-      const dashboardData = getDashboardData();
-      if (dashboardData) {
-        setData(dashboardData);
-      } else {
-        throw new Error('No dashboard data found');
-      }
-    } catch (err) {
-      console.error('Failed to fetch analytics:', err);
-      setError('Unable to fetch live analytics data.');
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   // Check if already authenticated in this session
   useEffect(() => {
