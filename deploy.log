@@ -9,10 +9,12 @@
 📤 Uploading: .htaccess (0.7 KB)
    ✅ Uploaded: .htaccess
 📁 Directory already exists: assets/
-📤 Uploading: assets/index-B81zkFf8.js (367.2 KB)
-   ✅ Uploaded: assets/index-B81zkFf8.js
-📤 Uploading: assets/index-CZR6IqiB.css (65.6 KB)
-   ✅ Uploaded: assets/index-CZR6IqiB.css
+📤 Uploading: assets/index-DqJ0GDXP.js (409.2 KB)
+   ✅ Uploaded: assets/index-DqJ0GDXP.js
+📤 Uploading: assets/index-mNlUKCyh.css (64.1 KB)
+   ✅ Uploaded: assets/index-mNlUKCyh.css
+📤 Uploading: deploy_wsgi.php (1.2 KB)
+   ✅ Uploaded: deploy_wsgi.php
 📤 Uploading: diagnose.php (4.3 KB)
    ✅ Uploaded: diagnose.php
 📤 Uploading: favicon.png (34.4 KB)
@@ -21,6 +23,8 @@
    ✅ Uploaded: icons.svg
 📤 Uploading: index.html (1.0 KB)
    ✅ Uploaded: index.html
+📤 Uploading: passenger_wsgi.py (0.6 KB)
+   ✅ Uploaded: passenger_wsgi.py
 
 ✅ All files uploaded successfully! 🎉
 🌐 Site is live at: https://securestack.co.zw
