@@ -30,6 +30,8 @@ export default function ContactForm() {
     setStatus('sending');
     setError('');
     
+    const referrer_code = localStorage.getItem('securestack_ref') || null;
+
     // Build submit form payload (standard JSON)
     const payload = {
       name: form.name,
@@ -37,6 +39,7 @@ export default function ContactForm() {
       phone: form.phone,
       service: nda ? 'NDA Requested' : 'General Inquiry',
       message: form.message,
+      referrer_code: referrer_code,
     };
 
     try {

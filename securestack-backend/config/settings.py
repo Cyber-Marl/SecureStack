@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'apps.contact',
     'apps.analytics',
     'apps.scanner',
+    'apps.affiliate',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +98,6 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/hour',
+        'anon': '100/min',
     }
 }

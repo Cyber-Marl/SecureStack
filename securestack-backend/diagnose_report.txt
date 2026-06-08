@@ -1,0 +1,88 @@
+=== SECURESTACK VPS DIAGNOSTIC REPORT ===
+Current User: securest
+Document Root: /home/securest/public_html
+PHP Version: 8.1.34
+OS: Linux
+
+--- Directory: /home/securest ---
+  [FILE] .bash_history
+  [FILE] .bash_logout
+  [FILE] .bash_profile
+  [FILE] .bashrc
+  [DIR] .cache
+  [DIR] .cagefs
+  [DIR] .caldav
+  [DIR] .cl.selector
+  [DIR] .cpanel
+  [FILE] .gitconfig
+  [DIR] .htpasswds
+  [FILE] .imunify_patch_id
+  [DIR] .koality
+  [FILE] .lastlogin
+  [DIR] .local
+  [FILE] .myimunify_id
+  [DIR] .razor
+  [DIR] .softaculous
+  [DIR] .spamassassin
+  [FILE] .spamassassinenable
+  [DIR] .ssh
+  [DIR] .trash
+  [DIR] .wp-cli
+  [FILE] .wp-toolkit-identifier
+  [FILE] .zshrc
+  [DIR] SecureStack
+  [DIR] SecureStack-Wordpress-Website
+  [DIR] access-logs
+  [DIR] etc
+  [FILE] etc.zip
+  [DIR] logs
+  [DIR] mail
+  [DIR] public_ftp
+  [DIR] public_html
+  [DIR] repositories
+  [DIR] securestack-backend
+  [DIR] securestack.co.zw
+  [DIR] ssl
+  [DIR] tmp
+  [DIR] virtualenv
+  [DIR] wordpress-backups
+  [DIR] www
+
+--- Scanning securestack-backend ---
+📂 Directory: /home/securest/securestack-backend
+  📄 .env (329 bytes)
+  📂 Directory: /home/securest/securestack-backend/__pycache__
+    📄 passenger_wsgi.cpython-311.pyc (265 bytes)
+  📄 api (333 bytes)
+  📂 Directory: /home/securest/securestack-backend/apps
+    📄 __init__.py (15 bytes)
+  📂 Directory: /home/securest/securestack-backend/config
+    📄 __init__.py (24 bytes)
+    📄 settings.py (2897 bytes)
+    📄 urls.py (175 bytes)
+    📄 wsgi.py (164 bytes)
+  📄 db.sqlite3 (135168 bytes)
+  📄 manage.py (377 bytes)
+  📄 passenger_wsgi.py (199 bytes)
+  📂 Directory: /home/securest/securestack-backend/public
+  📄 requirements.txt (4542 bytes)
+  📄 securestack-backend.tar.gz (34489 bytes)
+  📄 securestack-backend.zip (19249 bytes)
+  📂 Directory: /home/securest/securestack-backend/tmp
+    📄 restart.txt (1 bytes)
+
+--- Scanning virtualenv/venv ---
+Found virtualenv at: /home/securest/virtualenv
+📂 Directory: /home/securest/virtualenv
+  📂 Directory: /home/securest/virtualenv/securestack-backend
+    📄 .lock (0 bytes)
+    📂 Directory: /home/securest/virtualenv/securestack-backend/3.11
+      📄 .gitignore (40 bytes)
+      📄 pyvenv.cfg (303 bytes)
+
+--- Testing Shell Execution ---
+❌ shell_exec is DISABLED.
+
+--- Reading Server Error Logs ---
+
+=== END OF REPORT ===

@@ -118,6 +118,8 @@ Prospect Message:
 ${extraMsg || 'No additional comments.'}
     `.trim();
 
+    const referrer_code = localStorage.getItem('securestack_ref') || null;
+
     try {
       await axios.post(`${API_BASE}/contact/`, {
         name,
@@ -125,6 +127,7 @@ ${extraMsg || 'No additional comments.'}
         phone: phone || 'N/A',
         service: `Estimator: ${projectTypes.find(p => p.id === project)?.label}`,
         message: formattedMsg,
+        referrer_code: referrer_code,
       });
 
       setStatus({ type: 'success', msg: 'Estimate successfully submitted! Our team will reach out within 24 hours.' });

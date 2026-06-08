@@ -15,6 +15,7 @@ const company = [
   { label: 'Services', to: '/services' },
   { label: 'Front-End Dev', to: '/front-end-development' },
   { label: 'Back-End Dev', to: '/back-end-development-services' },
+  { label: 'Affiliate Program', to: '/affiliate' },
 ];
 
 export default function Footer() {

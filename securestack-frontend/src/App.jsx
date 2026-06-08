@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -14,6 +14,7 @@ import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
 import TawkChat from './components/TawkChat';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import AffiliatePortal from './pages/AffiliatePortal';
 import axios from 'axios';
 import './index.css';
 
@@ -35,6 +36,31 @@ function PageviewTracker() {
     };
     logPageView();
   }, [pathname]);
+
+  return null;
+}
+
+function ReferralTracker() {
+  const [searchParams] = useSearchParams();
+  const refCode = searchParams.get('ref');
+
+  useEffect(() => {
+    if (refCode) {
+      localStorage.setItem('securestack_ref', refCode);
+      const logClick = async () => {
+        try {
+          await axios.post(`${API_URL}/affiliate/click/`, {
+            code: refCode,
+            path: window.location.pathname
+          });
+          console.log('Referral click logged successfully.');
+        } catch (err) {
+          console.error('Failed to log referral click:', err);
+        }
+      };
+      logClick();
+    }
+  }, [refCode]);
 
   return null;
 }
@@ -64,6 +90,7 @@ export default function App() {
       <ScrollProgress />
       <ScrollToHashAndTop />
       <PageviewTracker />
+      <ReferralTracker />
       <Navbar />
       <ContactModal />
       <Routes>
@@ -74,6 +101,7 @@ export default function App() {
         <Route path="/back-end-development-services" element={<BackEnd />} />
         <Route path="/security-compliance" element={<TrustCenter />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/affiliate" element={<AffiliatePortal />} />
         <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
       </Routes>
       <Footer />

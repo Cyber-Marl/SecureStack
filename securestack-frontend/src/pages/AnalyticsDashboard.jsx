@@ -11,6 +11,12 @@ export default function AnalyticsDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  // New section tabs: 'analytics' | 'affiliates'
+  const [activeSection, setActiveSection] = useState('analytics');
+  const [affiliatesData, setAffiliatesData] = useState(null);
+  const [loadingAffiliates, setLoadingAffiliates] = useState(false);
+  const [editingRewards, setEditingRewards] = useState({}); // leadId -> rewardVal
 
   // Check if already authenticated in this session
   useEffect(() => {
@@ -21,9 +27,15 @@ export default function AnalyticsDashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    if (isAuthenticated && activeSection === 'affiliates') {
+      fetchAffiliateData();
+    }
+  }, [isAuthenticated, activeSection]);
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    // Use a robust local PIN lock. For B2B demo, 'securestack2026' or 'admin123' works seamlessly.
+    // Use robust passcode lock.
     if (password === 'securestack2026' || password === 'admin123') {
       localStorage.setItem('securestack_admin_auth', 'true');
       setIsAuthenticated(true);
@@ -50,10 +62,55 @@ export default function AnalyticsDashboard() {
     }
   };
 
+  const fetchAffiliateData = async () => {
+    setLoadingAffiliates(true);
+    try {
+      const response = await axios.get(`${API_URL}/affiliate/admin/stats/`);
+      setAffiliatesData(response.data);
+      // Pre-fill editing reward values
+      const rewardsMap = {};
+      response.data.leads.forEach(l => {
+        rewardsMap[l.id] = l.reward_amount;
+      });
+      setEditingRewards(rewardsMap);
+    } catch (err) {
+      console.error('Failed to fetch affiliate data:', err);
+    } finally {
+      setLoadingAffiliates(false);
+    }
+  };
+
+  const handleUpdateLeadField = async (leadId, fields) => {
+    try {
+      await axios.post(`${API_URL}/affiliate/admin/update-lead/`, {
+        lead_id: leadId,
+        ...fields
+      });
+      fetchAffiliateData(); // Refresh list
+    } catch (err) {
+      console.error('Failed to update lead:', err);
+      alert('Failed to update lead. Please try again.');
+    }
+  };
+
+  const handleRewardValChange = (leadId, val) => {
+    setEditingRewards(prev => ({
+      ...prev,
+      [leadId]: val
+    }));
+  };
+
+  const handleSaveReward = (leadId) => {
+    const amount = editingRewards[leadId];
+    handleUpdateLeadField(leadId, { reward_amount: amount });
+    alert(`Reward amount updated successfully.`);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('securestack_admin_auth');
     setIsAuthenticated(false);
     setData(null);
+    setAffiliatesData(null);
   };
 
   // Render password lock screen
@@ -97,6 +154,7 @@ export default function AnalyticsDashboard() {
   return (
     <main className="analytics-dashboard-root">
       <div className="dashboard-container">
+        
         {/* Header Block */}
         <header className="db-header">
           <div className="db-header-left">
@@ -106,10 +164,33 @@ export default function AnalyticsDashboard() {
             </div>
             <h1>SecureStack Analytics Terminal</h1>
             <p className="db-subtitle">Privacy-First, cookie-less daily traffic insights without tracking cookies.</p>
+            
+            {/* Tabs Navigation */}
+            <div className="admin-db-tabs" style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
+              <button 
+                onClick={() => setActiveSection('analytics')}
+                className={`btn ${activeSection === 'analytics' ? 'btn-primary' : 'btn-outline'}`}
+                style={{ padding: '10px 20px', fontSize: '14px' }}
+              >
+                📊 Traffic Analytics
+              </button>
+              <button 
+                onClick={() => setActiveSection('affiliates')}
+                className={`btn ${activeSection === 'affiliates' ? 'btn-primary' : 'btn-outline'}`}
+                style={{ padding: '10px 20px', fontSize: '14px' }}
+              >
+                🤝 Affiliate Program
+              </button>
+            </div>
           </div>
+          
           <div className="db-header-right">
-            <button className="btn btn-outline db-refresh-btn" onClick={fetchDashboardData} disabled={loading}>
-              {loading ? (
+            <button 
+              className="btn btn-outline db-refresh-btn" 
+              onClick={activeSection === 'analytics' ? fetchDashboardData : fetchAffiliateData} 
+              disabled={loading || loadingAffiliates}
+            >
+              {loading || loadingAffiliates ? (
                 <span className="spinner"></span>
               ) : (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -135,8 +216,8 @@ export default function AnalyticsDashboard() {
           </div>
         )}
 
-        {/* 1. Core Summary Stats */}
-        {data && typeof data === 'object' && data.summary && (
+        {/* ── SECTION 1: TRAFFIC ANALYTICS ── */}
+        {activeSection === 'analytics' && data && typeof data === 'object' && data.summary && (
           <>
             <section className="db-summary-grid">
               <div className="db-stat-card">
@@ -196,9 +277,7 @@ export default function AnalyticsDashboard() {
               </div>
             </section>
 
-            {/* 2. Main Aggregation Grid */}
             <div className="db-main-grid">
-              {/* Popular Routes Column */}
               <div className="db-panel card">
                 <h3>Most Visited Routes</h3>
                 <p className="panel-desc">Top application views logged during this period.</p>
@@ -225,7 +304,6 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
 
-              {/* Referrals Column */}
               <div className="db-panel card">
                 <h3>Top Referral Channels</h3>
                 <p className="panel-desc">Where your high-value prospective clients arrive from.</p>
@@ -253,9 +331,7 @@ export default function AnalyticsDashboard() {
               </div>
             </div>
 
-            {/* 3. Bottom Grid: Traffic Over Time & Live Stream */}
             <div className="db-bottom-grid">
-              {/* Daily Traffic Breakdown */}
               <div className="db-panel card history-panel">
                 <h3>Daily Visitor Trend (Last 7 Days)</h3>
                 <p className="panel-desc">Aggregated session volumes and unique users daily.</p>
@@ -291,7 +367,6 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
 
-              {/* Real-time terminal log stream */}
               <div className="db-panel card terminal-panel">
                 <h3>Activity Stream</h3>
                 <p className="panel-desc">Real-time live traffic ping feed from local routes.</p>
@@ -321,6 +396,193 @@ export default function AnalyticsDashboard() {
             </div>
           </>
         )}
+
+        {/* ── SECTION 2: AFFILIATE PROGRAM MANAGEMENT ── */}
+        {activeSection === 'affiliates' && affiliatesData && (
+          <div className="admin-affiliates-section" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            
+            {/* Table 1: Registered Partners */}
+            <div className="db-panel card" style={{ padding: '32px' }}>
+              <div style={{ marginBottom: '20px' }}>
+                <h3 style={{ fontSize: '20px' }}>Registered Partners</h3>
+                <p style={{ color: 'var(--text-2)', fontSize: '14px' }}>Overview of all registered affiliates and their conversion scores.</p>
+              </div>
+              <div className="table-responsive">
+                <table className="db-history-table">
+                  <thead>
+                    <tr>
+                      <th>Name / Email</th>
+                      <th>Referral Code</th>
+                      <th>Phone / Payout No.</th>
+                      <th>Clicks</th>
+                      <th>Enquiries</th>
+                      <th>Conversions</th>
+                      <th>Unpaid Rewards</th>
+                      <th>Paid Rewards</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {affiliatesData.affiliates.length === 0 ? (
+                      <tr>
+                        <td colSpan="9" className="empty-state">No registered affiliates yet.</td>
+                      </tr>
+                    ) : (
+                      affiliatesData.affiliates.map((aff) => (
+                        <tr key={aff.id}>
+                          <td>
+                            <div style={{ fontWeight: '600', color: 'var(--text-heading)' }}>{aff.name}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-3)' }}>{aff.email}</div>
+                          </td>
+                          <td><span className="ratio-tag" style={{ fontSize: '13px', background: 'rgba(254,145,76,0.1)', color: 'var(--orange)' }}>{aff.code}</span></td>
+                          <td>
+                            <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-heading)' }}>{aff.phone || '—'}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-3)' }}>{aff.payment_method || ''}</div>
+                          </td>
+                          <td>{aff.clicks}</td>
+                          <td>{aff.leads}</td>
+                          <td>{aff.converted}</td>
+                          <td style={{ fontWeight: '600' }}>${parseFloat(aff.unpaid_rewards).toFixed(2)}</td>
+                          <td style={{ color: 'var(--blue-l)', fontWeight: '600' }}>${parseFloat(aff.paid_rewards).toFixed(2)}</td>
+                          <td>
+                            <span className={`status-badge ${aff.is_active ? 'status-converted' : 'status-rejected'}`}>
+                              {aff.is_active ? 'Active' : 'Suspended'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Table 2: Referred Leads Pipeline */}
+            <div className="db-panel card" style={{ padding: '32px' }}>
+              <div style={{ marginBottom: '20px' }}>
+                <h3 style={{ fontSize: '20px' }}>Referred Lead Pipeline</h3>
+                <p style={{ color: 'var(--text-2)', fontSize: '14px' }}>Attributed customer enquiries. Modify deal outcomes and assign payout rewards.</p>
+              </div>
+              <div className="table-responsive">
+                <table className="db-history-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Client Info</th>
+                      <th>Referrer</th>
+                      <th>Service</th>
+                      <th>Deal Status</th>
+                      <th>Reward Comm. ($)</th>
+                      <th>Payout Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {affiliatesData.leads.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" className="empty-state">No referred enquiries recorded yet.</td>
+                      </tr>
+                    ) : (
+                      affiliatesData.leads.map((lead) => (
+                        <tr key={lead.id}>
+                          <td style={{ fontSize: '12px' }}>{lead.created_at.split(' ')[0]}</td>
+                          <td>
+                            <div style={{ fontWeight: '600', color: 'var(--text-heading)' }}>{lead.name}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-3)' }}>{lead.email}</div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: '13px' }}>{lead.referred_by_name}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--orange)' }}>code: {lead.referred_by_code}</div>
+                          </td>
+                          <td>
+                            <span className="ratio-tag" style={{ whiteSpace: 'nowrap' }}>{lead.service || 'Enquiry'}</span>
+                          </td>
+                          <td>
+                            <select
+                              value={lead.status}
+                              onChange={(e) => handleUpdateLeadField(lead.id, { status: e.target.value })}
+                              style={{
+                                background: 'rgba(0,0,0,0.3)',
+                                border: '1px solid var(--border)',
+                                color: 'var(--text)',
+                                padding: '6px 10px',
+                                borderRadius: '6px',
+                                outline: 'none',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <option value="pending">🟡 Pending enquiry</option>
+                              <option value="converted">🟢 Converted (Won)</option>
+                              <option value="rejected">🔴 Rejected / Invalid</option>
+                            </select>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                              <span style={{ fontSize: '14px', color: 'var(--text-3)' }}>$</span>
+                              <input
+                                type="number"
+                                value={editingRewards[lead.id] !== undefined ? editingRewards[lead.id] : lead.reward_amount}
+                                onChange={(e) => handleRewardValChange(lead.id, e.target.value)}
+                                style={{
+                                  width: '80px',
+                                  background: 'rgba(0,0,0,0.3)',
+                                  border: '1px solid var(--border)',
+                                  color: 'var(--text)',
+                                  padding: '6px 8px',
+                                  borderRadius: '6px',
+                                  textAlign: 'right',
+                                  outline: 'none'
+                                }}
+                              />
+                              <button 
+                                onClick={() => handleSaveReward(lead.id)}
+                                style={{
+                                  background: 'var(--orange)',
+                                  color: '#fff',
+                                  border: 'none',
+                                  padding: '6px 10px',
+                                  borderRadius: '6px',
+                                  fontSize: '12px',
+                                  fontWeight: '600',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Save
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            {lead.status === 'converted' ? (
+                              <select
+                                value={lead.reward_status}
+                                onChange={(e) => handleUpdateLeadField(lead.id, { reward_status: e.target.value })}
+                                style={{
+                                  background: 'rgba(0,0,0,0.3)',
+                                  border: '1px solid var(--border)',
+                                  color: 'var(--text)',
+                                  padding: '6px 10px',
+                                  borderRadius: '6px',
+                                  outline: 'none',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                <option value="unpaid">⏳ Unpaid</option>
+                                <option value="paid">✅ Paid</option>
+                              </select>
+                            ) : (
+                              <span style={{ color: 'var(--text-3)', fontSize: '13px' }}>N/A (Pending deal)</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+          </div>
+        )}
+        
       </div>
     </main>
   );

@@ -8,9 +8,18 @@ from .serializers import ContactMessageSerializer
 
 class ContactView(APIView):
     def post(self, request):
+        referrer_code = request.data.get('referrer_code')
         serializer = ContactMessageSerializer(data=request.data)
         if serializer.is_valid():
-            msg = serializer.save()
+            referred_by = None
+            if referrer_code:
+                try:
+                    from apps.affiliate.models import Affiliate
+                    referred_by = Affiliate.objects.get(code=referrer_code, is_active=True)
+                except Affiliate.DoesNotExist:
+                    pass
+            
+            msg = serializer.save(referred_by=referred_by)
 
             # Send notification email
             try:
