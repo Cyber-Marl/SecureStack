@@ -13,6 +13,7 @@ const company = [
   { label: 'About Us', to: '/#about' },
   { label: 'Industries', to: '/industries' },
   { label: 'Services', to: '/services' },
+  { label: 'Blog & Resources', to: '/blog' },
   { label: 'Front-End Dev', to: '/front-end-development' },
   { label: 'Back-End Dev', to: '/back-end-development-services' },
   { label: 'Affiliate Program', to: '/affiliate' },

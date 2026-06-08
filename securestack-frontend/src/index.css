@@ -284,3 +284,43 @@ h1, h2, h3, h4, h5, h6 {
   transition-delay: var(--reveal-delay);
 }
 
+/* ── Page Load Fade-in Transitions ── */
+main {
+  animation: pageFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Premium Scrollbar ── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius);
+  border: 2px solid var(--bg-2);
+  transition: background var(--transition);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+}
+
+/* ── Custom Selection ── */
+::selection {
+  background: rgba(254, 145, 76, 0.25);
+  color: var(--orange);
+}
+

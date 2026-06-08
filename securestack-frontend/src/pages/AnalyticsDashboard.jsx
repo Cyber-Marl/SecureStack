@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getDashboardData } from '../utils/analyticsService';
+import SEO from '../components/SEO';
 import './AnalyticsDashboard.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
 
 export default function AnalyticsDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,6 +16,26 @@ export default function AnalyticsDashboard() {
   const [affiliatesData, setAffiliatesData] = useState(null);
   const [loadingAffiliates, setLoadingAffiliates] = useState(false);
   const [editingRewards, setEditingRewards] = useState({}); // leadId -> rewardVal
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      // Simulate network request loading time for a premium interactive feel
+      await new Promise(resolve => setTimeout(resolve, 600));
+      const dashboardData = getDashboardData();
+      if (dashboardData) {
+        setData(dashboardData);
+      } else {
+        throw new Error('No dashboard data found');
+      }
+    } catch (err) {
+      console.error('Failed to fetch analytics:', err);
+      setError('Unable to fetch live analytics data.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Check if already authenticated in this session
   useEffect(() => {
@@ -117,6 +136,7 @@ export default function AnalyticsDashboard() {
   if (!isAuthenticated) {
     return (
       <main className="analytics-lock-container">
+        <SEO title="Console Authorization" description="Authorized personnel administrative dashboard lock screen." path="/admin/dashboard" />
         <div className="analytics-lock-bg-blobs">
           <div className="lock-blob blob-1"></div>
           <div className="lock-blob blob-2"></div>
@@ -153,6 +173,7 @@ export default function AnalyticsDashboard() {
 
   return (
     <main className="analytics-dashboard-root">
+      <SEO title="Analytics Terminal" description="Privacy-first B2B traffic monitoring console." path="/admin/dashboard" />
       <div className="dashboard-container">
         
         {/* Header Block */}

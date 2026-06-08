@@ -1,28 +1,26 @@
-📦 Found deploy.zip. Size: 0.16 MB
+🚀 SecureStack Direct WebDAV Deployment
+📁 Source: /home/runner/work/SecureStack/SecureStack/securestack-frontend/dist
+🌐 Target: https://hz4.vps.webdevworld.com:2078/public_html/
 
-📤 Step 1: Uploading deploy.zip via WebDAV (cPanel Web Disk)...
-Attempting binary PUT to WebDAV zip endpoint: https://hz4.vps.webdevworld.com:2078/public_html/deploy.zip
-HTTP Status: 201 Created
-✅ Archive uploaded successfully via WebDAV!
+📁 Step 1: Ensuring remote directories exist...
+📁 Directory already exists: assets/
 
-📤 Step 2: Uploading extract_zip.php via WebDAV...
-Attempting PHP PUT to WebDAV php endpoint: https://hz4.vps.webdevworld.com:2078/public_html/extract_zip.php
-HTTP Status: 201 Created
-✅ Extraction script uploaded successfully via WebDAV!
+📤 Step 2: Uploading all files...
+📤 Uploading: .htaccess (0.7 KB)
+   ✅ Uploaded: .htaccess
+📁 Directory already exists: assets/
+📤 Uploading: assets/index-B81zkFf8.js (367.2 KB)
+   ✅ Uploaded: assets/index-B81zkFf8.js
+📤 Uploading: assets/index-CZR6IqiB.css (65.6 KB)
+   ✅ Uploaded: assets/index-CZR6IqiB.css
+📤 Uploading: diagnose.php (4.3 KB)
+   ✅ Uploaded: diagnose.php
+📤 Uploading: favicon.png (34.4 KB)
+   ✅ Uploaded: favicon.png
+📤 Uploading: icons.svg (4.9 KB)
+   ✅ Uploaded: icons.svg
+📤 Uploading: index.html (1.0 KB)
+   ✅ Uploaded: index.html
 
-🚀 Step 3: Triggering ZipArchive extraction via live site URL...
-Sending GET request to trigger URL: https://securestack.co.zw/extract_zip.php
-HTTP Status: 415 Unsupported Media Type
-
---- Server Output ---
-<html>
-<head><title>415 Unsupported Media Type</title></head>
-<body>
-<center><h1>415 Unsupported Media Type</h1></center>
-<hr><center>openresty/1.29.2.3</center>
-</body>
-</html>
-
----------------------
-ERROR: 
-❌ Extraction failed on the server. Read the Server Output above for details.
+✅ All files uploaded successfully! 🎉
+🌐 Site is live at: https://securestack.co.zw

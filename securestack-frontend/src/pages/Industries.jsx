@@ -1,4 +1,5 @@
 import ContactForm from '../components/ContactForm';
+import SEO from '../components/SEO';
 import { 
   Landmark, 
   HeartPulse, 
@@ -71,6 +72,12 @@ const industries = [
 export default function Industries() {
   return (
     <main>
+      <SEO 
+        title="B2B Security & Tech Solutions by Industry" 
+        description="Secure tech solutions built for Fintech, Healthcare, Public Sector, and Logistics. We secure sensitive data and ensure global regulatory compliance."
+        keywords="fintech security, healthcare IT compliance, public sector cybersecurity, transport software security"
+        path="/industries"
+      />
       <section className="page-hero">
         <div className="container">
           <p className="section-label">Sectors We Serve</p>

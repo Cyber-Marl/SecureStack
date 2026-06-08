@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
+import DomainScanner from '../components/DomainScanner';
+import SEO from '../components/SEO';
 import { useScrollReveal } from '../hooks/useAnimations';
 import './TrustCenter.css';
 
@@ -112,6 +114,12 @@ export default function TrustCenter() {
 
   return (
     <main className="trust-page-root">
+      <SEO 
+        title="Security Auditing & Compliance Scanner" 
+        description="Check your domain's security status with our Compliance Scanner. We audit SPF, DMARC, MX records, and SSL configurations to identify vulnerabilities."
+        keywords="domain scanner, security audit, DMARC validation, SSL checker, cybersecurity compliance Zimbabwe"
+        path="/security-compliance"
+      />
       {/* ── Breadcrumb & Hero ── */}
       <section ref={secHeroRef} className={`sec-hero-section reveal-section ${secHeroRevealed ? 'revealed' : ''}`}>
         <div className="container">
@@ -126,6 +134,9 @@ export default function TrustCenter() {
           </p>
         </div>
       </section>
+
+      {/* ── Domain Scanner Section ── */}
+      <DomainScanner />
 
       {/* ── Secure SDLC Timeline Section ── */}
       <section ref={secSdlcRef} className={`section reveal-section ${secSdlcRevealed ? 'revealed' : ''}`}>

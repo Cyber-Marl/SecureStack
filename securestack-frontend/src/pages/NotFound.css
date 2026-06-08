@@ -1,0 +1,176 @@
+/* ── NotFound Page Styling ── */
+
+.nf-root {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 80px 24px;
+  background: radial-gradient(circle at 50% 50%, rgba(30, 111, 255, 0.05) 0%, transparent 60%);
+}
+
+.nf-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center;
+  pointer-events: none;
+  mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+}
+
+.nf-container {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.nf-card {
+  background: rgba(11, 15, 25, 0.65);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.nf-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--orange));
+}
+
+.nf-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 28px;
+  background: radial-gradient(135deg, rgba(254, 145, 76, 0.1) 0%, rgba(30, 111, 255, 0.05) 100%);
+  border: 1px solid rgba(254, 145, 76, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--orange);
+  box-shadow: 0 0 30px rgba(254, 145, 76, 0.15);
+  animation: nfPulse 3s infinite ease-in-out;
+}
+
+.nf-code {
+  font-size: 96px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text-heading) 30%, var(--text-3) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  display: inline-block;
+}
+
+.nf-code::after {
+  content: '404';
+  position: absolute;
+  left: 2px;
+  top: 0;
+  color: rgba(30, 111, 255, 0.35);
+  z-index: -1;
+  filter: blur(4px);
+}
+
+.nf-title {
+  font-size: clamp(20px, 4vw, 24px);
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-heading);
+}
+
+.nf-desc {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+
+.nf-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.nf-btn-home {
+  width: 100%;
+  max-width: 280px;
+  justify-content: center;
+}
+
+.nf-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.nf-link-item {
+  font-size: 13px;
+  color: var(--text-3);
+  transition: color var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nf-link-item:hover {
+  color: var(--orange);
+}
+
+.nf-terminal-alert {
+  margin-bottom: 24px;
+  background: rgba(254, 145, 76, 0.05);
+  border: 1px solid rgba(254, 145, 76, 0.15);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--orange);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nf-terminal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--orange);
+  box-shadow: 0 0 8px var(--orange);
+  animation: nfBlink 1s infinite alternate;
+}
+
+@keyframes nfPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 30px rgba(254, 145, 76, 0.15);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 45px rgba(254, 145, 76, 0.3);
+  }
+}
+
+@keyframes nfBlink {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}

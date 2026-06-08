@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import ContactForm from './ContactForm';
+import { submitContactForm } from '../utils/contactService';
 import './ProjectEstimator.css';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
 
 const projectTypes = [
   { id: 'web', label: 'Web Application', baseTime: 6, baseComplexity: 30, desc: 'SPAs, custom portals, high-performance dashboards.' },
@@ -121,7 +119,7 @@ ${extraMsg || 'No additional comments.'}
     const referrer_code = localStorage.getItem('securestack_ref') || null;
 
     try {
-      await axios.post(`${API_BASE}/contact/`, {
+      await submitContactForm({
         name,
         email,
         phone: phone || 'N/A',
@@ -147,7 +145,7 @@ ${extraMsg || 'No additional comments.'}
       console.error(err);
       setStatus({
         type: 'error',
-        msg: err.response?.data?.message || 'Server connection issue. Please verify your fields and try again.'
+        msg: err.message || 'Server connection issue. Please verify your fields and try again.'
       });
     } finally {
       setLoading(false);

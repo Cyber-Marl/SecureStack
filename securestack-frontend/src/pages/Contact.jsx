@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ProjectEstimator from '../components/ProjectEstimator';
+import SEO from '../components/SEO';
 import { useScrollReveal } from '../hooks/useAnimations';
 import './Contact.css';
 
@@ -9,6 +10,12 @@ export default function Contact() {
 
   return (
     <main className="contact-page-root">
+      <SEO 
+        title="Request a Secure Consultation" 
+        description="Contact SecureStack to discuss your project requirements or build a project estimate. Request an NDA-protected cybersecurity or software development consultation."
+        keywords="hire developers Zimbabwe, contact cybersecurity company Harare, project estimator"
+        path="/contact"
+      />
       {/* ── Breadcrumbs & Page Hero ── */}
       <section ref={secHeroRef} className={`contact-hero-section reveal-section ${secHeroRevealed ? 'revealed' : ''}`}>
         <div className="container">

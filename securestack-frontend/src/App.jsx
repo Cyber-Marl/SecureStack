@@ -18,23 +18,11 @@ import AffiliatePortal from './pages/AffiliatePortal';
 import axios from 'axios';
 import './index.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
-
 function PageviewTracker() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const logPageView = async () => {
-      try {
-        await axios.post(`${API_URL}/analytics/log/`, {
-          path: pathname,
-          referrer: document.referrer || 'Direct'
-        });
-      } catch (err) {
-        console.error('Failed to log pageview:', err);
-      }
-    };
-    logPageView();
+    logPageView(pathname, document.referrer);
   }, [pathname]);
 
   return null;
@@ -103,6 +91,9 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/affiliate" element={<AffiliatePortal />} />
         <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />

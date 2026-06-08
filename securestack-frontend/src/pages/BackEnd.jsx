@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ContactForm from '../components/ContactForm';
+import SEO from '../components/SEO';
 
 const techs = ['Django REST', 'Node.js / Express', '.NET Core', 'PHP Laravel', 'Python FastAPI', 'PostgreSQL', 'Redis', 'Docker / Kubernetes'];
 const features = [
@@ -38,6 +39,12 @@ const features = [
 export default function BackEnd() {
   return (
     <main>
+      <SEO 
+        title="Scalable Back-End Engineering Services" 
+        description="Robust, secure back-end architectures, database modeling, and API integrations using Django, FastAPI, and Node.js built to security-first standards."
+        keywords="backend developer Harare, secure API integration, database architecture, Django developer Zimbabwe"
+        path="/back-end-development-services"
+      />
       <section className="page-hero">
         <div className="container">
           <p className="section-label">Tech Stack → Back-End</p>
