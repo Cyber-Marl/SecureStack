@@ -143,6 +143,7 @@ const stats = [
   { icon: '🛡️', value: '100%', label: 'OWASP Aligned' },
   { icon: '🔒', value: '24/7', label: 'Threat Protection' },
   { icon: '🌍', value: '10+',  label: 'Sectors Supported' },
+  { icon: '💯', value: '98%',  label: 'Client Retention Rate' },
 ];
 
 function StatItem({ icon, value, label }) {

@@ -58,8 +58,8 @@
 .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 64px; }
 .hero-stats {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: nowrap;
   padding-top: 40px;
   justify-content: space-evenly;
 }
@@ -74,8 +74,7 @@
   border-radius: var(--radius-lg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  flex: 1;
-  min-width: 130px;
+  width: 150px;
   transition: all var(--transition);
   cursor: default;
 }
@@ -289,9 +288,38 @@
 
 @media (max-width: 900px) {
   .about-grid, .contact-layout { grid-template-columns: 1fr; gap: 48px; }
-  .hero-stats { gap: 24px; }
+  /* Stats: wrap into 3 per row on tablet */
+  .hero-stats {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .stat-card {
+    width: 145px;
+  }
 }
+
 @media (max-width: 600px) {
   .hero-title { letter-spacing: -1px; }
   .hero-cta { flex-direction: column; }
+  /* Stats: 2 per row on mobile */
+  .hero-stats {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .stat-card {
+    width: calc(50% - 10px);
+    min-width: 130px;
+    padding: 18px 16px;
+  }
+  .stat-value { font-size: 24px; }
+  .stat-label { font-size: 10px; }
+}
+
+@media (max-width: 360px) {
+  /* Very small screens: single column */
+  .stat-card {
+    width: 100%;
+  }
 }

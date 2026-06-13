@@ -1,0 +1,99 @@
+/* ── Privacy Policy Page ── */
+.pp-hero {
+  padding: 140px 0 60px;
+  background: radial-gradient(ellipse at 60% 0%, rgba(254,145,76,0.07) 0%, transparent 60%);
+  border-bottom: 1px solid var(--border);
+}
+.pp-title {
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin-bottom: 12px;
+}
+.pp-meta {
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+.pp-body {
+  padding: 80px 24px;
+  max-width: 860px;
+}
+
+.pp-section {
+  margin-bottom: 48px;
+}
+.pp-section h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.pp-section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--orange);
+  margin: 16px 0 8px;
+}
+.pp-section p {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.pp-section ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.pp-section ul li {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.7;
+  padding-left: 20px;
+  position: relative;
+}
+.pp-section ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--orange);
+  font-size: 13px;
+}
+.pp-section a {
+  color: var(--orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pp-section a:hover {
+  color: var(--orange-d);
+}
+
+.pp-contact {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+.pp-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 16px;
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.9;
+}
+
+@media (max-width: 600px) {
+  .pp-contact-grid {
+    grid-template-columns: 1fr;
+  }
+  .pp-body {
+    padding: 48px 24px;
+  }
+}
