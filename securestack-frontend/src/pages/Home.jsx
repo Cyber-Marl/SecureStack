@@ -139,13 +139,13 @@ const industries = [
 ];
 
 const stats = [
-  { value: '99%', label: 'Uptime SLA' },
-  { value: '100%', label: 'OWASP Aligned' },
-  { value: '24/7', label: 'Threat Protection' },
-  { value: '10+', label: 'Sectors Supported' },
+  { icon: '⚡', value: '99%',  label: 'Uptime SLA' },
+  { icon: '🛡️', value: '100%', label: 'OWASP Aligned' },
+  { icon: '🔒', value: '24/7', label: 'Threat Protection' },
+  { icon: '🌍', value: '10+',  label: 'Sectors Supported' },
 ];
 
-function StatItem({ value, label }) {
+function StatItem({ icon, value, label }) {
   const [active, setActive] = useState(false);
   const ref = useRef(null);
 
@@ -165,7 +165,8 @@ function StatItem({ value, label }) {
   const count = useCountUp(value, active);
 
   return (
-    <div ref={ref} className="stat">
+    <div ref={ref} className="stat-card">
+      <span className="stat-icon">{icon}</span>
       <span className="stat-value">{count}</span>
       <span className="stat-label">{label}</span>
     </div>
@@ -218,11 +219,11 @@ export default function Home() {
               </button>
               <Link to="/services" className="btn btn-outline">View Our Services</Link>
             </div>
-          </div>
-          <div className="hero-stats">
-            {stats.map(s => (
-              <StatItem key={s.label} value={s.value} label={s.label} />
-            ))}
+            <div className="hero-stats">
+              {stats.map(s => (
+                <StatItem key={s.label} icon={s.icon} value={s.value} label={s.label} />
+              ))}
+            </div>
           </div>
         </div>
       </section>

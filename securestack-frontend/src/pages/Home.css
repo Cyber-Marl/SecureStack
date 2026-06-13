@@ -39,6 +39,7 @@
 }
 .hero-text-wrapper {
   max-width: 860px;
+  width: 100%;
 }
 .hero-title {
   font-size: clamp(36px, 5.5vw, 72px);
@@ -57,14 +58,52 @@
 .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 64px; }
 .hero-stats {
   display: flex;
-  gap: 40px;
+  gap: 16px;
   flex-wrap: wrap;
-  padding-top: 32px;
-  border-top: 1px solid var(--border);
+  padding-top: 40px;
+  justify-content: space-evenly;
 }
-.stat { display: flex; flex-direction: column; gap: 4px; }
-.stat-value { font-size: 32px; font-weight: 800; color: var(--orange); }
-.stat-label { font-size: 13px; color: var(--text-2); }
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex: 1;
+  min-width: 130px;
+  transition: all var(--transition);
+  cursor: default;
+}
+.stat-card:hover {
+  background: rgba(254, 145, 76, 0.06);
+  border-color: rgba(254, 145, 76, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(254, 145, 76, 0.15);
+}
+.stat-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--orange);
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -1px;
+}
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
 
 /* ── About ── */
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }

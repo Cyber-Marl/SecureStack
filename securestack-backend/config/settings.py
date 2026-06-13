@@ -8,8 +8,13 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-securestack-dev-key-2025')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+# ── Security ────────────────────────────────────────────────────────────────
+# SECRET_KEY must be set in your .env file — no insecure fallback allowed.
+SECRET_KEY = os.environ['SECRET_KEY']
+
+# Default to False — set DEBUG=True in .env for local development only.
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 INSTALLED_APPS = [
@@ -78,7 +83,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'https://securestack.co.zw',
 ]
-CORS_ALLOW_ALL_ORIGINS = DEBUG
+# Never allow all origins — explicit whitelist above is always used.
+CORS_ALLOW_ALL_ORIGINS = False
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
