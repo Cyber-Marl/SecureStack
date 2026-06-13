@@ -118,7 +118,7 @@ Output ONLY the final post text. Do not include any intro, outro, markdown code 
 
             # 4. Generate post content with Gemini API
             self.safe_stdout("Generating content using Gemini AI...")
-            gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_api_key}"
+            gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
             payload = {
                 "contents": [
                     {
