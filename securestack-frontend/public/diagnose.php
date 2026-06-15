@@ -113,7 +113,8 @@ echo "\n--- Reading Backend Source Files ---\n";
 $backend_files = [
     '/home/securest/securestack-backend/config/urls.py',
     '/home/securest/securestack-backend/config/settings.py',
-    '/home/securest/securestack-backend/passenger_wsgi.py'
+    '/home/securest/securestack-backend/passenger_wsgi.py',
+    '/home/securest/securestack-backend/debug_path.txt'
 ];
 foreach ($backend_files as $bf) {
     if (file_exists($bf)) {
