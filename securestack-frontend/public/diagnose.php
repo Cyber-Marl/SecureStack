@@ -128,6 +128,9 @@ foreach ($backend_files as $bf) {
     }
 }
 
+echo "\n--- Scanning Logs Directory ---\n";
+list_dir_recursive('/home/securest/logs', 0, 1);
+
 echo "\n--- Reading Server Error Logs ---\n";
 $log_files = [
     '/home/securest/logs/securestack.co.zw.php.error.log',
