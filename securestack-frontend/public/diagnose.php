@@ -109,6 +109,22 @@ if (function_exists('shell_exec')) {
     echo "❌ shell_exec is DISABLED.\n";
 }
 
+echo "\n--- Reading Backend Source Files ---\n";
+$backend_files = [
+    '/home/securest/securestack-backend/config/urls.py',
+    '/home/securest/securestack-backend/config/settings.py',
+    '/home/securest/securestack-backend/passenger_wsgi.py'
+];
+foreach ($backend_files as $bf) {
+    if (file_exists($bf)) {
+        echo "\n📄 File: $bf (" . filesize($bf) . " bytes):\n";
+        echo file_get_contents($bf);
+        echo "\n-------------------------------------\n";
+    } else {
+        echo "\n❌ File not found: $bf\n";
+    }
+}
+
 echo "\n--- Reading Server Error Logs ---\n";
 $log_files = [
     '/home/securest/logs/securestack.co.zw.php.error.log',
