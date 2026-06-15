@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import ContactForm from './ContactForm';
-import { submitContactForm } from '../utils/contactService';
 import './ProjectEstimator.css';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const projectTypes = [
   { id: 'web', label: 'Web Application', baseTime: 6, baseComplexity: 30, desc: 'SPAs, custom portals, high-performance dashboards.' },
@@ -119,7 +121,7 @@ ${extraMsg || 'No additional comments.'}
     const referrer_code = localStorage.getItem('securestack_ref') || null;
 
     try {
-      await submitContactForm({
+      const response = await axios.post(`${API_URL}/contact/`, {
         name,
         email,
         phone: phone || 'N/A',
@@ -128,24 +130,29 @@ ${extraMsg || 'No additional comments.'}
         referrer_code: referrer_code,
       });
 
-      setStatus({ type: 'success', msg: 'Estimate successfully submitted! Our team will reach out within 24 hours.' });
-      
-      setTimeout(() => {
-        setName('');
-        setEmail('');
-        setPhone('');
-        setExtraMsg('');
-        setSelectedStack([]);
-        setSelectedCompliance([]);
-        setStep(1);
-        if (onSuccess) onSuccess();
-      }, 3500);
+      if (response.status === 201) {
+        setStatus({ type: 'success', msg: 'Estimate successfully submitted! Our team will reach out within 24 hours.' });
+        
+        setTimeout(() => {
+          setName('');
+          setEmail('');
+          setPhone('');
+          setExtraMsg('');
+          setSelectedStack([]);
+          setSelectedCompliance([]);
+          setStep(1);
+          if (onSuccess) onSuccess();
+        }, 3500);
+      } else {
+        throw new Error('Unexpected response from server.');
+      }
 
     } catch (err) {
       console.error(err);
+      const serverMsg = err.response?.data?.detail || err.response?.data?.message;
       setStatus({
         type: 'error',
-        msg: err.message || 'Server connection issue. Please verify your fields and try again.'
+        msg: serverMsg || err.message || 'Server connection issue. Please verify your fields and try again.'
       });
     } finally {
       setLoading(false);
