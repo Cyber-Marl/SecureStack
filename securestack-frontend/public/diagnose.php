@@ -116,7 +116,8 @@ $backend_files = [
     '/home/securest/securestack-backend/passenger_wsgi.py',
     '/home/securest/securestack-backend/debug_path.txt',
     '/home/securest/securestack-backend/pip_install.log',
-    '/home/securest/securestack-backend/stderr.log'
+    '/home/securest/securestack-backend/stderr.log',
+    '/home/securest/public_html/.htaccess'
 ];
 foreach ($backend_files as $bf) {
     if (file_exists($bf)) {
