@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
-import { submitContactForm } from '../utils/contactService';
+import axios from 'axios';
 import './ContactForm.css';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
@@ -30,7 +32,6 @@ export default function ContactForm() {
     
     const referrer_code = localStorage.getItem('securestack_ref') || null;
 
-    // Build submit form payload (standard JSON)
     const payload = {
       name: form.name,
       email: form.email,
@@ -41,22 +42,19 @@ export default function ContactForm() {
     };
 
     try {
-      await submitContactForm({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        service: nda ? 'NDA Requested' : 'General Inquiry',
-        message: form.message,
-        files: files,
-        nda: nda
-      });
-      setStatus('success');
-      setForm({ name: '', email: '', phone: '', message: '' });
-      setFiles([]);
-      setNda(false);
+      const response = await axios.post(`${API_URL}/contact/`, payload);
+      if (response.status === 201) {
+        setStatus('success');
+        setForm({ name: '', email: '', phone: '', message: '' });
+        setFiles([]);
+        setNda(false);
+      } else {
+        throw new Error('Unexpected response from server.');
+      }
     } catch (err) {
       setStatus('error');
-      setError(err.message || 'Something went wrong. Please try again.');
+      const serverMsg = err.response?.data?.detail || err.response?.data?.message;
+      setError(serverMsg || err.message || 'Something went wrong. Please try again.');
     }
   };
 
