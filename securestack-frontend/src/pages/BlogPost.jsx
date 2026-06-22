@@ -1,4 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import SEO from '../components/SEO';
 import NotFound from './NotFound';
 import { blogPosts } from '../data/blogData';
@@ -6,9 +8,53 @@ import './Blog.css';
 
 export default function BlogPost() {
   const { slug } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Find the post
-  const post = blogPosts.find(p => p.slug === slug);
+  useEffect(() => {
+    const fetchPostDetail = async () => {
+      try {
+        setLoading(true);
+        const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
+        const response = await axios.get(`${API_URL}/social/blog/${slug}/`);
+        setPost(response.data);
+      } catch (err) {
+        console.error('Failed to fetch blog detail from API, trying local fallback:', err);
+        const localPost = blogPosts.find(p => p.slug === slug);
+        setPost(localPost || null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPostDetail();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <main className="post-page-root">
+        <article className="post-container">
+          <header className="post-header">
+            <Link to="/blog" className="post-back-btn" style={{ marginBottom: '24px' }}>
+              ← Back to Articles
+            </Link>
+            <div className="skeleton-line skeleton-badge"></div>
+            <div className="skeleton-line skeleton-title" style={{ height: '40px', width: '90%' }}></div>
+            <div className="skeleton-line skeleton-title" style={{ height: '40px', width: '60%', marginBottom: '20px' }}></div>
+            <div className="skeleton-line skeleton-badge" style={{ width: '200px' }}></div>
+          </header>
+          <div className="post-content">
+            <div className="skeleton-line" style={{ height: '16px', width: '100%', marginBottom: '16px' }}></div>
+            <div className="skeleton-line" style={{ height: '16px', width: '100%', marginBottom: '16px' }}></div>
+            <div className="skeleton-line" style={{ height: '16px', width: '85%', marginBottom: '32px' }}></div>
+            
+            <div className="skeleton-line" style={{ height: '28px', width: '40%', marginBottom: '20px' }}></div>
+            <div className="skeleton-line" style={{ height: '16px', width: '100%', marginBottom: '16px' }}></div>
+            <div className="skeleton-line" style={{ height: '16px', width: '90%', marginBottom: '16px' }}></div>
+          </div>
+        </article>
+      </main>
+    );
+  }
 
   // If no post is found, render the 404 page directly
   if (!post) {

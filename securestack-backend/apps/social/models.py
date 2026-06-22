@@ -6,7 +6,12 @@ from django.utils import timezone
 class LinkedInCredential(models.Model):
     client_id = models.CharField(max_length=255, help_text="LinkedIn Developer App Client ID")
     client_secret = models.CharField(max_length=255, help_text="LinkedIn Developer App Client Secret")
-    organization_id = models.CharField(max_length=100, help_text="LinkedIn Organization ID (e.g. 12345678)")
+    organization_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="LinkedIn Organization ID (e.g. 12345678) or Person URN (e.g. urn:li:person:XXXX). If empty, the system will use the authenticated user's profile URN."
+    )
     
     access_token = models.TextField(blank=True, null=True, help_text="OAuth Access Token")
     refresh_token = models.TextField(blank=True, null=True, help_text="OAuth Refresh Token")
@@ -113,3 +118,44 @@ class SocialPost(models.Model):
         snippet = self.content[:50] + "..." if len(self.content) > 50 else self.content
         safe_snippet = snippet.encode('ascii', errors='replace').decode('ascii')
         return f"[{self.platform.upper()} - {self.status}] {safe_snippet}"
+
+
+class BlogPost(models.Model):
+    STATUS_CHOICES = [
+        ('DRAFT', 'Draft'),
+        ('PUBLISHED', 'Published'),
+    ]
+
+    title = models.CharField(max_length=255, help_text="The title of the blog post")
+    slug = models.SlugField(max_length=255, unique=True, help_text="URL-friendly slug (e.g. demystifying-dmarc)")
+    excerpt = models.TextField(help_text="A short summary/excerpt of the post shown in listings")
+    content = models.TextField(help_text="The full body content of the blog post (supports Markdown/HTML)")
+    
+    date = models.CharField(max_length=100, blank=True, help_text="Display date (e.g. June 01, 2026). If blank, will display current date format.")
+    author = models.CharField(max_length=255, default="SecureStack Research Team", help_text="Author name and title")
+    read_time = models.CharField(max_length=50, default="5 min read", help_text="Estimated read time (e.g. 6 min read)")
+    category = models.CharField(max_length=100, default="Cybersecurity", help_text="Category (e.g. Cybersecurity, Development, Cloud & DevOps)")
+    tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags (e.g. Email Security, DMARC, Compliance)")
+    
+    seo_title = models.CharField(max_length=255, blank=True, null=True, help_text="Optional custom SEO Title tag")
+    seo_desc = models.TextField(blank=True, null=True, help_text="Optional custom SEO Meta Description")
+    keywords = models.CharField(max_length=255, blank=True, null=True, help_text="Comma-separated SEO keywords")
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='DRAFT')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Blog Post"
+        verbose_name_plural = "Blog Posts"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from django.utils.text import slugify
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)

@@ -169,6 +169,16 @@ Output ONLY the final post text. Do not include any intro, outro, markdown code 
         
         # Determine Author URN
         author_urn = cred.organization_id
+        if not author_urn:
+            self.safe_stderr("ERROR: LinkedIn Target URN (organization_id) is not set in credentials. Please authenticate again or configure it in the admin portal.")
+            SocialPost.objects.create(
+                platform='linkedin',
+                content=post_content,
+                status='FAILED',
+                error_message="Missing Target URN (organization_id) in LinkedIn credentials."
+            )
+            return
+            
         if not author_urn.startswith("urn:li:"):
             # If numerical, assume organization
             if author_urn.isdigit():
