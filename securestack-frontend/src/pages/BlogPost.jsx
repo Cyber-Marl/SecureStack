@@ -13,9 +13,18 @@ export default function BlogPost() {
 
   useEffect(() => {
     const fetchPostDetail = async () => {
+      const API_URL = import.meta.env.VITE_API_URL || '';
+      const isLocalDev = API_URL.includes('localhost') || API_URL.includes('127.0.0.1');
+
+      if (!isLocalDev) {
+        const localPost = blogPosts.find(p => p.slug === slug);
+        setPost(localPost || null);
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
         const response = await axios.get(`${API_URL}/social/blog/${slug}/`);
         setPost(response.data);
       } catch (err) {

@@ -15,12 +15,24 @@ export default function Blog() {
 
   useEffect(() => {
     const fetchPosts = async () => {
+      const API_URL = import.meta.env.VITE_API_URL || '';
+
+      // Only attempt API fetch in local dev (when URL points to localhost).
+      // In production, VITE_API_URL is a relative path ('/api') which means
+      // the Django backend isn't co-hosted — use static data directly.
+      const isLocalDev = API_URL.includes('localhost') || API_URL.includes('127.0.0.1');
+
+      if (!isLocalDev) {
+        setPosts(blogPosts);
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
         const response = await axios.get(`${API_URL}/social/blog/`);
-        // If API returns data, use it; otherwise fall back to static dataset
-        if (response.data && response.data.length > 0) {
+        // Guard: ensure the response is a non-empty JSON array, not an HTML error page
+        if (Array.isArray(response.data) && response.data.length > 0) {
           setPosts(response.data);
         } else {
           console.info('API returned no posts — using local static dataset.');
