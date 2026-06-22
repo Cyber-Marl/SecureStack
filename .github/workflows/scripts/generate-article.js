@@ -119,19 +119,45 @@ function parseGeminiJson(rawText) {
   // Strategy 1: direct parse
   try { return JSON.parse(rawText); } catch (_) {}
 
-  // Strategy 2: extract JSON object and fix bare newlines in strings
+  // Strategy 2: isolate the JSON block
   const start = rawText.indexOf('{');
   const end = rawText.lastIndexOf('}');
-  if (start === -1 || end === -1) throw new Error('No JSON object found in response');
-
+  if (start === -1 || end === -1) throw new Error('No JSON object found in Gemini response');
   let jsonStr = rawText.slice(start, end + 1);
 
-  // Replace unescaped newlines inside JSON string values
-  jsonStr = jsonStr.replace(/"(?:[^"\\]|\\.)*"/gs, (match) =>
-    match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
-  );
+  // Strategy 3: fix bare newlines/tabs inside all string values using a state machine
+  let result = '';
+  let inString = false;
+  let escape = false;
+  for (let i = 0; i < jsonStr.length; i++) {
+    const ch = jsonStr[i];
+    if (escape) {
+      result += ch;
+      escape = false;
+      continue;
+    }
+    if (ch === '\\') {
+      escape = true;
+      result += ch;
+      continue;
+    }
+    if (ch === '"') {
+      inString = !inString;
+      result += ch;
+      continue;
+    }
+    if (inString) {
+      // Escape any bare control characters inside strings
+      if (ch === '\n') { result += '\\n'; continue; }
+      if (ch === '\r') { result += '\\r'; continue; }
+      if (ch === '\t') { result += '\\t'; continue; }
+    }
+    result += ch;
+  }
 
-  return JSON.parse(jsonStr);
+  try { return JSON.parse(result); } catch (e) {
+    throw new Error(`JSON parse failed after sanitization: ${e.message}\nSanitized excerpt: ${result.slice(14300, 14600)}`);
+  }
 }
 
 function slugify(text) {
