@@ -1,0 +1,84 @@
+name: 🤖 Auto-Generate & Publish Blog Article
+
+on:
+  # Run every Monday at 08:00 UTC
+  schedule:
+    - cron: '0 8 * * 1'
+
+  # Also allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Topic to generate (leave blank for automatic rotation)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-publish:
+    name: Generate Article with Gemini AI & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ── 2. Setup Node ─────────────────────────────────────────────────────────
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ── 3. Generate article via Gemini AI ────────────────────────────────────
+      - name: 🤖 Generate Blog Article via Gemini AI
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node .github/workflows/scripts/generate-article.js
+
+      # ── 4. Read generated article summary ────────────────────────────────────
+      - name: 📋 Read Article Summary
+        id: summary
+        run: |
+          if [ -f generated_article_summary.txt ]; then
+            SUMMARY=$(cat generated_article_summary.txt)
+            TITLE=$(echo "$SUMMARY" | cut -d'|' -f1)
+            SLUG=$(echo "$SUMMARY" | cut -d'|' -f3)
+            CATEGORY=$(echo "$SUMMARY" | cut -d'|' -f5)
+            echo "title=$TITLE" >> $GITHUB_OUTPUT
+            echo "slug=$SLUG" >> $GITHUB_OUTPUT
+            echo "category=$CATEGORY" >> $GITHUB_OUTPUT
+          fi
+
+      # ── 5. Commit updated blogData.js ─────────────────────────────────────────
+      - name: 📝 Commit New Article
+        run: |
+          git config --global user.name "SecureStack Bot"
+          git config --global user.email "bot@securestack.co.zw"
+          git add securestack-frontend/src/data/blogData.js
+          git diff --staged --quiet || git commit -m "feat(blog): auto-publish '${{ steps.summary.outputs.title }}' [${{ steps.summary.outputs.category }}]"
+
+      # ── 6. Install frontend dependencies ──────────────────────────────────────
+      - name: 📦 Install Frontend Dependencies
+        working-directory: securestack-frontend
+        run: npm install
+
+      # ── 7. Build React App ────────────────────────────────────────────────────
+      - name: 🔨 Build React App
+        working-directory: securestack-frontend
+        run: npm run build
+
+      # ── 8. Deploy to cPanel ───────────────────────────────────────────────────
+      - name: 🚀 Deploy to cPanel Server
+        env:
+          CPANEL_USER: ${{ secrets.FTP_USERNAME }}
+          CPANEL_PASS: ${{ secrets.FTP_PASSWORD }}
+        run: node .github/workflows/scripts/cpanel-deploy.js
+
+      # ── 9. Push the committed article back to main ────────────────────────────
+      - name: ⬆️ Push Article Commit to main
+        run: git push origin HEAD:main
