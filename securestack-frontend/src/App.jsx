@@ -16,6 +16,9 @@ import TawkChat from './components/TawkChat';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AffiliatePortal from './pages/AffiliatePortal';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+import NotFound from './pages/NotFound';
 import axios from 'axios';
 import './index.css';
 
@@ -101,6 +104,9 @@ export default function App() {
         <Route path="/affiliate" element={<AffiliatePortal />} />
         <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />
