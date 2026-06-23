@@ -61,7 +61,15 @@ class ContactView(APIView):
                 logger.error(f"Failed to send contact notification email: {e}")
 
             return Response(
-                {'detail': 'Message received. We will be in touch shortly.'},
+                {
+                    'detail': 'Message received. We will be in touch shortly.',
+                    'debug': {
+                        'content_type': request.META.get('CONTENT_TYPE'),
+                        'data_keys': list(request.data.keys()),
+                        'files_keys': list(request.FILES.keys()),
+                        'attachments_count': len(attachments),
+                    }
+                },
                 status=status.HTTP_201_CREATED
             )
 
