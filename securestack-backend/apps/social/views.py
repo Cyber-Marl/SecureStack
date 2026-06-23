@@ -8,8 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import LinkedInCredential, SocialPost, BlogPost
+from .models import LinkedInCredential, SocialPost, BlogPost, FacebookCredential
 from .serializers import BlogPostSerializer
+
 
 class LinkedInAuthorizeView(APIView):
     """
@@ -535,7 +536,309 @@ class LinkedInCallbackView(APIView):
             )
 
 
+class FacebookAuthorizeView(APIView):
+    """
+    Redirects the user to Facebook's OAuth page to start the flow.
+    """
+    def get(self, request):
+        cred = FacebookCredential.objects.first()
+        client_id = cred.client_id if cred else os.getenv("FACEBOOK_APP_ID")
+        
+        if not client_id:
+            return Response(
+                {"error": "Facebook Client ID (App ID) not configured. Please add it in Django Admin."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        redirect_uri = request.build_absolute_uri(reverse('facebook-callback'))
+        scopes = "pages_manage_posts,pages_read_engagement,pages_show_list,public_profile"
+        
+        auth_url = (
+            f"https://www.facebook.com/v19.0/dialog/oauth?"
+            f"client_id={client_id}&"
+            f"redirect_uri={redirect_uri}&"
+            f"state=securestack_fb_state&"
+            f"scope={scopes}"
+        )
+        return HttpResponseRedirect(auth_url)
+
+
+class FacebookCallbackView(APIView):
+    """
+    Handles Meta OAuth callback, exchanges authorization code for long-lived page token, and saves it.
+    """
+    def get(self, request):
+        code = request.GET.get('code')
+        error = request.GET.get('error')
+        error_desc = request.GET.get('error_description')
+        
+        if error:
+            return Response(
+                {"error": f"Facebook OAuth error: {error} - {error_desc}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        if not code:
+            return Response(
+                {"error": "Authorization code not provided in request."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        # Get credentials
+        cred = FacebookCredential.objects.first()
+        client_id = cred.client_id if cred else os.getenv("FACEBOOK_APP_ID")
+        client_secret = cred.client_secret if cred else os.getenv("FACEBOOK_APP_SECRET")
+        page_id = cred.page_id if cred else os.getenv("FACEBOOK_PAGE_ID")
+        
+        if not client_id or not client_secret or not page_id:
+            return Response(
+                {"error": "Facebook App credentials (ID, Secret, or Page ID) are missing from the configuration."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        redirect_uri = request.build_absolute_uri(reverse('facebook-callback'))
+        
+        # 1. Exchange authorization code for short-lived user token
+        token_url = "https://graph.facebook.com/v19.0/oauth/access_token"
+        params = {
+            "client_id": client_id,
+            "redirect_uri": redirect_uri,
+            "client_secret": client_secret,
+            "code": code,
+        }
+        
+        try:
+            # Short-lived user token
+            res = requests.get(token_url, params=params, timeout=10)
+            res_data = res.json()
+            if res.status_code != 200:
+                return Response(
+                    {"error": f"Failed to acquire short-lived user access token: {res_data}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            short_lived_token = res_data.get("access_token")
+            
+            # 2. Exchange short-lived token for long-lived user token
+            exchange_params = {
+                "grant_type": "fb_exchange_token",
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "fb_exchange_token": short_lived_token
+            }
+            res_ex = requests.get(token_url, params=exchange_params, timeout=10)
+            res_ex_data = res_ex.json()
+            if res_ex.status_code != 200:
+                return Response(
+                    {"error": f"Failed to exchange for long-lived user access token: {res_ex_data}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            long_lived_token = res_ex_data.get("access_token")
+            
+            # 3. Retrieve Page Access Token for page_id
+            pages_url = "https://graph.facebook.com/v19.0/me/accounts"
+            pages_params = {"access_token": long_lived_token}
+            res_pages = requests.get(pages_url, params=pages_params, timeout=10)
+            pages_data = res_pages.json()
+            if res_pages.status_code != 200:
+                return Response(
+                    {"error": f"Failed to retrieve pages list: {pages_data}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            # Search for the target page_id
+            page_access_token = None
+            page_name = "Unknown Page"
+            for account in pages_data.get("data", []):
+                if str(account.get("id")) == str(page_id):
+                    page_access_token = account.get("access_token")
+                    page_name = account.get("name", "Page")
+                    break
+                    
+            if not page_access_token:
+                return Response(
+                    {
+                        "error": f"Configured Facebook Page ID {page_id} not found in user's authorized pages. "
+                                 f"Authorized pages found: " + ", ".join([f"{p.get('name')} ({p.get('id')})" for p in pages_data.get('data', [])])
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            # 4. Save credentials
+            if cred:
+                cred.user_access_token = long_lived_token
+                cred.page_access_token = page_access_token
+                cred.save()
+            else:
+                cred = FacebookCredential.objects.create(
+                    client_id=client_id,
+                    client_secret=client_secret,
+                    page_id=page_id,
+                    user_access_token=long_lived_token,
+                    page_access_token=page_access_token
+                )
+                
+            # Return success HTML
+            success_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStack - Meta Integration Successful</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {{
+            --bg-color: #090d16;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --success-color: #10b981;
+            --accent-color: #fe914c;
+            --accent-hover: #e07d3b;
+        }}
+        body {{
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background-image: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(254, 145, 76, 0.05) 0%, transparent 40%);
+        }}
+        .container {{
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }}
+        .success-icon {{
+            width: 64px;
+            height: 64px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--success-color);
+            font-size: 32px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }}
+        h1 {{
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #f3f4f6;
+        }}
+        p {{
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }}
+        .info-card {{
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }}
+        .info-row {{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }}
+        .info-row:last-child {{
+            margin-bottom: 0;
+        }}
+        .info-label {{
+            color: var(--text-secondary);
+        }}
+        .info-value {{
+            font-weight: 600;
+            color: var(--text-primary);
+        }}
+        .info-token {{
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            word-break: break-all;
+        }}
+        .btn-group {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+        .btn {{
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }}
+        .btn:hover {{
+            background: var(--accent-hover);
+            box-shadow: 0 4px 12px rgba(254, 145, 76, 0.2);
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h1>Meta Integration Successful!</h1>
+        <p>Your SecureStack backend has successfully authenticated and saved the permanent Page Access Token.</p>
+        
+        <div class="info-card">
+            <div class="info-row">
+                <span class="info-label">Connected Page:</span>
+                <span class="info-value">{page_name}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Page ID:</span>
+                <span class="info-value info-token">{page_id}</span>
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <a href="/admin/social/facebookcredential/" class="btn">Go to Django Admin</a>
+        </div>
+    </div>
+</body>
+</html>"""
+            success_html = success_html.replace("{page_name}", page_name).replace("{page_id}", str(page_id))
+            return HttpResponse(success_html)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Error communicating with Meta Graph API: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class TriggerPostView(APIView):
+
     """
     Manually triggers the social bot run for testing.
     """

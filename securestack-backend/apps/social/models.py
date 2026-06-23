@@ -159,3 +159,23 @@ class BlogPost(models.Model):
             from django.utils.text import slugify
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+class FacebookCredential(models.Model):
+    client_id = models.CharField(max_length=255, help_text="Meta App ID")
+    client_secret = models.CharField(max_length=255, help_text="Meta App Secret")
+    page_id = models.CharField(max_length=100, help_text="Facebook Page ID (numeric)")
+    
+    user_access_token = models.TextField(blank=True, null=True, help_text="Long-lived User Access Token")
+    page_access_token = models.TextField(blank=True, null=True, help_text="Permanent Page Access Token")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Facebook Credential"
+        verbose_name_plural = "Facebook Credentials"
+
+    def __str__(self):
+        return f"Facebook Credentials for Page: {self.page_id}"
+

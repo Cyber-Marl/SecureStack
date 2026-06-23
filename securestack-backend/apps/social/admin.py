@@ -1,9 +1,14 @@
 from django.contrib import admin
-from .models import LinkedInCredential, SocialPost, BlogPost
+from .models import LinkedInCredential, SocialPost, BlogPost, FacebookCredential
 
 @admin.register(LinkedInCredential)
 class LinkedInCredentialAdmin(admin.ModelAdmin):
     list_display = ('organization_id', 'authorized_at', 'expires_in', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+
+@admin.register(FacebookCredential)
+class FacebookCredentialAdmin(admin.ModelAdmin):
+    list_display = ('page_id', 'created_at', 'updated_at')
     readonly_fields = ('created_at', 'updated_at')
 
 @admin.register(SocialPost)

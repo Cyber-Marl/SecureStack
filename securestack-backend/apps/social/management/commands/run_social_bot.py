@@ -3,7 +3,7 @@ import random
 import requests
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from apps.social.models import LinkedInCredential, SocialPost
+from apps.social.models import LinkedInCredential, SocialPost, FacebookCredential
 
 class Command(BaseCommand):
     help = "Generates an engaging marketing post using Gemini AI and posts it to LinkedIn."
@@ -49,10 +49,12 @@ class Command(BaseCommand):
             self.safe_stdout("WARNING: GEMINI_API_KEY environment variable is not set. Falling back to local templates...")
             use_fallback = True
 
-        # 2. Retrieve LinkedIn Credentials (unless dry-running without config)
-        cred = LinkedInCredential.objects.first()
-        if not dry_run and not cred:
-            self.safe_stderr("ERROR: LinkedIn Credentials not found in database. Please run the OAuth flow first.")
+        # 2. Retrieve Credentials (unless dry-running without config)
+        cred_li = LinkedInCredential.objects.first()
+        cred_fb = FacebookCredential.objects.first()
+        
+        if not dry_run and not cred_li and not cred_fb:
+            self.safe_stderr("ERROR: No credentials (LinkedIn or Facebook) found in database. Please run the OAuth flow first.")
             return
 
         # 3. Select topic and formulate content
@@ -156,104 +158,148 @@ Output ONLY the final post text. Do not include any intro, outro, markdown code 
 
         # 5. Handle Dry Run
         if dry_run:
-            SocialPost.objects.create(
-                platform='linkedin',
-                content=post_content,
-                status='DRAFT'
-            )
-            self.safe_stdout("Dry run complete. Post saved as DRAFT in database.")
-            return
-
-        # 6. Publish to LinkedIn
-        self.safe_stdout("Publishing to LinkedIn...")
-        
-        # Determine Author URN
-        author_urn = cred.organization_id
-        if not author_urn:
-            self.safe_stderr("ERROR: LinkedIn Target URN (organization_id) is not set in credentials. Please authenticate again or configure it in the admin portal.")
-            SocialPost.objects.create(
-                platform='linkedin',
-                content=post_content,
-                status='FAILED',
-                error_message="Missing Target URN (organization_id) in LinkedIn credentials."
-            )
-            return
-            
-        if not author_urn.startswith("urn:li:"):
-            # If numerical, assume organization
-            if author_urn.isdigit():
-                author_urn = f"urn:li:organization:{author_urn}"
-            else:
-                author_urn = f"urn:li:organization:{author_urn}"
-
-        # Get valid access token (handles refresh internally if expired)
-        try:
-            access_token = cred.get_valid_access_token()
-        except Exception as e:
-            self.safe_stderr(f"Failed to obtain valid access token: {str(e)}")
-            # Log failure
-            SocialPost.objects.create(
-                platform='linkedin',
-                content=post_content,
-                status='FAILED',
-                error_message=f"Access token error: {str(e)}"
-            )
-            return
-
-        # LinkedIn Posts API
-        linkedin_url = "https://api.linkedin.com/rest/posts"
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-            "LinkedIn-Version": "202401",
-            "X-Restli-Protocol-Version": "2.0.0"
-        }
-        
-        payload = {
-            "author": author_urn,
-            "commentary": post_content,
-            "visibility": "PUBLIC",
-            "distribution": {
-                "feedDistribution": "MAIN_FEED",
-                "targetEntities": [],
-                "thirdPartyDistributionChannels": []
-            }
-        }
-
-        try:
-            response = requests.post(linkedin_url, json=payload, headers=headers, timeout=15)
-            
-            if response.status_code in [200, 201]:
-                # In some versions, the post URN is returned in the x-linkedin-id header or json
-                post_urn = response.headers.get("x-linkedin-id", "")
-                if not post_urn and response.text:
-                    try:
-                        post_urn = response.json().get("id", "")
-                    except:
-                        pass
-                
+            if cred_li:
                 SocialPost.objects.create(
                     platform='linkedin',
                     content=post_content,
-                    status='PUBLISHED',
-                    published_time=timezone.now(),
-                    linkedin_post_urn=post_urn
+                    status='DRAFT'
                 )
-                self.safe_stdout(f"SUCCESS: Post successfully published to LinkedIn! URN: {post_urn}")
-            else:
-                error_text = response.text
-                self.safe_stderr(f"LinkedIn API error {response.status_code}: {error_text}")
+            if cred_fb:
+                SocialPost.objects.create(
+                    platform='facebook',
+                    content=post_content,
+                    status='DRAFT'
+                )
+            if not cred_li and not cred_fb:
+                SocialPost.objects.create(
+                    platform='linkedin',
+                    content=post_content,
+                    status='DRAFT'
+                )
+            self.safe_stdout("Dry run complete. Post saved as DRAFT in database.")
+            return
+
+        # 6. Publish to LinkedIn (if credentials exist)
+        if cred_li:
+            self.safe_stdout("Publishing to LinkedIn...")
+            
+            # Determine Author URN
+            author_urn = cred_li.organization_id
+            if not author_urn:
+                self.safe_stderr("ERROR: LinkedIn Target URN (organization_id) is not set in credentials. Please authenticate again or configure it in the admin portal.")
                 SocialPost.objects.create(
                     platform='linkedin',
                     content=post_content,
                     status='FAILED',
-                    error_message=f"LinkedIn API {response.status_code}: {error_text}"
+                    error_message="Missing Target URN (organization_id) in LinkedIn credentials."
                 )
-        except Exception as e:
-            self.safe_stderr(f"Error publishing to LinkedIn: {str(e)}")
-            SocialPost.objects.create(
-                platform='linkedin',
-                content=post_content,
-                status='FAILED',
-                error_message=f"Network error: {str(e)}"
-            )
+            else:
+                if not author_urn.startswith("urn:li:"):
+                    # If numerical, assume organization
+                    if author_urn.isdigit():
+                        author_urn = f"urn:li:organization:{author_urn}"
+                    else:
+                        author_urn = f"urn:li:organization:{author_urn}"
+
+                # Get valid access token (handles refresh internally if expired)
+                try:
+                    access_token = cred_li.get_valid_access_token()
+                    
+                    # LinkedIn Posts API
+                    linkedin_url = "https://api.linkedin.com/rest/posts"
+                    headers = {
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json",
+                        "LinkedIn-Version": "202401",
+                        "X-Restli-Protocol-Version": "2.0.0"
+                    }
+                    
+                    payload = {
+                        "author": author_urn,
+                        "commentary": post_content,
+                        "visibility": "PUBLIC",
+                        "distribution": {
+                            "feedDistribution": "MAIN_FEED",
+                            "targetEntities": [],
+                            "thirdPartyDistributionChannels": []
+                        }
+                    }
+
+                    response = requests.post(linkedin_url, json=payload, headers=headers, timeout=15)
+                    
+                    if response.status_code in [200, 201]:
+                        post_urn = response.headers.get("x-linkedin-id", "")
+                        if not post_urn and response.text:
+                            try:
+                                post_urn = response.json().get("id", "")
+                            except:
+                                pass
+                        
+                        SocialPost.objects.create(
+                            platform='linkedin',
+                            content=post_content,
+                            status='PUBLISHED',
+                            published_time=timezone.now(),
+                            linkedin_post_urn=post_urn
+                        )
+                        self.safe_stdout(f"SUCCESS: Post successfully published to LinkedIn! URN: {post_urn}")
+                    else:
+                        error_text = response.text
+                        self.safe_stderr(f"LinkedIn API error {response.status_code}: {error_text}")
+                        SocialPost.objects.create(
+                            platform='linkedin',
+                            content=post_content,
+                            status='FAILED',
+                            error_message=f"LinkedIn API {response.status_code}: {error_text}"
+                        )
+                except Exception as e:
+                    self.safe_stderr(f"Error publishing to LinkedIn: {str(e)}")
+                    SocialPost.objects.create(
+                        platform='linkedin',
+                        content=post_content,
+                        status='FAILED',
+                        error_message=f"Network/Access Token error: {str(e)}"
+                    )
+        else:
+            self.safe_stdout("Skipping LinkedIn (no credentials configured).")
+
+        # 7. Publish to Facebook Page (if credentials exist)
+        if cred_fb:
+            self.safe_stdout("Publishing to Facebook Page...")
+            fb_url = f"https://graph.facebook.com/v19.0/{cred_fb.page_id}/feed"
+            fb_payload = {
+                "message": post_content,
+                "access_token": cred_fb.page_access_token
+            }
+            try:
+                response = requests.post(fb_url, data=fb_payload, timeout=15)
+                if response.status_code in [200, 201]:
+                    post_id = response.json().get("id", "")
+                    SocialPost.objects.create(
+                        platform='facebook',
+                        content=post_content,
+                        status='PUBLISHED',
+                        published_time=timezone.now(),
+                        linkedin_post_urn=post_id  # Store Facebook post ID in the URN field
+                    )
+                    self.safe_stdout(f"SUCCESS: Post successfully published to Facebook Page! ID: {post_id}")
+                else:
+                    error_text = response.text
+                    self.safe_stderr(f"Facebook API error {response.status_code}: {error_text}")
+                    SocialPost.objects.create(
+                        platform='facebook',
+                        content=post_content,
+                        status='FAILED',
+                        error_message=f"Facebook API {response.status_code}: {error_text}"
+                    )
+            except Exception as e:
+                self.safe_stderr(f"Error publishing to Facebook: {str(e)}")
+                SocialPost.objects.create(
+                    platform='facebook',
+                    content=post_content,
+                    status='FAILED',
+                    error_message=f"Network error: {str(e)}"
+                )
+        else:
+            self.safe_stdout("Skipping Facebook Page (no credentials configured).")
+
