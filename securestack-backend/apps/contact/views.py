@@ -23,16 +23,6 @@ class ContactView(APIView):
 
             # Collect uploaded file attachments (multipart/form-data)
             attachments = request.FILES.getlist('attachments')
-            
-            attachment_debug = []
-            for f in attachments:
-                f.seek(0)
-                content = f.read()
-                attachment_debug.append({
-                    'name': f.name,
-                    'size_read': len(content),
-                    'content_type': f.content_type,
-                })
 
             # Build email body
             body = (
@@ -46,7 +36,6 @@ class ContactView(APIView):
                 body += f"\n\n--- Attachments ({len(attachments)} file(s)) ---"
 
             # Send notification email with optional attachments
-            email_error = None
             try:
                 email = EmailMessage(
                     subject=f"[SecureStack] New enquiry from {msg.name}",
@@ -67,24 +56,13 @@ class ContactView(APIView):
 
                 email.send(fail_silently=False)
             except Exception as e:
-                email_error = str(e)
                 # Log but don't fail the request — message is already saved to DB
                 import logging
                 logger = logging.getLogger(__name__)
                 logger.error(f"Failed to send contact notification email: {e}")
 
             return Response(
-                {
-                    'detail': 'Message received. We will be in touch shortly.',
-                    'debug': {
-                        'content_type': request.META.get('CONTENT_TYPE'),
-                        'data_keys': list(request.data.keys()),
-                        'files_keys': list(request.FILES.keys()),
-                        'attachments_count': len(attachments),
-                        'attachments_info': attachment_debug,
-                        'email_error': email_error,
-                    }
-                },
+                {'detail': 'Message received. We will be in touch shortly.'},
                 status=status.HTTP_201_CREATED
             )
 

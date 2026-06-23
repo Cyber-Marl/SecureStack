@@ -45,9 +45,7 @@ export default function ContactForm() {
     files.forEach(file => formData.append('attachments', file));
 
     try {
-      const response = await axios.post(`${API_URL}/contact/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await axios.post(`${API_URL}/contact/`, formData);
       if (response.status === 201) {
         setStatus('success');
         setForm({ name: '', email: '', phone: '', message: '' });
