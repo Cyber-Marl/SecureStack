@@ -116,6 +116,9 @@ echo "\n--- Scanning virtualenv site-packages ---\n";
 list_dir_recursive('/home/securest/virtualenv/securestack-backend/3.11/lib/python3.11/site-packages', 0, 1);
 list_dir_recursive('/home/securest/virtualenv/securestack-backend/3.11/lib64/python3.11/site-packages', 0, 1);
 
+echo "securestack-backend is link: " . (is_link('/home/securest/securestack-backend') ? "YES" : "NO") . "\n";
+echo "SecureStack is link: " . (is_link('/home/securest/SecureStack') ? "YES" : "NO") . "\n";
+
 echo "\n--- Reading Backend Source Files ---\n";
 $backend_files = [
     '/home/securest/securestack-backend/config/urls.py',
@@ -126,7 +129,10 @@ $backend_files = [
     '/home/securest/securestack-backend/stderr.log',
     '/home/securest/securestack-backend/api',
     '/home/securest/public_html/.htaccess',
-    '/home/securest/public_html/api/.htaccess'
+    '/home/securest/public_html/api/.htaccess',
+    '/home/securest/SecureStack/.cpanel.yml',
+    '/home/securest/repositories/SecureStack/.cpanel.yml',
+    '/home/securest/public_html/.cpanel.yml'
 ];
 foreach ($backend_files as $bf) {
     if (file_exists($bf)) {
