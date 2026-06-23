@@ -1,58 +1,68 @@
 <?php
 header('Content-Type: text/plain; charset=utf-8');
 
-// Find virtualenv python
-$python_paths = [
-    '/home/securest/virtualenv/securestack-backend/*/bin/python',
-    '/home/securest/securestack-backend/venv/bin/python',
-    '/home/securest/venv/bin/python',
-];
+$db_path = '/home/securest/securestack-backend/db.sqlite3';
 
-$python = 'python3'; // fallback
-foreach ($python_paths as $pattern) {
-    $matches = glob($pattern);
-    if (!empty($matches)) {
-        $python = $matches[0];
-        break;
+if (!file_exists($db_path)) {
+    die("❌ Database file does not exist at $db_path\n");
+}
+
+if (!is_writable($db_path)) {
+    die("❌ Database file is not writable at $db_path\n");
+}
+
+$db_dir = dirname($db_path);
+if (!is_writable($db_dir)) {
+    echo "⚠️ Database directory is not writable at $db_dir. SQLite may fail to write journal files.\n";
+}
+
+try {
+    $db = new PDO("sqlite:$db_path");
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "✅ Connected to SQLite database.\n";
+    
+    // Check if auth_user table exists
+    $stmt = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='auth_user'");
+    if (!$stmt->fetch()) {
+        die("❌ Table 'auth_user' does not exist in the database. Run migrations first!\n");
     }
+    
+    $username = 'marlvin';
+    $password_hash = 'pbkdf2_sha256$600000$oi6dYWCjWpvIl45lk8FuLy$L1HRmRW6Q4SqbJd2u0DfzlTK+G6XZSPZ3RO4zh8sI0U=';
+    $email = 'marlvin@securestack.co.zw';
+    
+    // Check if user already exists
+    $stmt = $db->prepare("SELECT id FROM auth_user WHERE username = :username");
+    $stmt->execute([':username' => $username]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user) {
+        // Update existing user
+        $stmt = $db->prepare("UPDATE auth_user SET password = :password, is_superuser = 1, is_staff = 1, is_active = 1 WHERE username = :username");
+        $stmt->execute([
+            ':password' => $password_hash,
+            ':username' => $username
+        ]);
+        echo "✅ Password and superuser permissions updated successfully for existing user: $username\n";
+    } else {
+        // Insert new user
+        $stmt = $db->prepare("INSERT INTO auth_user (password, is_superuser, username, last_name, email, is_staff, is_active, date_joined, first_name) VALUES (:password, 1, :username, '', :email, 1, 1, :date_joined, '')");
+        $stmt->execute([
+            ':password' => $password_hash,
+            ':username' => $username,
+            ':email' => $email,
+            ':date_joined' => date('Y-m-d H:i:s')
+        ]);
+        echo "✅ Superuser $username created successfully.\n";
+    }
+} catch (Exception $e) {
+    echo "❌ Error: " . $e->getMessage() . "\n";
 }
 
-echo "Using Python: $python\n";
-
-$new_username = 'marlvin';
-$new_password = 'SecurePassword123!';
-
-$python_code = "
-import os, django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-django.setup()
-from django.contrib.auth.models import User
-try:
-    u = User.objects.get(username='$new_username')
-    u.set_password('$new_password')
-    u.is_superuser = True
-    u.is_staff = True
-    u.save()
-    print('SUCCESS: Updated password for existing superuser $new_username')
-except User.DoesNotExist:
-    User.objects.create_superuser('$new_username', 'marlvin@securestack.co.zw', '$new_password')
-    print('SUCCESS: Created new superuser $new_username')
-";
-
-// Write python code to a temporary file
-$py_file = '/home/securest/securestack-backend/tmp_reset.py';
-file_put_contents($py_file, $python_code);
-
-// Run it
-$cmd = "cd /home/securest/securestack-backend && $python tmp_reset.py 2>&1";
-$output = shell_exec($cmd);
-echo "Result:\n$output\n";
-
-// Cleanup python file
-if (file_exists($py_file)) {
-    unlink($py_file);
+// Self-delete
+if (unlink(__FILE__)) {
+    echo "🧹 Self-deleted reset_super.php from server.\n";
+} else {
+    echo "⚠️ Failed to self-delete reset_super.php. Please delete it manually!\n";
 }
-
-// Self delete
-unlink(__FILE__);
 ?>
