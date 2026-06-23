@@ -13,8 +13,10 @@
    ✅ Uploaded: assets/index-C3_UliR3.css
 📤 Uploading: assets/index-DbXKHNKL.js (457.3 KB)
    ✅ Uploaded: assets/index-DbXKHNKL.js
-📤 Uploading: deploy_backend_helper.php (1.4 KB)
-   ✅ Uploaded: deploy_backend_helper.php
+📤 Uploading: backend.zip (65.3 KB)
+   ✅ Uploaded: backend.zip
+📤 Uploading: deploy_backend.php (1.7 KB)
+   ✅ Uploaded: deploy_backend.php
 📤 Uploading: deploy_wsgi.php (1.2 KB)
    ✅ Uploaded: deploy_wsgi.php
 📤 Uploading: diagnose.php (6.1 KB)
@@ -27,8 +29,6 @@
    ✅ Uploaded: index.html
 📤 Uploading: passenger_wsgi.py (0.6 KB)
    ✅ Uploaded: passenger_wsgi.py
-📤 Uploading: urls.py.temp (0.8 KB)
-   ✅ Uploaded: urls.py.temp
 
 ✅ All files uploaded successfully! 🎉
 🌐 Site is live at: https://securestack.co.zw
