@@ -109,6 +109,9 @@ if (function_exists('shell_exec')) {
     echo "❌ shell_exec is DISABLED.\n";
 }
 
+echo "\n--- Scanning public_html ---\n";
+list_dir_recursive('/home/securest/public_html', 0, 2);
+
 echo "\n--- Reading Backend Source Files ---\n";
 $backend_files = [
     '/home/securest/securestack-backend/config/urls.py',
@@ -117,7 +120,9 @@ $backend_files = [
     '/home/securest/securestack-backend/debug_path.txt',
     '/home/securest/securestack-backend/pip_install.log',
     '/home/securest/securestack-backend/stderr.log',
-    '/home/securest/public_html/.htaccess'
+    '/home/securest/securestack-backend/api',
+    '/home/securest/public_html/.htaccess',
+    '/home/securest/public_html/api/.htaccess'
 ];
 foreach ($backend_files as $bf) {
     if (file_exists($bf)) {
@@ -128,6 +133,7 @@ foreach ($backend_files as $bf) {
         echo "\n❌ File not found: $bf\n";
     }
 }
+
 
 echo "\n--- Scanning Logs Directory ---\n";
 list_dir_recursive('/home/securest/logs', 0, 1);
