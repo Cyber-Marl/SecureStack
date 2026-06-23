@@ -32,7 +32,7 @@ jobs:
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       # ── 3. Generate article via Gemini AI ────────────────────────────────────
       - name: 🤖 Generate Blog Article via Gemini AI
