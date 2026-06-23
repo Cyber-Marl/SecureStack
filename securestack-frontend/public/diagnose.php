@@ -112,6 +112,10 @@ if (function_exists('shell_exec')) {
 echo "\n--- Scanning public_html ---\n";
 list_dir_recursive('/home/securest/public_html', 0, 2);
 
+echo "\n--- Scanning virtualenv site-packages ---\n";
+list_dir_recursive('/home/securest/virtualenv/securestack-backend/3.11/lib/python3.11/site-packages', 0, 1);
+list_dir_recursive('/home/securest/virtualenv/securestack-backend/3.11/lib64/python3.11/site-packages', 0, 1);
+
 echo "\n--- Reading Backend Source Files ---\n";
 $backend_files = [
     '/home/securest/securestack-backend/config/urls.py',
