@@ -31,3 +31,7 @@ db.sqlite3-journal
 .idea/
 .DS_Store
 Thumbs.db
+
+# Collected static assets
+securestack-backend/static/
+

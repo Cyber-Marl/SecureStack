@@ -14,16 +14,18 @@ if os.path.exists(venv_base):
             print(f"Activated site-packages: {site_packages_path}")
             break
 
-# Run migrations on startup
+# Run migrations and collect static files on startup
 try:
     import django
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     django.setup()
     from django.core.management import call_command
     call_command('migrate', interactive=False)
+    call_command('collectstatic', interactive=False)
 except Exception as e:
     with open(os.path.join(os.path.dirname(__file__), 'migration_error.txt'), 'w') as f:
         f.write(str(e))
+
 
 # Import Django application
 from config.wsgi import application
