@@ -151,6 +151,9 @@ list_dir_recursive('/home/securest/logs', 0, 1);
 echo "\n--- Reading Server Error Logs ---\n";
 $log_files = [
     '/home/securest/logs/securestack.co.zw.php.error.log',
+    '/home/securest/logs/securestack.co.zw',
+    '/home/securest/logs/securestack.co.zw-ssl_log',
+    '/home/securest/logs/securestack_co_zw.php.error.log',
     '/home/securest/logs/error_log',
     '/home/securest/public_html/error_log',
     '/home/securest/securestack-backend/passenger_wsgi.log',
