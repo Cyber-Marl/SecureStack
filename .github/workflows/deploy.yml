@@ -30,6 +30,12 @@ jobs:
         working-directory: securestack-frontend
         run: npm install
 
+      # ── Zip Backend ────────────────────────────────────────────────────────
+      - name: 📦 Zip Backend Folder
+        run: |
+          cd securestack-backend
+          zip -r ../securestack-frontend/public/backend.zip . -x "venv/*" "db.sqlite3" ".env" "__pycache__/*" "*/__pycache__/*" "debug_path.txt" "pip_install.log" "deploy.log" "deploy.tar.gz" "generated_article_summary.txt"
+
       # ── 4. Build React App ─────────────────────────────────────────────────
       - name: 🔨 Build React App
         working-directory: securestack-frontend
@@ -48,6 +54,14 @@ jobs:
           CPANEL_USER: ${{ secrets.FTP_USERNAME }}
           CPANEL_PASS: ${{ secrets.FTP_PASSWORD }}
         run: node .github/workflows/scripts/cpanel-deploy.js
+
+      # ── Trigger Backend Deploy Helper ──────────────────────────────────────
+      - name: 🚀 Trigger Backend Deploy Helper
+        run: |
+          echo "Waiting 5 seconds for WebDAV changes to sync..."
+          sleep 5
+          curl -sS "https://securestack.co.zw/deploy_backend.php"
+
 
       # ── 7. Commit and Push Deploy Log ──────────────────────────────────────
       - name: 📝 Commit Deploy Log
