@@ -23,6 +23,16 @@ class ContactView(APIView):
 
             # Collect uploaded file attachments (multipart/form-data)
             attachments = request.FILES.getlist('attachments')
+            
+            attachment_debug = []
+            for f in attachments:
+                f.seek(0)
+                content = f.read()
+                attachment_debug.append({
+                    'name': f.name,
+                    'size_read': len(content),
+                    'content_type': f.content_type,
+                })
 
             # Build email body
             body = (
@@ -47,6 +57,7 @@ class ContactView(APIView):
 
                 # Attach each uploaded file to the email
                 for attachment in attachments:
+                    attachment.seek(0)
                     email.attach(
                         attachment.name,
                         attachment.read(),
@@ -68,6 +79,7 @@ class ContactView(APIView):
                         'data_keys': list(request.data.keys()),
                         'files_keys': list(request.FILES.keys()),
                         'attachments_count': len(attachments),
+                        'attachments_info': attachment_debug,
                     }
                 },
                 status=status.HTTP_201_CREATED
