@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.conf import settings
 from .serializers import ContactMessageSerializer
 
@@ -18,26 +18,47 @@ class ContactView(APIView):
                     referred_by = Affiliate.objects.get(code=referrer_code, is_active=True)
                 except Affiliate.DoesNotExist:
                     pass
-            
+
             msg = serializer.save(referred_by=referred_by)
 
-            # Send notification email
+            # Collect uploaded file attachments (multipart/form-data)
+            attachments = request.FILES.getlist('attachments')
+
+            # Build email body
+            body = (
+                f"Name: {msg.name}\n"
+                f"Email: {msg.email}\n"
+                f"Phone: {msg.phone or 'N/A'}\n"
+                f"Service: {msg.service or 'N/A'}\n\n"
+                f"Message:\n{msg.message}"
+            )
+            if attachments:
+                body += f"\n\n--- Attachments ({len(attachments)} file(s)) ---"
+
+            # Send notification email with optional attachments
             try:
-                send_mail(
+                email = EmailMessage(
                     subject=f"[SecureStack] New enquiry from {msg.name}",
-                    message=(
-                        f"Name: {msg.name}\n"
-                        f"Email: {msg.email}\n"
-                        f"Phone: {msg.phone or 'N/A'}\n"
-                        f"Service: {msg.service or 'N/A'}\n\n"
-                        f"Message:\n{msg.message}"
-                    ),
+                    body=body,
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[settings.CONTACT_RECIPIENT_EMAIL],
-                    fail_silently=True,
+                    to=[settings.CONTACT_RECIPIENT_EMAIL],
+                    reply_to=[msg.email],  # Reply directly to the enquirer
                 )
-            except Exception:
-                pass  # Don't fail the request if email fails
+
+                # Attach each uploaded file to the email
+                for attachment in attachments:
+                    email.attach(
+                        attachment.name,
+                        attachment.read(),
+                        attachment.content_type,
+                    )
+
+                email.send(fail_silently=False)
+            except Exception as e:
+                # Log but don't fail the request — message is already saved to DB
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Failed to send contact notification email: {e}")
 
             return Response(
                 {'detail': 'Message received. We will be in touch shortly.'},

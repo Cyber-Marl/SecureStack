@@ -32,17 +32,22 @@ export default function ContactForm() {
     
     const referrer_code = localStorage.getItem('securestack_ref') || null;
 
-    const payload = {
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      service: nda ? 'NDA Requested' : 'General Inquiry',
-      message: form.message,
-      referrer_code: referrer_code,
-    };
+    // Use FormData so files are transmitted as multipart/form-data
+    const formData = new FormData();
+    formData.append('name',    form.name);
+    formData.append('email',   form.email);
+    formData.append('phone',   form.phone);
+    formData.append('service', nda ? 'NDA Requested' : 'General Inquiry');
+    formData.append('message', form.message);
+    if (referrer_code) formData.append('referrer_code', referrer_code);
+
+    // Append each selected file
+    files.forEach(file => formData.append('attachments', file));
 
     try {
-      const response = await axios.post(`${API_URL}/contact/`, payload);
+      const response = await axios.post(`${API_URL}/contact/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       if (response.status === 201) {
         setStatus('success');
         setForm({ name: '', email: '', phone: '', message: '' });
