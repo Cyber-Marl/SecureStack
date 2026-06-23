@@ -30,11 +30,45 @@ jobs:
         working-directory: securestack-frontend
         run: npm install
 
+      # ── Write Production .env ──────────────────────────────────────────────
+      - name: ⚙️ Write Production .env File
+        env:
+          SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+        run: |
+          cat > securestack-backend/.env.production << EOF
+          DEBUG=False
+          SECRET_KEY=${SECRET_KEY:-securestack-prod-secret-key-change-me}
+          ALLOWED_HOSTS=securestack.co.zw,www.securestack.co.zw,hz4.vps.webdevworld.com
+          EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+          EMAIL_HOST=${EMAIL_HOST:-mail.securestack.co.zw}
+          EMAIL_PORT=${EMAIL_PORT:-587}
+          EMAIL_USE_TLS=True
+          EMAIL_HOST_USER=${EMAIL_HOST_USER:-info@securestack.co.zw}
+          EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+          DEFAULT_FROM_EMAIL=${EMAIL_HOST_USER:-info@securestack.co.zw}
+          CONTACT_RECIPIENT_EMAIL=info@securestack.co.zw
+          EOF
+          # Strip leading whitespace from heredoc
+          sed -i 's/^[[:space:]]*//' securestack-backend/.env.production
+          echo "✅ Production .env written:"
+          # Print without showing password
+          grep -v 'PASSWORD' securestack-backend/.env.production
+
       # ── Zip Backend ────────────────────────────────────────────────────────
       - name: 📦 Zip Backend Folder
         run: |
           cd securestack-backend
+          # Include .env.production as .env inside the zip
           zip -r ../securestack-frontend/public/backend.zip . -x "venv/*" "db.sqlite3" ".env" "__pycache__/*" "*/__pycache__/*" "debug_path.txt" "pip_install.log" "deploy.log" "deploy.tar.gz" "generated_article_summary.txt"
+          # Add the production env as .env in the zip
+          cd ..
+          zip securestack-frontend/public/backend.zip securestack-backend/.env.production
+          echo "✅ backend.zip contents:"
+          unzip -l securestack-frontend/public/backend.zip | tail -20
 
       # ── 4. Build React App ─────────────────────────────────────────────────
       - name: 🔨 Build React App

@@ -62,12 +62,45 @@ jobs:
           git add securestack-frontend/src/data/blogData.js
           git diff --staged --quiet || git commit -m "feat(blog): auto-publish '${{ steps.summary.outputs.title }}' [${{ steps.summary.outputs.category }}]"
 
-      # ── 6. Install frontend dependencies ──────────────────────────────────────
+      # ── 6. Write Production .env ───────────────────────────────────────────
+      - name: ⚙️ Write Production .env File
+        env:
+          SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+        run: |
+          cat > securestack-backend/.env.production << EOF
+          DEBUG=False
+          SECRET_KEY=${SECRET_KEY:-securestack-prod-secret-key-change-me}
+          ALLOWED_HOSTS=securestack.co.zw,www.securestack.co.zw,hz4.vps.webdevworld.com
+          EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+          EMAIL_HOST=${EMAIL_HOST:-mail.securestack.co.zw}
+          EMAIL_PORT=${EMAIL_PORT:-587}
+          EMAIL_USE_TLS=True
+          EMAIL_HOST_USER=${EMAIL_HOST_USER:-info@securestack.co.zw}
+          EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+          DEFAULT_FROM_EMAIL=${EMAIL_HOST_USER:-info@securestack.co.zw}
+          CONTACT_RECIPIENT_EMAIL=info@securestack.co.zw
+          EOF
+          sed -i 's/^[[:space:]]*//' securestack-backend/.env.production
+          echo "✅ Production .env written."
+
+      # ── 6b. Zip backend with production env ───────────────────────────────────
+      - name: 📦 Zip Backend with Production Env
+        run: |
+          cd securestack-backend
+          zip -r ../securestack-frontend/public/backend.zip . -x "venv/*" "db.sqlite3" ".env" "__pycache__/*" "*/__pycache__/*" "debug_path.txt" "pip_install.log"
+          cd ..
+          zip securestack-frontend/public/backend.zip securestack-backend/.env.production
+
+      # ── 7. Install frontend dependencies ──────────────────────────────────────
       - name: 📦 Install Frontend Dependencies
         working-directory: securestack-frontend
         run: npm install
 
-      # ── 7. Build React App ────────────────────────────────────────────────────
+      # ── 8. Build React App ────────────────────────────────────────────────────
       - name: 🔨 Build React App
         working-directory: securestack-frontend
         run: npm run build

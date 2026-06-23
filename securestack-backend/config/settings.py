@@ -6,7 +6,12 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# Load production env first (injected by GitHub Actions with real SMTP creds),
+# then fall back to local .env for development.
+_prod_env = os.path.join(BASE_DIR, '.env.production')
+_dev_env  = os.path.join(BASE_DIR, '.env')
+load_dotenv(_prod_env if os.path.exists(_prod_env) else _dev_env)
 
 # ── Security ────────────────────────────────────────────────────────────────
 # SECRET_KEY must be set in your .env file — no insecure fallback allowed.
