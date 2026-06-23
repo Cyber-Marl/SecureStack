@@ -92,10 +92,56 @@ jobs:
       # ── Trigger Backend Deploy Helper & Cleanup ────────────────────────────
       - name: 🚀 Trigger Backend Deploy Helper & Cleanup
         run: |
-          echo "Waiting 5 seconds for WebDAV changes to sync..."
-          sleep 5
-          curl -sS "https://securestack.co.zw/deploy_backend.php"
-          curl -sS "https://securestack.co.zw/delete_diagnose.php"
+          # Retry helper: polls URL until HTTP 200 or gives up after max_attempts
+          curl_with_retry() {
+            local url="$1"
+            local label="$2"
+            local max_attempts=10
+            local attempt=1
+            local delay=8
+
+            echo "⏳ Waiting for $label to become available..."
+            while [ $attempt -le $max_attempts ]; do
+              HTTP_STATUS=$(curl -o /tmp/curl_response.txt -w "%{http_code}" -s --max-time 30 "$url")
+              BODY=$(cat /tmp/curl_response.txt)
+
+              if [ "$HTTP_STATUS" = "200" ]; then
+                echo "✅ [$label] HTTP $HTTP_STATUS — success on attempt $attempt"
+                echo "--- Server Response ---"
+                echo "$BODY"
+                echo "-----------------------"
+                return 0
+              else
+                echo "⚠️  [$label] HTTP $HTTP_STATUS on attempt $attempt/$max_attempts. Retrying in ${delay}s..."
+                if [ -n "$BODY" ]; then
+                  echo "   Response: $(echo "$BODY" | head -3)"
+                fi
+                sleep $delay
+              fi
+              attempt=$((attempt + 1))
+            done
+
+            echo "❌ [$label] Failed after $max_attempts attempts. Last HTTP status: $HTTP_STATUS"
+            echo "--- Last Response ---"
+            echo "$BODY"
+            echo "--------------------"
+            return 1
+          }
+
+          echo "🚀 Step 1: Triggering backend ZIP extraction..."
+          curl_with_retry "https://securestack.co.zw/deploy_backend.php" "deploy_backend.php"
+
+          echo ""
+          echo "🧹 Step 2: Cleaning up diagnose.php..."
+          # delete_diagnose.php self-deletes, so it's OK if it 404s (already gone)
+          HTTP=$(curl -o /tmp/diag_resp.txt -w "%{http_code}" -s --max-time 15 "https://securestack.co.zw/delete_diagnose.php")
+          if [ "$HTTP" = "200" ]; then
+            echo "✅ delete_diagnose.php ran successfully."
+          else
+            echo "ℹ️  delete_diagnose.php returned HTTP $HTTP (may already be deleted — that's fine)."
+          fi
+
+
 
 
       # ── 7. Commit and Push Deploy Log ──────────────────────────────────────
