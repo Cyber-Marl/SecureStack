@@ -46,6 +46,7 @@ class ContactView(APIView):
                 body += f"\n\n--- Attachments ({len(attachments)} file(s)) ---"
 
             # Send notification email with optional attachments
+            email_error = None
             try:
                 email = EmailMessage(
                     subject=f"[SecureStack] New enquiry from {msg.name}",
@@ -66,6 +67,7 @@ class ContactView(APIView):
 
                 email.send(fail_silently=False)
             except Exception as e:
+                email_error = str(e)
                 # Log but don't fail the request — message is already saved to DB
                 import logging
                 logger = logging.getLogger(__name__)
@@ -80,6 +82,7 @@ class ContactView(APIView):
                         'files_keys': list(request.FILES.keys()),
                         'attachments_count': len(attachments),
                         'attachments_info': attachment_debug,
+                        'email_error': email_error,
                     }
                 },
                 status=status.HTTP_201_CREATED
