@@ -278,158 +278,263 @@
   color: var(--orange);
 }
 
-/* ── Modal Pop-up Styles ── */
-.svc-modal-overlay {
+/* ── Drawer (Side Sheet) ── */
+
+/* Thin backdrop — lets the page stay visible */
+.svc-drawer-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(6, 8, 12, 0.8);
-  backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 24px;
+  inset: 0;
+  background: rgba(6, 8, 12, 0.45);
+  z-index: 9998;
   animation: svc-fadeIn 0.25s ease-out;
 }
 
-.svc-modal-card {
-  width: 100%;
-  max-width: 640px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 48px;
-  position: relative;
-  box-shadow: var(--shadow-lg);
-  animation: svc-slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.svc-modal-close {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  background: none;
-  border: none;
-  font-size: 32px;
-  font-weight: 300;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: color 0.2s;
+/* The drawer panel itself */
+.svc-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 480px;
+  max-width: 100vw;
+  z-index: 9999;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
+  flex-direction: column;
+  background: var(--bg-2);
+  border-left: 1px solid var(--border);
+  box-shadow: -24px 0 80px rgba(0, 0, 0, 0.55);
+  animation: svc-slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overscroll-behavior: contain;
 }
 
-.svc-modal-close:hover {
-  color: var(--orange);
+/* ── Drawer Header ── */
+.svc-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
-.svc-modal-path {
+.svc-drawer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.svc-drawer-path {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--orange);
-  letter-spacing: 1px;
-  margin-bottom: 16px;
+  letter-spacing: 0.12em;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
-.svc-modal-path .path-sep {
-  color: var(--text-2);
-  opacity: 0.5;
+.svc-drawer-path .path-sep {
+  color: var(--text-3);
 }
 
-.svc-modal-title {
+.svc-drawer-title {
   font-family: 'Outfit', sans-serif;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 800;
-  color: var(--text);
-  margin-bottom: 20px;
+  color: var(--text-heading);
   line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-.svc-modal-desc {
-  font-size: 16px;
+.svc-drawer-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text-2);
-  line-height: 1.75;
-  margin-bottom: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 1;
 }
 
-.svc-modal-highlights {
-  margin-bottom: 40px;
+.svc-drawer-close:hover {
+  background: var(--surface-h);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 
-.svc-modal-highlights h4 {
-  font-size: 14px;
+/* ── Drawer Body (scrollable) ── */
+.svc-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  /* Custom slim scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.svc-drawer-body::-webkit-scrollbar { width: 4px; }
+.svc-drawer-body::-webkit-scrollbar-track { background: transparent; }
+.svc-drawer-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.svc-drawer-desc {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ── Highlights block ── */
+.svc-drawer-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.svc-drawer-highlights-label {
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text);
-  margin-bottom: 20px;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-.svc-modal-bullet {
+.svc-drawer-bullet {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-start;
-  margin-bottom: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
 }
 
-.svc-modal-bullet:last-child {
-  margin-bottom: 0;
+.svc-drawer-bullet:last-child {
+  border-bottom: none;
 }
 
-.svc-modal-bullet .bullet-check {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+.svc-drawer-bullet:hover {
+  background: var(--surface-h);
+}
+
+.svc-bullet-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
   background: rgba(254, 145, 76, 0.12);
+  border: 1px solid rgba(254, 145, 76, 0.2);
   color: var(--orange);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-.svc-modal-bullet strong {
+.svc-drawer-bullet strong {
   display: block;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
+  font-weight: 600;
 }
 
-.svc-modal-bullet p {
-  font-size: 13.5px;
+.svc-drawer-bullet p {
+  font-size: 13px;
   color: var(--text-2);
-  line-height: 1.6;
+  line-height: 1.55;
+  margin: 0;
 }
 
-.svc-modal-actions {
-  display: flex;
-  gap: 16px;
+/* ── Drawer Footer (sticky CTA) ── */
+.svc-drawer-footer {
+  padding: 20px 32px;
   border-top: 1px solid var(--border);
-  padding-top: 32px;
+  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-/* Animations */
+.svc-drawer-cta-primary {
+  width: 100%;
+  justify-content: center;
+  padding: 14px;
+  font-size: 15px;
+}
+
+.svc-drawer-cta-secondary {
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* ── Animations ── */
 @keyframes svc-fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes svc-slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes svc-slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* ── Mobile: full-width bottom-anchored drawer ── */
+@media (max-width: 600px) {
+  .svc-drawer {
+    width: 100%;
+    top: auto;
+    left: 0;
+    height: 90vh;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    animation: svc-slideInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes svc-slideInUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .svc-drawer-header {
+    padding: 20px 20px 16px;
+  }
+
+  .svc-drawer-body {
+    padding: 20px;
+  }
+
+  .svc-drawer-footer {
+    padding: 16px 20px;
+  }
+
+  .svc-drawer-title {
+    font-size: 20px;
+  }
 }
 
 /* ── Contact Layout override ── */

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useSearchParams } from 'react-router-dom';
 import { 
   Brain, Database, Cpu, Bot, Shield, Lock, Terminal, Server, Smartphone, 
@@ -158,6 +159,21 @@ export default function Services() {
   const [active, setActive] = useState(initialTab);
   const [selectedService, setSelectedService] = useState(null);
 
+  const closeModal = useCallback(() => setSelectedService(null), []);
+
+  // ── Portal modal: body scroll-lock + Escape key dismiss ──
+  useEffect(() => {
+    if (!selectedService) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') closeModal(); };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [selectedService, closeModal]);
+
   useEffect(() => {
     if (tabParam && tabs.some(t => t.id === tabParam)) {
       setActive(tabParam);
@@ -254,62 +270,95 @@ export default function Services() {
         </div>
       </section>
 
-      {/* ── Detail Modal Pop-up ── */}
-      {selectedService && (
-        <div className="svc-modal-overlay" onClick={() => setSelectedService(null)}>
-          <div className="svc-modal-card card" onClick={e => e.stopPropagation()}>
-            <button className="svc-modal-close" onClick={() => setSelectedService(null)}>×</button>
-            <div className="svc-modal-path">
-              {currentTab.label} <span className="path-sep">&gt;</span> {selectedService.name}
+      {/* ── Service Drawer — rendered via Portal onto #modal-root ── */}
+      {selectedService && createPortal(
+        <>
+          {/* Backdrop — click to close */}
+          <div
+            className="svc-drawer-backdrop"
+            onClick={closeModal}
+            aria-hidden="true"
+          />
+
+          {/* Drawer panel */}
+          <aside
+            className="svc-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedService.name}
+          >
+            {/* ── Header ── */}
+            <div className="svc-drawer-header">
+              <div className="svc-drawer-meta">
+                <div className="svc-drawer-path">
+                  {currentTab.label}
+                  <span className="path-sep"> / </span>
+                  {selectedService.name}
+                </div>
+                <h2 className="svc-drawer-title">{selectedService.name}</h2>
+              </div>
+              <button
+                className="svc-drawer-close"
+                onClick={closeModal}
+                aria-label="Close panel"
+              >
+                ×
+              </button>
             </div>
-            <h2 className="svc-modal-title">{selectedService.name}</h2>
-            <p className="svc-modal-desc">{selectedService.desc}</p>
-            
-            <div className="svc-modal-highlights">
-              <h4>Key Features &amp; Delivery Standards</h4>
-              <div className="svc-modal-bullet">
-                <span className="bullet-check">✓</span>
-                <div>
-                  <strong>Security-First Architecture</strong>
-                  <p>Engineered with zero-trust principles and robust vulnerability protection layers.</p>
+
+            {/* ── Scrollable Body ── */}
+            <div className="svc-drawer-body">
+              <p className="svc-drawer-desc">{selectedService.desc}</p>
+
+              <div className="svc-drawer-highlights">
+                <p className="svc-drawer-highlights-label">Key Delivery Standards</p>
+                <div className="svc-drawer-bullet">
+                  <span className="svc-bullet-icon">✓</span>
+                  <div>
+                    <strong>Security-First Architecture</strong>
+                    <p>Engineered with zero-trust principles and robust vulnerability protection layers.</p>
+                  </div>
                 </div>
-              </div>
-              <div className="svc-modal-bullet">
-                <span className="bullet-check">✓</span>
-                <div>
-                  <strong>High Scalability &amp; Clean Code</strong>
-                  <p>Modular, reusable code written to standard guidelines and optimized for performance.</p>
+                <div className="svc-drawer-bullet">
+                  <span className="svc-bullet-icon">✓</span>
+                  <div>
+                    <strong>High Scalability &amp; Clean Code</strong>
+                    <p>Modular, reusable code written to standard guidelines and optimized for performance.</p>
+                  </div>
                 </div>
-              </div>
-              <div className="svc-modal-bullet">
-                <span className="bullet-check">✓</span>
-                <div>
-                  <strong>Enterprise Readiness</strong>
-                  <p>Includes full documentation, automated deployments, and continuous system monitoring.</p>
+                <div className="svc-drawer-bullet">
+                  <span className="svc-bullet-icon">✓</span>
+                  <div>
+                    <strong>Enterprise Readiness</strong>
+                    <p>Full documentation, automated deployments, and continuous system monitoring.</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="svc-modal-actions">
-              <a 
-                href="#svc-contact" 
-                className="btn btn-primary"
+            {/* ── Sticky Footer CTAs ── */}
+            <div className="svc-drawer-footer">
+              <button
+                className="btn btn-primary svc-drawer-cta-primary"
                 onClick={() => {
-                  setSelectedService(null);
-                  // Auto fill service field in Contact Form
-                  const selectEl = document.querySelector('select[name="service"]');
-                  if (selectEl) {
-                    selectEl.value = 'General Inquiry'; // standard options
-                  }
-                  document.getElementById('svc-contact')?.scrollIntoView({ behavior: 'smooth' });
+                  closeModal();
+                  setTimeout(() => {
+                    document.getElementById('svc-contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 50);
                 }}
               >
                 Inquire About This Service →
-              </a>
-              <button className="btn btn-outline" onClick={() => setSelectedService(null)}>Close</button>
+              </button>
+              <button
+                className="btn btn-outline svc-drawer-cta-secondary"
+                onClick={closeModal}
+              >
+                Browse Other Services
+              </button>
             </div>
-          </div>
-        </div>
+          </aside>
+        </>,
+        document.getElementById('modal-root')
       )}
 
       <div className="divider" />
