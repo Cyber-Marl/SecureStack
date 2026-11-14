@@ -6,31 +6,73 @@
 📁 Directory already exists: assets/
 
 📤 Step 2: Uploading all files...
-📤 Uploading: .htaccess (0.8 KB)
+📤 Uploading: .htaccess (1.1 KB)
    ✅ Uploaded: .htaccess
 📁 Directory already exists: assets/
-📤 Uploading: assets/index-B4ZLG5B9.css (75.2 KB)
-   ✅ Uploaded: assets/index-B4ZLG5B9.css
-📤 Uploading: assets/index-otHZcnYG.js (593.0 KB)
-   ✅ Uploaded: assets/index-otHZcnYG.js
-📤 Uploading: backend.zip (69.1 KB)
+📤 Uploading: assets/AffiliatePortal-B08s5R1a.js (14.9 KB)
+   ✅ Uploaded: assets/AffiliatePortal-B08s5R1a.js
+📤 Uploading: assets/AffiliatePortal-WSp1yRJF.css (5.3 KB)
+   ✅ Uploaded: assets/AffiliatePortal-WSp1yRJF.css
+📤 Uploading: assets/AnalyticsDashboard-CZDgL53i.js (18.2 KB)
+   ✅ Uploaded: assets/AnalyticsDashboard-CZDgL53i.js
+📤 Uploading: assets/AnalyticsDashboard-CuBUHlOe.css (7.9 KB)
+   ✅ Uploaded: assets/AnalyticsDashboard-CuBUHlOe.css
+📤 Uploading: assets/BackEnd-DVL7sKkT.js (5.6 KB)
+   ✅ Uploaded: assets/BackEnd-DVL7sKkT.js
+📤 Uploading: assets/Blog-BuBW6d9f.css (4.7 KB)
+   ✅ Uploaded: assets/Blog-BuBW6d9f.css
+📤 Uploading: assets/Blog-Bwp4FK1K.js (4.9 KB)
+   ✅ Uploaded: assets/Blog-Bwp4FK1K.js
+📤 Uploading: assets/Blog-CKUObqAG.js (213.2 KB)
+   ✅ Uploaded: assets/Blog-CKUObqAG.js
+📤 Uploading: assets/BlogPost-l8dSxCOl.js (3.2 KB)
+   ✅ Uploaded: assets/BlogPost-l8dSxCOl.js
+📤 Uploading: assets/Contact-DAsjC3mB.css (0.7 KB)
+   ✅ Uploaded: assets/Contact-DAsjC3mB.css
+📤 Uploading: assets/Contact-jGB7X9Bv.js (3.7 KB)
+   ✅ Uploaded: assets/Contact-jGB7X9Bv.js
+📤 Uploading: assets/FrontEnd-C5fPFRnd.js (5.4 KB)
+   ✅ Uploaded: assets/FrontEnd-C5fPFRnd.js
+📤 Uploading: assets/Industries-CpXtKpbp.js (5.7 KB)
+   ✅ Uploaded: assets/Industries-CpXtKpbp.js
+📤 Uploading: assets/NotFound-B7dAPHzv.css (2.8 KB)
+   ✅ Uploaded: assets/NotFound-B7dAPHzv.css
+📤 Uploading: assets/NotFound-elt0_YRm.js (2.4 KB)
+   ✅ Uploaded: assets/NotFound-elt0_YRm.js
+📤 Uploading: assets/PrivacyPolicy-3YB-DE_L.js (8.2 KB)
+   ✅ Uploaded: assets/PrivacyPolicy-3YB-DE_L.js
+📤 Uploading: assets/PrivacyPolicy-BhQHKQQO.css (1.4 KB)
+   ✅ Uploaded: assets/PrivacyPolicy-BhQHKQQO.css
+📤 Uploading: assets/Services-DR7VB3M-.js (14.6 KB)
+   ✅ Uploaded: assets/Services-DR7VB3M-.js
+📤 Uploading: assets/Services-Dgb00P40.css (8.5 KB)
+   ✅ Uploaded: assets/Services-Dgb00P40.css
+📤 Uploading: assets/TermsOfService-BOyBKbIF.js (7.5 KB)
+   ✅ Uploaded: assets/TermsOfService-BOyBKbIF.js
+📤 Uploading: assets/TrustCenter-Cmgu405X.css (3.8 KB)
+   ✅ Uploaded: assets/TrustCenter-Cmgu405X.css
+📤 Uploading: assets/TrustCenter-DWy1AT_4.js (9.1 KB)
+   ✅ Uploaded: assets/TrustCenter-DWy1AT_4.js
+📤 Uploading: assets/index-Bg3cuOxj.css (44.9 KB)
+   ✅ Uploaded: assets/index-Bg3cuOxj.css
+📤 Uploading: assets/index-MHC-CaWG.js (345.1 KB)
+   ✅ Uploaded: assets/index-MHC-CaWG.js
+📤 Uploading: backend.zip (72.2 KB)
    ✅ Uploaded: backend.zip
-📤 Uploading: delete_diagnose.php (0.5 KB)
-   ✅ Uploaded: delete_diagnose.php
-📤 Uploading: deploy_backend.php (3.5 KB)
+📤 Uploading: deploy_backend.php (3.2 KB)
    ✅ Uploaded: deploy_backend.php
-📤 Uploading: deploy_wsgi.php (1.2 KB)
-   ✅ Uploaded: deploy_wsgi.php
-📤 Uploading: favicon.png (34.4 KB)
+📤 Uploading: favicon.png (28.7 KB)
    ✅ Uploaded: favicon.png
+📤 Uploading: favicon.svg (1.1 KB)
+   ✅ Uploaded: favicon.svg
 📤 Uploading: icons.svg (4.9 KB)
    ✅ Uploaded: icons.svg
 📤 Uploading: index.html (1.1 KB)
    ✅ Uploaded: index.html
-📤 Uploading: passenger_wsgi.py (0.6 KB)
-   ✅ Uploaded: passenger_wsgi.py
-📤 Uploading: reset_super.php (2.5 KB)
-   ✅ Uploaded: reset_super.php
+📤 Uploading: logo-dark.png (27.7 KB)
+   ✅ Uploaded: logo-dark.png
+📤 Uploading: logo-light.png (26.0 KB)
+   ✅ Uploaded: logo-light.png
 
 ✅ All files uploaded successfully! 🎉
 🌐 Site is live at: https://securestack.co.zw
