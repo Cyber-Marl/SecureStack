@@ -5,7 +5,6 @@ import SEO from '../components/SEO';
 import { triggerContactModal } from '../components/ContactModal';
 import ParticleCanvas from '../components/ParticleCanvas';
 import HowWeWork from '../components/HowWeWork';
-import Testimonials from '../components/Testimonials';
 import { useScrollReveal, useCountUp } from '../hooks/useAnimations';
 import DomainScanner from '../components/DomainScanner';
 import { 
@@ -18,6 +17,7 @@ import {
   Cloud, 
   Lock, 
   Smartphone, 
+  Globe,
   Palette, 
   Brain,
   Landmark,
@@ -35,6 +35,12 @@ const services = [
     title: 'IT Security Management', 
     desc: 'Security policy development, vulnerability assessments, and awareness training to protect your entire IT ecosystem.', 
     to: '/services?tab=cybersecurity&service=IT Security Management' 
+  },
+  { 
+    icon: <Globe size={24} strokeWidth={2} />, 
+    title: 'Web Development', 
+    desc: 'High-performance corporate websites, custom web portals, and modern full-stack web applications built to scale.', 
+    to: '/services?tab=software-engineering&service=Web Development' 
   },
   { 
     icon: <Braces size={24} strokeWidth={2} />, 
@@ -82,7 +88,7 @@ const services = [
     icon: <Smartphone size={24} strokeWidth={2} />,
     title: 'Mobile App Development',
     desc: 'High-performance native Swift/Kotlin applications and responsive cross-platform (React Native/Flutter) products.',
-    to: '/services?tab=app-dev&service=Mobile Development'
+    to: '/services?tab=software-engineering&service=Mobile Development'
   },
   {
     icon: <Palette size={24} strokeWidth={2} />,
@@ -139,11 +145,11 @@ const industries = [
 ];
 
 const stats = [
-  { icon: '⚡', value: '99%',  label: 'Uptime SLA' },
-  { icon: '🛡️', value: '100%', label: 'OWASP Aligned' },
-  { icon: '🔒', value: '24/7', label: 'Threat Protection' },
-  { icon: '🌍', value: '10+',  label: 'Sectors Supported' },
-  { icon: '💯', value: '98%',  label: 'Client Retention Rate' },
+  { icon: '⚡', value: '99.9%', label: 'Uptime SLA' },
+  { icon: '🛡️', value: '100%',  label: 'OWASP Audited' },
+  { icon: '🔒', value: '24/7',  label: 'Threat Defense' },
+  { icon: '🌍', value: '10+',   label: 'Sectors Served' },
+  { icon: '💯', value: '100%',  label: 'NDA Protected' },
 ];
 
 function StatItem({ icon, value, label }) {
@@ -199,38 +205,60 @@ export default function Home() {
         </div>
         <div className="container hero-content">
           <div className="hero-text-wrapper">
-            <div className="tag" style={{ marginBottom: 24 }}>
+            <div className="tag" style={{ marginBottom: 28 }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--orange)' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Cybersecurity &amp; Software Development
               </span>
             </div>
             <h1 className="hero-title">
-              Empowering Your Business Through{' '}
-              <span className="gradient-text">Secure Development</span>{' '}
-              and Cloud Solutions
+              Build Faster. Stay Secure.{' '}
+              <span className="gradient-text">Enterprise Software</span>{' '}
+              &amp; Cyber Defense
             </h1>
             <p className="hero-sub">
-              Innovative software development, robust cybersecurity, and cloud services
-              tailored to your unique business needs across Africa and beyond.
+              From high-performance <strong>Web &amp; Mobile Apps</strong> to <strong>Penetration Testing</strong>,{' '}
+              <strong>SOC 2 / ISO 27001 Compliance</strong>, and <strong>Cloud Infrastructure</strong> — we engineer and protect mission-critical systems across Africa and beyond.
             </p>
             <div className="hero-cta">
               <button className="btn btn-primary" onClick={triggerContactModal}>
                 Let's Discuss Your Project →
               </button>
-              <Link to="/services" className="btn btn-outline">View Our Services</Link>
+              <a
+                href="#domain-scanner"
+                className="btn btn-outline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('domain-scanner')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                🛡️ Run Free Security Audit
+              </a>
             </div>
-            <div className="hero-stats">
-              {stats.map(s => (
-                <StatItem key={s.label} icon={s.icon} value={s.value} label={s.label} />
-              ))}
+            <div className="hero-trust-strip">
+              <span>✓ 100% NDA Protected</span>
+              <span className="trust-dot">·</span>
+              <span>✓ Expert Response Within 24 Hours</span>
+              <span className="trust-dot">·</span>
+              <span>✓ Free Initial Consultation</span>
             </div>
           </div>
         </div>
       </section>
 
+      {/* ── Stats Bar (Below the Fold) ── */}
+      <section className="hero-stats-section">
+        <div className="container">
+          <div className="hero-stats">
+            {stats.map(s => (
+              <StatItem key={s.label} icon={s.icon} value={s.value} label={s.label} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Domain Scanner Section ── */}
-      <section className="section-sm" style={{ paddingTop: 0, paddingBottom: '40px' }}>
+      <section className="section-sm" id="domain-scanner" style={{ paddingTop: 0, paddingBottom: '40px' }}>
         <div className="container">
           <DomainScanner />
         </div>
@@ -427,7 +455,26 @@ export default function Home() {
                 </div>
               </div>
 
-
+              <div className="home-direct-contact">
+                <h4>Direct Connections</h4>
+                <a href="mailto:info@securestack.co.zw" className="home-direct-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <span>info@securestack.co.zw</span>
+                </a>
+                <a href="tel:+263775634182" className="home-direct-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  <span>+263 77 563 4182</span>
+                </a>
+                <div className="home-direct-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span>Harare, Zimbabwe</span>
+                </div>
+                <div style={{ marginTop: 20 }}>
+                  <Link to="/contact" className="btn btn-outline" style={{ fontSize: '13px', padding: '10px 18px' }}>
+                    Launch Project Cost Estimator →
+                  </Link>
+                </div>
+              </div>
             </div>
             <ContactForm />
           </div>

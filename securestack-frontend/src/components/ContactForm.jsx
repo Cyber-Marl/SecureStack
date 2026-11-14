@@ -1,11 +1,18 @@
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './ContactForm.css';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-export default function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+export default function ContactForm({ defaultService = '' }) {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: defaultService || 'Cybersecurity & Pentesting',
+    message: ''
+  });
   const [nda, setNda] = useState(false);
   const [files, setFiles] = useState([]);
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
@@ -31,13 +38,14 @@ export default function ContactForm() {
     setError('');
     
     const referrer_code = localStorage.getItem('securestack_ref') || null;
+    const serviceLabel = nda ? `${form.service} (NDA)` : form.service;
 
     // Use FormData so files are transmitted as multipart/form-data
     const formData = new FormData();
     formData.append('name',    form.name);
     formData.append('email',   form.email);
     formData.append('phone',   form.phone);
-    formData.append('service', nda ? 'NDA Requested' : 'General Inquiry');
+    formData.append('service', serviceLabel);
     formData.append('message', form.message);
     if (referrer_code) formData.append('referrer_code', referrer_code);
 
@@ -48,7 +56,13 @@ export default function ContactForm() {
       const response = await axios.post(`${API_URL}/contact/`, formData);
       if (response.status === 201) {
         setStatus('success');
-        setForm({ name: '', email: '', phone: '', message: '' });
+        setForm({
+          name: '',
+          email: '',
+          phone: '',
+          service: defaultService || 'Cybersecurity & Pentesting',
+          message: ''
+        });
         setFiles([]);
         setNda(false);
       } else {
@@ -117,6 +131,24 @@ export default function ContactForm() {
         </div>
 
         <div className="cf-field">
+          <select
+            name="service"
+            value={form.service}
+            onChange={handleChange}
+            className="cf-underline-select"
+            id="cf-service"
+          >
+            <option value="Cybersecurity & Pentesting">🛡️ Cybersecurity &amp; Pentesting</option>
+            <option value="Web, Mobile & Software Development">💻 Web, Mobile &amp; Software Development</option>
+            <option value="Cloud & Infrastructure">☁️ Cloud &amp; Infrastructure</option>
+            <option value="AI & Process Automation">🤖 AI &amp; Process Automation</option>
+            <option value="Compliance Audit (SOC 2 / ISO 27001)">📋 Compliance Audit (SOC 2 / ISO 27001)</option>
+            <option value="General Inquiry">💬 General Consultation</option>
+          </select>
+          <label htmlFor="cf-service" className="cf-floating-label cf-label-pinned">Service Needed</label>
+        </div>
+
+        <div className="cf-field">
           <textarea 
             name="message" 
             value={form.message} 
@@ -181,7 +213,7 @@ export default function ContactForm() {
             {status === 'sending' ? 'Sending…' : 'Send request'}
           </button>
           <div className="cf-privacy-badge">
-            <span className="cf-shield-check">✓</span> Your privacy is protected
+            <span className="cf-shield-check">✓</span> Protected under our <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</Link>
           </div>
         </div>
       </form>

@@ -1,0 +1,113 @@
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+  text-decoration: none;
+}
+
+.brand-logo__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: linear-gradient(145deg, rgba(254, 145, 76, 0.12), rgba(30, 111, 255, 0.06));
+  border: 1px solid rgba(254, 145, 76, 0.25);
+  box-shadow: 0 4px 18px rgba(254, 145, 76, 0.12);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.brand-logo__svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.brand-logo:hover .brand-logo__mark {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 6px 22px rgba(254, 145, 76, 0.24);
+  border-color: rgba(254, 145, 76, 0.45);
+}
+
+.brand-logo__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+}
+
+.brand-logo__wordmark {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  display: inline-flex;
+  align-items: baseline;
+  transition: font-size 0.3s ease;
+}
+
+.brand-logo__secure {
+  color: var(--text);
+}
+
+.brand-logo__stack {
+  background: linear-gradient(135deg, #fe914c 0%, #ff6b1a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-logo__tagline {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--text-2);
+  margin-top: 4px;
+  opacity: 0.85;
+  transition: font-size 0.3s ease, margin-top 0.3s ease;
+}
+
+/* Compact adjustments when navbar is scrolled */
+.navbar.scrolled .brand-logo__mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+}
+
+.navbar.scrolled .brand-logo__svg {
+  width: 24px;
+  height: 24px;
+}
+
+.navbar.scrolled .brand-logo__wordmark {
+  font-size: 20px;
+}
+
+.navbar.scrolled .brand-logo__tagline {
+  font-size: 8px;
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  .brand-logo__mark {
+    width: 36px;
+    height: 36px;
+  }
+  .brand-logo__svg {
+    width: 24px;
+    height: 24px;
+  }
+  .brand-logo__wordmark {
+    font-size: 19px;
+  }
+  .brand-logo__tagline {
+    font-size: 8px;
+    letter-spacing: 1.4px;
+  }
+}
+

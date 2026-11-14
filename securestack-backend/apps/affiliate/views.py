@@ -9,6 +9,7 @@ from .models import Affiliate, ReferralClick
 from apps.contact.models import ContactMessage
 from .serializers import AffiliateRegisterSerializer, AffiliateLoginSerializer, ContactMessageAffiliateSerializer
 from apps.analytics.views import get_hashed_ip
+from apps.analytics.auth import get_admin_user_from_request
 
 class RegisterView(APIView):
     throttle_classes = []
@@ -132,6 +133,10 @@ class AffiliateDashboardView(APIView):
 
 class AdminAffiliateStatsView(APIView):
     def get(self, request):
+        is_auth, _ = get_admin_user_from_request(request)
+        if not is_auth:
+            return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
         # Fetch overview for admin dashboard
         affiliates_data = []
         for affiliate in Affiliate.objects.all():
@@ -178,6 +183,10 @@ class AdminAffiliateStatsView(APIView):
 
 class AdminUpdateLeadView(APIView):
     def post(self, request):
+        is_auth, _ = get_admin_user_from_request(request)
+        if not is_auth:
+            return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
         lead_id = request.data.get('lead_id')
         status_val = request.data.get('status')
         reward_amount_val = request.data.get('reward_amount')

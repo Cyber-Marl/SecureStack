@@ -1,12 +1,23 @@
 <?php
 header('Content-Type: text/plain; charset=utf-8');
 
+// Require deployment authentication token
+$expected_token = getenv('DEPLOY_SECRET_KEY') ?: '98f7e2a4b86c1d0e53a2f791c84b3d6e';
+
+$headers = function_exists('getallheaders') ? getallheaders() : [];
+$header_token = $headers['X-Deploy-Token'] ?? $headers['x-deploy-token'] ?? '';
+$query_token = $_GET['token'] ?? '';
+$provided_token = $header_token ?: $query_token;
+
+if (empty($provided_token) || !hash_equals($expected_token, $provided_token)) {
+    http_response_code(403);
+    die("❌ 403 Forbidden: Invalid or missing deployment authentication token.\n");
+}
+
 $zip_file = '/home/securest/public_html/backend.zip';
 $dest_dir = '/home/securest/securestack-backend';
 
 echo "=== BACKEND DEPLOYMENT EXTRACTOR ===\n";
-echo "Source ZIP: $zip_file\n";
-echo "Destination: $dest_dir\n";
 
 if (!file_exists($zip_file)) {
     echo "❌ Error: ZIP file not found at $zip_file\n";
@@ -46,21 +57,18 @@ if (class_exists('ZipArchive')) {
 }
 
 if ($success) {
-    // Rename .env.production -> .env (the production env with real SMTP credentials)
-    $env_prod = $dest_dir . '/securestack-backend/.env.production';
-    $env_dest = $dest_dir . '/.env';
-
-    // Handle nested path from zip structure
+    // Deploy .env.production -> .env
     $nested_env = $dest_dir . '/securestack-backend/.env.production';
     $root_env   = $dest_dir . '/.env.production';
+    $env_dest   = $dest_dir . '/.env';
 
     if (file_exists($nested_env)) {
         if (rename($nested_env, $env_dest)) {
             echo "✅ Production .env deployed from securestack-backend/.env.production\n";
         } else {
-            echo "⚠️ Could not rename nested .env.production — trying copy...\n";
             copy($nested_env, $env_dest);
             unlink($nested_env);
+            echo "✅ Production .env copied from nested directory.\n";
         }
     } elseif (file_exists($root_env)) {
         if (rename($root_env, $env_dest)) {
@@ -70,28 +78,12 @@ if ($success) {
             unlink($root_env);
             echo "✅ Production .env copied.\n";
         }
-    } else {
-        echo "⚠️ WARNING: .env.production not found in ZIP. Email may not work.\n";
-        echo "Searching for it...\n";
-        $rit = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dest_dir));
-        foreach ($rit as $f) {
-            if (strpos($f->getFilename(), '.env') !== false) {
-                echo "   Found: " . $f->getPathname() . "\n";
-            }
-        }
     }
 
-    echo "📄 Current .env contents (passwords hidden):\n";
     if (file_exists($env_dest)) {
-        $lines = file($env_dest);
-        foreach ($lines as $line) {
-            if (stripos($line, 'password') !== false || stripos($line, 'secret') !== false) {
-                $parts = explode('=', trim($line), 2);
-                echo $parts[0] . "=***REDACTED***\n";
-            } else {
-                echo $line;
-            }
-        }
+        echo "✅ Production .env configuration confirmed.\n";
+    } else {
+        echo "⚠️ WARNING: .env not found.\n";
     }
 
     // Touch restart.txt to reload Passenger

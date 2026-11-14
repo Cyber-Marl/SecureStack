@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import BrandLogo from './BrandLogo';
 import { triggerContactModal } from './ContactModal';
 import './Navbar.css';
 
 const navLinks = [
-  { label: 'About Us', to: '/#about' },
   {
-    label: 'Tech Stack', to: '#',
+    label: 'Services',
+    to: '/services',
     children: [
-      { label: 'Front-End Development', to: '/front-end-development' },
-      { label: 'Back-End Development', to: '/back-end-development-services' },
+      { label: '🛡️ Cybersecurity & Compliance', to: '/services?tab=cybersecurity' },
+      { label: '💻 Web, Mobile & Software', to: '/services?tab=software-engineering' },
+      { label: '☁️ Cloud & Infrastructure', to: '/services?tab=cloud' },
+      { label: '🤖 AI & Process Automation', to: '/services?tab=ai-data' },
+      { divider: true },
+      { label: 'Front-End Tech Stack →', to: '/front-end-development' },
+      { label: 'Back-End Tech Stack →', to: '/back-end-development-services' },
     ]
   },
   { label: 'Industries', to: '/industries' },
-  { label: 'Services', to: '/services' },
-  { label: 'Security & Trust', to: '/security-compliance' },
+  { label: 'Trust Center', to: '/security-compliance' },
   { label: 'Blog', to: '/blog' },
-  { label: 'Contact', to: '/contact' },
 ];
 
 export default function Navbar() {
@@ -56,8 +60,8 @@ export default function Navbar() {
   return (
     <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
       <div className="nav-inner container">
-        <Link to="/" className="nav-logo">
-          <span className="logo-dollar">$</span>ecure <span className="logo-dollar">$</span>tack
+        <Link to="/" className="nav-logo" aria-label="SecureStack Home">
+          <BrandLogo />
         </Link>
 
         <ul className={`nav-links${open ? ' open' : ''}`}>
@@ -79,11 +83,17 @@ export default function Navbar() {
                   </span>
                   {dropdown === link.label && (
                     <ul className="dropdown">
-                      {link.children.map(c => (
-                        <li key={c.label}>
-                          <NavLink to={c.to} onClick={() => setOpen(false)}>{c.label}</NavLink>
-                        </li>
-                      ))}
+                      {link.children.map((c, idx) =>
+                        c.divider ? (
+                          <li key={`div-${idx}`} className="dropdown-divider" aria-hidden="true" />
+                        ) : (
+                          <li key={c.label}>
+                            <Link to={c.to} onClick={() => { setOpen(false); setDropdown(null); }}>
+                              {c.label}
+                            </Link>
+                          </li>
+                        )
+                      )}
                     </ul>
                   )}
                 </>
@@ -94,13 +104,18 @@ export default function Navbar() {
               )}
             </li>
           ))}
+          <li className="nav-mobile-cta">
+            <Link to="/contact" className="btn btn-primary" onClick={() => setOpen(false)}>
+              Estimate Project →
+            </Link>
+          </li>
         </ul>
 
         <ThemeToggle />
 
-        <button className="btn btn-primary nav-cta" onClick={triggerContactModal}>
-          Get a Quote
-        </button>
+        <Link to="/contact" className="btn btn-primary nav-cta">
+          Estimate Project →
+        </Link>
 
         <button className={`hamburger${open ? ' active' : ''}`} onClick={() => setOpen(!open)} aria-label="Menu">
           <span /><span /><span />

@@ -25,7 +25,7 @@ const sdlcSteps = [
   {
     step: '04',
     phase: 'Ethical Pentesting',
-    desc: 'Elite OSCP-certified security engineers perform comprehensive manual security reviews, targeting logic errors, access control failures, and advanced privilege escalations.'
+    desc: 'Certified ethical security specialists perform comprehensive manual reviews, targeting logic errors, access control failures, and advanced privilege escalations.'
   },
   {
     step: '05',

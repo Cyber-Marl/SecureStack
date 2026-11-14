@@ -12,46 +12,9 @@ import './Services.css';
 
 const tabs = [
   {
-    id: 'ai-data',
-    label: 'AI & Data',
-    title: 'AI & Data Services',
-    services: [
-      { name: 'Artificial Intelligence', desc: 'Deploy smart systems, deep cognitive modelling, and machine learning pipelines for automated business tasks.' },
-      { name: 'AI Consulting Services', desc: 'Expert strategy, technical analysis, and roadmapping to integrate AI into your products safely.' },
-      { name: 'AI tools for business transformation', desc: 'Automate high-friction enterprise processes and boost efficiency using generative AI tools.' },
-      { name: 'Data Science', desc: 'Deep analytics, custom predictive modelling, and database insights for strategic data-driven growth.' },
-      { name: 'Database creation and management', desc: 'Secure, optimized PostgreSQL, MySQL, and NoSQL setups with zero latency and high availability.' },
-      { name: 'Hire AI engineers', desc: 'Scale your engineering force with seasoned, elite AI & ML specialists ready to build.' },
-      { name: 'AI powered Robotics integration', desc: 'Bridge software intelligence with physical devices and automated industrial hardware for smart automation.' },
-    ],
-  },
-  {
-    id: 'app-dev',
-    label: 'Application Development',
-    title: 'Application Development',
-    services: [
-      { name: 'Mobile Development', desc: 'High-performance native Swift (iOS) and Kotlin (Android) applications built to scale.' },
-      { name: 'Web Development', desc: 'Premium, fast web apps built on React, Next.js, and modern single-page architectures.' },
-      { name: 'Cross-platform development', desc: 'Cost-efficient cross-platform products using React Native and Flutter with unified codebase.' },
-      { name: 'PWA development', desc: 'Installable, fast progressive web applications with offline capabilities and push alerts.' },
-      { name: 'CMS-based web development', desc: 'Highly optimized Headless CMS platforms for seamless, secure content management.' },
-    ],
-  },
-  {
-    id: 'cloud',
-    label: 'Cloud',
-    title: 'Cloud Services',
-    services: [
-      { name: 'Cloud Development', desc: 'Cloud-native architecture design with microservices and resilient serverless infrastructure.' },
-      { name: 'Cloud Migration', desc: 'Safe, zero-downtime workload migrations from local servers to AWS, Azure, or private clouds.' },
-      { name: 'AWS', desc: 'Full-spectrum Amazon Web Services design, scaling, serverless deployment, and active monitoring.' },
-      { name: 'Oracle Managed Services', desc: 'Elite database tuning, management, and scaling on Oracle Cloud Infrastructure (OCI).' },
-    ],
-  },
-  {
     id: 'cybersecurity',
-    label: 'Cybersecurity',
-    title: 'Cybersecurity Management',
+    label: '🛡️ Cybersecurity & Compliance',
+    title: 'Cybersecurity & Compliance',
     services: [
       { name: 'IT Security Management', desc: 'Comprehensive enterprise-wide threat mitigation, patch management, and resource safeguarding.' },
       { name: 'Penetration Testing', desc: 'Offensive ethical hacking simulations to expose and patch deep logical vulnerabilities.' },
@@ -62,43 +25,58 @@ const tabs = [
     ],
   },
   {
-    id: 'digital-transformation',
-    label: 'Digital Transformation',
-    title: 'Digital Transformation',
-    services: [
-      { name: 'Legacy Migration', desc: 'Breathe new life into aging systems by migrating them to modern, fast stack equivalents.' },
-      { name: 'Systems Integration', desc: 'Harmonize siloed business software applications into a single, cohesive workflow.' },
-      { name: 'Business Process Automation', desc: 'Settle labor-intensive tasks automatically with custom scripts and server workflows.' },
-      { name: 'Custom Workflow Engines', desc: 'Bespoke software solutions to track, manage, and optimize business operations.' },
-      { name: 'Workflow & Automation Consulting', desc: 'Audit and optimize your standard operating procedures for maximum execution speed.' },
-    ],
-  },
-  {
     id: 'software-engineering',
-    label: 'Software Engineering',
-    title: 'Software Engineering',
+    label: '💻 Web, Mobile & Software',
+    title: 'Web, Mobile & Software Development',
     services: [
+      { name: 'Web Development', desc: 'Premium, fast web apps built on React, Next.js, and modern single-page architectures.' },
+      { name: 'Mobile Development', desc: 'High-performance native Swift (iOS), Kotlin (Android), and cross-platform Flutter/React Native apps.' },
+      { name: 'Front-End Engineering', desc: 'Pixel-perfect, accessible, and responsive user interface components and Figma prototyping.', link: '/front-end-development' },
+      { name: 'Back-End Engineering', desc: 'Secure, reliable RESTful & GraphQL APIs, server orchestration, and custom logic layers.', link: '/back-end-development-services' },
       { name: '.NET Development', desc: 'Enterprise-grade backends and desktop solutions engineered with Microsoft\'s robust C# framework.' },
-      { name: 'PHP Development', desc: 'Highly functional websites and custom web portals leveraging modern Laravel and Symfony.' },
       { name: 'Python Development', desc: 'Scalable data structures, RESTful and GraphQL APIs, and intelligent data pipelines.' },
       { name: 'Node.js Development', desc: 'High-concurrency event-driven backend systems for real-time data sync and messaging.' },
+      { name: 'PHP Development', desc: 'Highly functional websites and custom web portals leveraging modern Laravel and Symfony.' },
       { name: 'C++ Development', desc: 'Bare-metal performance for low-level systems, high-frequency apps, and embedded platforms.' },
-      { name: 'Front-End Engineering', desc: 'Pixel-perfect, accessible, and responsive user interface components.' },
-      { name: 'Back-End Engineering', desc: 'Secure, reliable RESTful APIs, server orchestration, and custom logic layers.' },
+      { name: 'E-Commerce Solutions (Magento, WooCommerce)', desc: 'Robust digital storefronts capable of handling high transaction volumes with payment gateways.' },
+      { name: 'ERP & Systems Integration', desc: 'Unify inventory, sales, purchasing, and siloed business software into a single cohesive platform.' },
     ],
   },
   {
-    id: 'enterprise-applications',
-    label: 'Enterprise Applications',
-    title: 'Enterprise Applications',
+    id: 'cloud',
+    label: '☁️ Cloud & Infrastructure',
+    title: 'Cloud & Infrastructure Services',
     services: [
-      { name: 'E-Commerce Solutions (Magento, WooCommerce)', desc: 'Robust digital storefronts capable of handling high transaction volumes with payment gateways.' },
-      { name: 'ERP Systems Integration', desc: 'Unify inventory, sales, purchasing, and accounts into a central database platform.' },
-      { name: 'Performance-Critical Applications', desc: 'High-frequency systems optimized for sub-millisecond execution and minimal memory usage.' },
-      { name: 'Embedded IoT Systems', desc: 'Custom firmware and low-level control systems for connected hardware devices.' },
+      { name: 'Cloud Development', desc: 'Cloud-native architecture design with microservices, Kubernetes, and resilient serverless infrastructure.' },
+      { name: 'Cloud & Legacy Migration', desc: 'Safe, zero-downtime workload migrations from aging on-premise servers to AWS, Azure, or private clouds.' },
+      { name: 'AWS & Azure Engineering', desc: 'Full-spectrum cloud design, auto-scaling, Infrastructure as Code (Terraform), and active monitoring.' },
+      { name: 'Database Creation & Management', desc: 'Secure, optimized PostgreSQL, MySQL, Oracle, and NoSQL setups with high availability.' },
+    ],
+  },
+  {
+    id: 'ai-data',
+    label: '🤖 AI & Process Automation',
+    title: 'AI, Data & Process Automation',
+    services: [
+      { name: 'Artificial Intelligence', desc: 'Deploy smart systems, LLM integrations, and machine learning pipelines for automated business tasks.' },
+      { name: 'Business Process Automation', desc: 'Eliminate repetitive manual bottlenecks with custom workflow engines and intelligent scripts.' },
+      { name: 'Data Science & Analytics', desc: 'Deep analytics, custom predictive modelling, and executive insights for data-driven growth.' },
+      { name: 'AI Consulting Services', desc: 'Expert strategy, technical analysis, and roadmapping to integrate AI into your operations safely.' },
     ],
   },
 ];
+
+const TAB_ALIASES = {
+  'app-dev': 'software-engineering',
+  'enterprise-applications': 'software-engineering',
+  'digital-transformation': 'ai-data',
+};
+
+function resolveTabId(tabParam) {
+  if (!tabParam) return 'cybersecurity';
+  const mapped = TAB_ALIASES[tabParam] || tabParam;
+  return tabs.some(t => t.id === mapped) ? mapped : 'cybersecurity';
+}
 
 function getServiceIcon(name, tabId) {
   const n = name.toLowerCase();
@@ -155,7 +133,7 @@ export default function Services() {
   const tabParam = searchParams.get('tab');
   const serviceParam = searchParams.get('service');
 
-  const initialTab = tabs.some(t => t.id === tabParam) ? tabParam : 'ai-data';
+  const initialTab = resolveTabId(tabParam);
   const [active, setActive] = useState(initialTab);
   const [selectedService, setSelectedService] = useState(null);
 
@@ -175,16 +153,16 @@ export default function Services() {
   }, [selectedService, closeModal]);
 
   useEffect(() => {
-    if (tabParam && tabs.some(t => t.id === tabParam)) {
-      setActive(tabParam);
+    if (tabParam) {
+      const resolved = resolveTabId(tabParam);
+      setActive(resolved);
       
       if (serviceParam) {
-        const foundTab = tabs.find(t => t.id === tabParam);
+        const foundTab = tabs.find(t => t.id === resolved);
         const foundService = foundTab?.services.find(
           s => s.name.toLowerCase() === serviceParam.toLowerCase()
         );
         if (foundService) {
-          // Add a minor delay to ensure standard React DOM rendering finishes smoothly before showing the modal
           const timer = setTimeout(() => {
             setSelectedService(foundService);
           }, 100);
@@ -349,12 +327,23 @@ export default function Services() {
               >
                 Inquire About This Service →
               </button>
-              <button
-                className="btn btn-outline svc-drawer-cta-secondary"
-                onClick={closeModal}
-              >
-                Browse Other Services
-              </button>
+              {selectedService.link ? (
+                <Link
+                  to={selectedService.link}
+                  className="btn btn-outline svc-drawer-cta-secondary"
+                  onClick={closeModal}
+                >
+                  View Architecture &amp; Tech Stack →
+                </Link>
+              ) : (
+                <Link
+                  to="/contact"
+                  className="btn btn-outline svc-drawer-cta-secondary"
+                  onClick={closeModal}
+                >
+                  Estimate Project Cost →
+                </Link>
+              )}
             </div>
           </aside>
         </>,

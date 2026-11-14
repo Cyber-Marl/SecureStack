@@ -22,7 +22,8 @@
 }
 
 .cf-underline-input,
-.cf-underline-textarea {
+.cf-underline-textarea,
+.cf-underline-select {
   background: transparent;
   border: none;
   border-bottom: 1.5px solid #dcdcdc;
@@ -35,6 +36,15 @@
   font-family: inherit;
 }
 
+.cf-underline-select {
+  cursor: pointer;
+}
+
+.cf-underline-select option {
+  color: #24292f;
+  background: #ffffff;
+}
+
 .cf-underline-textarea {
   resize: none;
   overflow-y: hidden;
@@ -42,7 +52,8 @@
 }
 
 .cf-underline-input:focus,
-.cf-underline-textarea:focus {
+.cf-underline-textarea:focus,
+.cf-underline-select:focus {
   outline: none;
   border-bottom-color: var(--orange);
 }
@@ -58,10 +69,11 @@
 }
 
 /* Floating logic based on input placeholder state */
-.cf-underline-input:focus ~ .cf-floating-label,
-.cf-underline-input:not(:placeholder-shown) ~ .cf-floating-label,
-.cf-underline-textarea:focus ~ .cf-floating-label,
-.cf-underline-textarea:not(:placeholder-shown) ~ .cf-floating-label {
+.cf-underline-input:focus~.cf-floating-label,
+.cf-underline-input:not(:placeholder-shown)~.cf-floating-label,
+.cf-underline-textarea:focus~.cf-floating-label,
+.cf-underline-textarea:not(:placeholder-shown)~.cf-floating-label,
+.cf-floating-label.cf-label-pinned {
   top: -12px;
   font-size: 12px;
   color: var(--orange);
@@ -255,14 +267,17 @@
   .cf-card {
     padding: 32px 24px;
   }
+
   .cf-submit-row {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
   }
+
   .cf-submit-btn {
     width: 100%;
   }
+
   .cf-privacy-badge {
     justify-content: center;
   }

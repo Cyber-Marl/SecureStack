@@ -31,13 +31,21 @@ export default function Blog() {
       try {
         setLoading(true);
         const response = await axios.get(`${API_URL}/social/blog/`);
-        // Guard: ensure the response is a non-empty JSON array, not an HTML error page
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          setPosts(response.data);
-        } else {
-          console.info('API returned no posts — using local static dataset.');
-          setPosts(blogPosts);
-        }
+        // Guard: ensure the response is a JSON array, not an HTML error page
+        const apiPosts = Array.isArray(response.data) ? response.data : [];
+
+        // Merge API posts with the static dataset (auto-published articles
+        // only exist in blogData.js). Dedupe by slug — API version wins.
+        const bySlug = new Map();
+        [...blogPosts, ...apiPosts].forEach(p => bySlug.set(p.slug, p));
+
+        const toTime = d => {
+          const t = Date.parse(d);
+          return Number.isNaN(t) ? 0 : t;
+        };
+        const merged = [...bySlug.values()].sort((a, b) => toTime(b.date) - toTime(a.date));
+
+        setPosts(merged);
       } catch (err) {
         console.error('Failed to fetch blog posts from API, falling back to local dataset:', err);
         setPosts(blogPosts);

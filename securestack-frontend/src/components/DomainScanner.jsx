@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { triggerContactModal } from './ContactModal';
 import './DomainScanner.css';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // ─── Public APIs (all CORS-safe, no backend needed) ────────────────────────
 const DNS_API    = 'https://dns.google/resolve';
@@ -120,6 +123,9 @@ export default function DomainScanner() {
   const [progress, setProgress]   = useState(0);
   const [results, setResults]     = useState(null);
   const [scanError, setScanError] = useState('');
+  const [leadName, setLeadName]   = useState('');
+  const [leadEmail, setLeadEmail] = useState('');
+  const [leadStatus, setLeadStatus] = useState('idle'); // idle | sending | sent | error
   const logEndRef                 = useRef(null);
 
   useEffect(() => {
@@ -133,6 +139,7 @@ export default function DomainScanner() {
     setLoading(true);
     setResults(null);
     setScanError('');
+    setLeadStatus('idle');
     setLogs([]);
     setProgress(0);
 
@@ -207,6 +214,33 @@ export default function DomainScanner() {
       case 'C': return 'grade-c';
       case 'D': return 'grade-d';
       default:  return 'grade-f';
+    }
+  };
+
+  const handleReportRequest = async (e) => {
+    e.preventDefault();
+    if (!leadEmail.trim() || !results) return;
+    setLeadStatus('sending');
+
+    const referrer_code = localStorage.getItem('securestack_ref') || null;
+    const findingsText = results.reasons.length > 0
+      ? results.reasons.map(r => `- ${r}`).join('\n')
+      : '- All public checks passed.';
+
+    const payload = {
+      name: leadName.trim() || leadEmail.split('@')[0],
+      email: leadEmail.trim(),
+      phone: '',
+      service: `Domain Security Audit (${results.domain} — Grade ${results.grade})`,
+      message: `Automated Domain Security Audit Report Request\nDomain: ${results.domain}\nScore: ${results.score}/100 (Grade ${results.grade})\nTimestamp: ${results.timestamp}\n\nDetected Advisories:\n${findingsText}`,
+    };
+    if (referrer_code) payload.referrer_code = referrer_code;
+
+    try {
+      await axios.post(`${API_URL}/contact/`, payload);
+      setLeadStatus('sent');
+    } catch {
+      setLeadStatus('error');
     }
   };
 
@@ -406,15 +440,53 @@ export default function DomainScanner() {
               </div>
             </div>
 
-            {/* Results CTA Action Block */}
+            {/* Results CTA & Email Lead Gate Block */}
             <div className="results-cta-block text-center">
-              <h4>Want to resolve outstanding security findings?</h4>
-              <p>SecureStack's lead security engineers are ready to fortify your digital assets and align your domain configuration with enterprise standards.</p>
-              <div className="results-cta-buttons">
-                <button className="btn btn-primary cta-remediate-btn" onClick={triggerContactModal}>
-                  Request Remediations &amp; Fix
+              <h4>Get the Full Technical Remediation Plan for <span className="highlight-domain">{results.domain}</span></h4>
+              <p>Enter your work email and our security engineers will send you a step-by-step configuration guide to fix your findings and achieve an <strong>A+ Security Rating</strong>.</p>
+
+              {leadStatus === 'sent' ? (
+                <div className="scanner-lead-success">
+                  ✓ <strong>Remediation report queued!</strong> Our security team has received the scan data for <strong>{results.domain}</strong> and will email your step-by-step fix guide to <strong>{leadEmail}</strong> shortly.
+                </div>
+              ) : (
+                <form onSubmit={handleReportRequest} className="scanner-lead-form">
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    value={leadName}
+                    onChange={(e) => setLeadName(e.target.value)}
+                    required
+                    className="scanner-lead-input"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Corporate Email (e.g. you@company.com)"
+                    value={leadEmail}
+                    onChange={(e) => setLeadEmail(e.target.value)}
+                    required
+                    className="scanner-lead-input"
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn-primary scanner-lead-btn"
+                    disabled={leadStatus === 'sending'}
+                  >
+                    {leadStatus === 'sending' ? 'Sending…' : 'Email Me the Fix Guide →'}
+                  </button>
+                </form>
+              )}
+              {leadStatus === 'error' && (
+                <p className="scanner-error-text" style={{ marginTop: 10 }}>
+                  Could not submit automatically. Please click &ldquo;Book a Remediation Call&rdquo; below.
+                </p>
+              )}
+
+              <div className="results-cta-buttons" style={{ marginTop: 20 }}>
+                <button className="btn btn-outline cta-remediate-btn" onClick={triggerContactModal}>
+                  Book a Remediation Call
                 </button>
-                <button className="btn btn-outline cta-reset-btn" onClick={() => { setResults(null); setDomain(''); }}>
+                <button className="btn btn-outline cta-reset-btn" onClick={() => { setResults(null); setDomain(''); setLeadStatus('idle'); }}>
                   Scan Another Domain
                 </button>
               </div>

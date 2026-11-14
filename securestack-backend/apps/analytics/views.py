@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import PageView
+from .auth import authenticate_admin, get_admin_user_from_request, verify_admin_token
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -43,12 +44,57 @@ class LogPageView(APIView):
         
         return Response({'detail': 'Logged'}, status=status.HTTP_201_CREATED)
 
+class AdminLoginView(APIView):
+    """
+    Authenticate administrative credentials and return a signed HMAC session token.
+    Accepts:
+      - username + password (standard Django staff/superuser credentials)
+      - key or password (admin passcode)
+    """
+    throttle_classes = []
+
+    def post(self, request):
+        username = request.data.get('username', '').strip()
+        password = request.data.get('password', '').strip()
+        key = request.data.get('key', '').strip()
+
+        success, token, auth_user = authenticate_admin(
+            username=username or None,
+            password=password or None,
+            key=key or None,
+            request=request
+        )
+
+        if success and token:
+            return Response({
+                'token': token,
+                'username': auth_user,
+                'detail': 'Administrative authentication successful.'
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            'detail': 'Invalid administrative credentials.'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+
+class AdminVerifyView(APIView):
+    """Verify validity of existing admin Bearer token."""
+    throttle_classes = []
+
+    def get(self, request):
+        is_auth, user = get_admin_user_from_request(request)
+        if is_auth:
+            username = getattr(user, 'username', 'admin') if user else 'admin'
+            return Response({'authenticated': True, 'username': username}, status=status.HTTP_200_OK)
+        return Response({'authenticated': False, 'detail': 'Session expired or invalid.'}, status=status.HTTP_401_UNAUTHORIZED)
+
 class AnalyticsDashboardView(APIView):
     throttle_classes = []
     
     def get(self, request):
-        # We can implement a simple token lock or basic password verification in the React dashboard.
-        # For security, let's keep it open to query but secure the React view, or we can add a basic check.
+        # Enforce server-side authentication
+        is_auth, _ = get_admin_user_from_request(request)
+        if not is_auth:
+            return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
         
         # 1. Core counters
         total_views = PageView.objects.count()

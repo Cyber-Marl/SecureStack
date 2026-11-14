@@ -7,28 +7,46 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
 
 export default function AnalyticsDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [loginErrorMsg, setLoginErrorMsg] = useState('');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  // New section tabs: 'analytics' | 'affiliates'
+  // Section tabs: 'analytics' | 'affiliates'
   const [activeSection, setActiveSection] = useState('analytics');
   const [affiliatesData, setAffiliatesData] = useState(null);
   const [loadingAffiliates, setLoadingAffiliates] = useState(false);
   const [editingRewards, setEditingRewards] = useState({}); // leadId -> rewardVal
 
+  const getAuthToken = () => localStorage.getItem('securestack_admin_token') || '';
 
-
-  // Check if already authenticated in this session
+  // Check if already authenticated via valid signed token
   useEffect(() => {
-    const authStatus = localStorage.getItem('securestack_admin_auth');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-      fetchDashboardData();
+    const token = getAuthToken();
+    if (token) {
+      verifyStoredToken(token);
     }
   }, []);
+
+  const verifyStoredToken = async (token) => {
+    try {
+      const response = await axios.get(`${API_URL}/analytics/admin/verify/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data?.authenticated) {
+        setIsAuthenticated(true);
+        fetchDashboardData(token);
+      } else {
+        handleLogout();
+      }
+    } catch {
+      handleLogout();
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated && activeSection === 'affiliates') {
@@ -36,62 +54,108 @@ export default function AnalyticsDashboard() {
     }
   }, [isAuthenticated, activeSection]);
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    // Use robust passcode lock.
-    if (password === 'securestack2026' || password === 'admin123') {
-      localStorage.setItem('securestack_admin_auth', 'true');
-      setIsAuthenticated(true);
-      setLoginError(false);
-      setPassword('');
-      fetchDashboardData();
-    } else {
+    setSubmitting(true);
+    setLoginError(false);
+    setLoginErrorMsg('');
+
+    try {
+      const payload = {
+        password: password.trim()
+      };
+      if (username.trim()) {
+        payload.username = username.trim();
+      }
+
+      const response = await axios.post(`${API_URL}/analytics/admin/login/`, payload);
+      const token = response.data?.token;
+
+      if (token) {
+        localStorage.setItem('securestack_admin_token', token);
+        setIsAuthenticated(true);
+        setPassword('');
+        fetchDashboardData(token);
+      } else {
+        throw new Error('No authentication token received.');
+      }
+    } catch (err) {
       setLoginError(true);
-      setTimeout(() => setLoginError(false), 600); // Shaking animation duration
+      const msg = err.response?.data?.detail || 'Authentication failed. Please verify your credentials.';
+      setLoginErrorMsg(msg);
+      setTimeout(() => setLoginError(false), 600);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (overrideToken) => {
+    const token = overrideToken || getAuthToken();
+    if (!token) return;
+
     setLoading(true);
     setError('');
     try {
-      const response = await axios.get(`${API_URL}/analytics/dashboard/`);
+      const response = await axios.get(`${API_URL}/analytics/dashboard/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setData(response.data);
     } catch (err) {
       console.error('Failed to fetch analytics:', err);
+      if (err.response?.status === 401) {
+        handleLogout();
+        return;
+      }
       setError('Unable to fetch live analytics data. Please ensure the backend is running.');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchAffiliateData = async () => {
+  const fetchAffiliateData = async (overrideToken) => {
+    const token = overrideToken || getAuthToken();
+    if (!token) return;
+
     setLoadingAffiliates(true);
     try {
-      const response = await axios.get(`${API_URL}/affiliate/admin/stats/`);
+      const response = await axios.get(`${API_URL}/affiliate/admin/stats/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setAffiliatesData(response.data);
       // Pre-fill editing reward values
       const rewardsMap = {};
-      response.data.leads.forEach(l => {
+      (response.data.leads || []).forEach(l => {
         rewardsMap[l.id] = l.reward_amount;
       });
       setEditingRewards(rewardsMap);
     } catch (err) {
       console.error('Failed to fetch affiliate data:', err);
+      if (err.response?.status === 401) {
+        handleLogout();
+      }
     } finally {
       setLoadingAffiliates(false);
     }
   };
 
   const handleUpdateLeadField = async (leadId, fields) => {
+    const token = getAuthToken();
+    if (!token) return;
+
     try {
       await axios.post(`${API_URL}/affiliate/admin/update-lead/`, {
         lead_id: leadId,
         ...fields
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      fetchAffiliateData(); // Refresh list
+      fetchAffiliateData(token); // Refresh list
     } catch (err) {
       console.error('Failed to update lead:', err);
+      if (err.response?.status === 401) {
+        handleLogout();
+        return;
+      }
       alert('Failed to update lead. Please try again.');
     }
   };
@@ -110,6 +174,7 @@ export default function AnalyticsDashboard() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('securestack_admin_token');
     localStorage.removeItem('securestack_admin_auth');
     setIsAuthenticated(false);
     setData(null);
@@ -133,21 +198,33 @@ export default function AnalyticsDashboard() {
             </svg>
           </div>
           <h2>Console Authorization</h2>
-          <p>Provide administrative passcode to access SecureStack's privacy-first analytics terminal.</p>
+          <p>Authenticate with administrative credentials or authorized access key to enter the analytics console.</p>
           <form onSubmit={handleLoginSubmit}>
             <div className="lock-input-group">
               <input
-                type="password"
-                placeholder="Enter Access Key..."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus
+                type="text"
+                placeholder="Admin Username (optional)"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
               />
               <span className="input-glow-line"></span>
             </div>
-            {loginError && <p className="lock-error-msg">Invalid passcode. Please try again.</p>}
-            <button type="submit" className="btn btn-primary lock-submit-btn">
-              Authenticate Console
+            <div className="lock-input-group">
+              <input
+                type="password"
+                placeholder="Administrative Access Key..."
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoFocus
+                required
+                autoComplete="current-password"
+              />
+              <span className="input-glow-line"></span>
+            </div>
+            {loginError && <p className="lock-error-msg">{loginErrorMsg || 'Invalid administrative credentials.'}</p>}
+            <button type="submit" className="btn btn-primary lock-submit-btn" disabled={submitting}>
+              {submitting ? 'Authenticating…' : 'Authenticate Console'}
             </button>
           </form>
         </div>

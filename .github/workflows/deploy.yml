@@ -90,15 +90,11 @@ jobs:
         run: node .github/workflows/scripts/cpanel-deploy.js
 
       # ── Trigger Backend Deploy Helper & Cleanup ───────────────────────
-      - name: 🚀 Trigger Backend Deploy Helper & Cleanup
+      - name: 🚀 Trigger Backend Deploy Helper
         continue-on-error: true
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_SECRET_KEY || '98f7e2a4b86c1d0e53a2f791c84b3d6e' }}
         run: |
-          # Browser-like headers needed — OpenResty returns 415 for plain curl
-          CURL_OPTS="-s --max-time 30
-            -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-            -H 'User-Agent: Mozilla/5.0 (compatible; SecureStack-Deploy/1.0)'
-            -H 'Cache-Control: no-cache'"
-
           # Retry helper: polls URL until HTTP 200 or gives up after max_attempts
           curl_with_retry() {
             local url="$1"
@@ -113,6 +109,7 @@ jobs:
                 -s --max-time 30 \
                 -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
                 -H "User-Agent: Mozilla/5.0 (compatible; SecureStack-Deploy/1.0)" \
+                -H "X-Deploy-Token: $DEPLOY_TOKEN" \
                 -H "Cache-Control: no-cache" \
                 "$url")
               BODY=$(cat /tmp/curl_response.txt)
@@ -140,22 +137,8 @@ jobs:
             return 1
           }
 
-          echo "🚀 Step 1: Triggering backend ZIP extraction..."
+          echo "🚀 Triggering backend ZIP extraction..."
           curl_with_retry "https://securestack.co.zw/deploy_backend.php" "deploy_backend.php"
-
-          echo ""
-          echo "🧹 Step 2: Cleaning up diagnose.php..."
-          # delete_diagnose.php self-deletes, so 404 is fine (already gone)
-          HTTP=$(curl -o /tmp/diag_resp.txt -w "%{http_code}" \
-            -s --max-time 15 \
-            -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
-            -H "User-Agent: Mozilla/5.0 (compatible; SecureStack-Deploy/1.0)" \
-            "https://securestack.co.zw/delete_diagnose.php")
-          if [ "$HTTP" = "200" ]; then
-            echo "✅ delete_diagnose.php ran successfully."
-          else
-            echo "ℹ️  delete_diagnose.php returned HTTP $HTTP (may already be deleted — that's fine)."
-          fi
 
       # ── 7. Commit and Push Deploy Log ──────────────────────────────────────
       - name: 📝 Commit Deploy Log

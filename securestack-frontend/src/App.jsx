@@ -1,26 +1,30 @@
 import { BrowserRouter, Routes, Route, useLocation, useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Services from './pages/Services';
-import Industries from './pages/Industries';
-import FrontEnd from './pages/FrontEnd';
-import BackEnd from './pages/BackEnd';
-import TrustCenter from './pages/TrustCenter';
-import Contact from './pages/Contact';
 import ContactModal from './components/ContactModal';
 import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
 import TawkChat from './components/TawkChat';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import AffiliatePortal from './pages/AffiliatePortal';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import NotFound from './pages/NotFound';
+import CookieConsent from './components/CookieConsent';
 import axios from 'axios';
 import './index.css';
+
+// Lazy-loaded route chunks for faster initial page load
+const Services           = lazy(() => import('./pages/Services'));
+const Industries         = lazy(() => import('./pages/Industries'));
+const FrontEnd           = lazy(() => import('./pages/FrontEnd'));
+const BackEnd            = lazy(() => import('./pages/BackEnd'));
+const TrustCenter        = lazy(() => import('./pages/TrustCenter'));
+const Contact            = lazy(() => import('./pages/Contact'));
+const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
+const AffiliatePortal    = lazy(() => import('./pages/AffiliatePortal'));
+const PrivacyPolicy      = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService     = lazy(() => import('./pages/TermsOfService'));
+const Blog               = lazy(() => import('./pages/Blog'));
+const BlogPost           = lazy(() => import('./pages/BlogPost'));
+const NotFound           = lazy(() => import('./pages/NotFound'));
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001/api';
 
@@ -93,24 +97,29 @@ export default function App() {
       <ReferralTracker />
       <Navbar />
       <ContactModal />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/industries" element={<Industries />} />
-        <Route path="/front-end-development" element={<FrontEnd />} />
-        <Route path="/back-end-development-services" element={<BackEnd />} />
-        <Route path="/security-compliance" element={<TrustCenter />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/affiliate" element={<AffiliatePortal />} />
-        <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/industries" element={<Industries />} />
+          <Route path="/front-end-development" element={<FrontEnd />} />
+          <Route path="/back-end-development-services" element={<BackEnd />} />
+          <Route path="/security-compliance" element={<TrustCenter />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/affiliate" element={<AffiliatePortal />} />
+          <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />
       <TawkChat />
+      <CookieConsent />
     </BrowserRouter>
   );
 }
