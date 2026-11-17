@@ -7,18 +7,18 @@ import ParticleCanvas from '../components/ParticleCanvas';
 import HowWeWork from '../components/HowWeWork';
 import { useScrollReveal, useCountUp } from '../hooks/useAnimations';
 import DomainScanner from '../components/DomainScanner';
-import { 
-  Shield, 
-  Braces, 
-  Layers, 
-  Terminal, 
-  Zap, 
-  Cpu, 
-  Cloud, 
-  Lock, 
-  Smartphone, 
+import {
+  Shield,
+  Braces,
+  Layers,
+  Terminal,
+  Zap,
+  Cpu,
+  Cloud,
+  Lock,
+  Smartphone,
   Globe,
-  Palette, 
+  Palette,
   Brain,
   Landmark,
   HeartPulse,
@@ -30,47 +30,47 @@ import {
 import './Home.css';
 
 const services = [
-  { 
-    icon: <Shield size={24} strokeWidth={2} />, 
-    title: 'IT Security Management', 
-    desc: 'Security policy development, vulnerability assessments, and awareness training to protect your entire IT ecosystem.', 
-    to: '/services?tab=cybersecurity&service=IT Security Management' 
+  {
+    icon: <Shield size={24} strokeWidth={2} />,
+    title: 'IT Security Management',
+    desc: 'Security policy development, vulnerability assessments, and awareness training to protect your entire IT ecosystem.',
+    to: '/services?tab=cybersecurity&service=IT Security Management'
   },
-  { 
-    icon: <Globe size={24} strokeWidth={2} />, 
-    title: 'Web Development', 
-    desc: 'High-performance corporate websites, custom web portals, and modern full-stack web applications built to scale.', 
-    to: '/services?tab=software-engineering&service=Web Development' 
+  {
+    icon: <Globe size={24} strokeWidth={2} />,
+    title: 'Web Development',
+    desc: 'High-performance corporate websites, custom web portals, and modern full-stack web applications built to scale.',
+    to: '/services?tab=software-engineering&service=Web Development'
   },
-  { 
-    icon: <Braces size={24} strokeWidth={2} />, 
-    title: '.NET Development', 
-    desc: 'Robust, cross-platform .NET solutions with consulting, project planning, and end-to-end software development & QA.', 
-    to: '/services?tab=software-engineering&service=.NET Development' 
+  {
+    icon: <Braces size={24} strokeWidth={2} />,
+    title: '.NET Development',
+    desc: 'Robust, cross-platform .NET solutions with consulting, project planning, and end-to-end software development & QA.',
+    to: '/services?tab=software-engineering&service=.NET Development'
   },
-  { 
-    icon: <Layers size={24} strokeWidth={2} />, 
-    title: 'PHP Development', 
-    desc: 'Top-performance PHP applications with seamless integrations and enhanced compatibility by skilled engineers.', 
-    to: '/services?tab=software-engineering&service=PHP Development' 
+  {
+    icon: <Layers size={24} strokeWidth={2} />,
+    title: 'PHP Development',
+    desc: 'Top-performance PHP applications with seamless integrations and enhanced compatibility by skilled engineers.',
+    to: '/services?tab=software-engineering&service=PHP Development'
   },
-  { 
-    icon: <Terminal size={24} strokeWidth={2} />, 
-    title: 'Python Development', 
-    desc: 'Scalable Python solutions for data processing, automation, web APIs, and AI/ML integrations.', 
-    to: '/services?tab=software-engineering&service=Python Development' 
+  {
+    icon: <Terminal size={24} strokeWidth={2} />,
+    title: 'Python Development',
+    desc: 'Scalable Python solutions for data processing, automation, web APIs, and AI/ML integrations.',
+    to: '/services?tab=software-engineering&service=Python Development'
   },
-  { 
-    icon: <Zap size={24} strokeWidth={2} />, 
-    title: 'Node.js Development', 
-    desc: 'Fast, event-driven Node.js backends for real-time applications, REST APIs and microservices architectures.', 
-    to: '/services?tab=software-engineering&service=Node.js Development' 
+  {
+    icon: <Zap size={24} strokeWidth={2} />,
+    title: 'Node.js Development',
+    desc: 'Fast, event-driven Node.js backends for real-time applications, REST APIs and microservices architectures.',
+    to: '/services?tab=software-engineering&service=Node.js Development'
   },
-  { 
-    icon: <Cpu size={24} strokeWidth={2} />, 
-    title: 'C++ Development', 
-    desc: 'High-performance C++ systems programming for embedded systems, game engines, and performance-critical software.', 
-    to: '/services?tab=software-engineering&service=C%2B%2B Development' 
+  {
+    icon: <Cpu size={24} strokeWidth={2} />,
+    title: 'C++ Development',
+    desc: 'High-performance C++ systems programming for embedded systems, game engines, and performance-critical software.',
+    to: '/services?tab=software-engineering&service=C%2B%2B Development'
   },
   {
     icon: <Cloud size={24} strokeWidth={2} />,
@@ -112,44 +112,44 @@ const techStack = [
 ];
 
 const industries = [
-  { 
-    icon: <Landmark size={32} strokeWidth={1.8} />, 
-    title: 'Finance & Banking', 
-    desc: 'Secure fintech platforms, digital banking, and payment systems.' 
+  {
+    icon: <Landmark size={32} strokeWidth={1.8} />,
+    title: 'Finance & Banking',
+    desc: 'Secure fintech platforms, digital banking, and payment systems.'
   },
-  { 
-    icon: <HeartPulse size={32} strokeWidth={1.8} />, 
-    title: 'Healthcare', 
-    desc: 'HIPAA-compliant health data systems and telemedicine platforms.' 
+  {
+    icon: <HeartPulse size={32} strokeWidth={1.8} />,
+    title: 'Healthcare',
+    desc: 'HIPAA-compliant health data systems and telemedicine platforms.'
   },
-  { 
-    icon: <Building2 size={32} strokeWidth={1.8} />, 
-    title: 'Government', 
-    desc: 'Mission-critical systems with the highest security standards.' 
+  {
+    icon: <Building2 size={32} strokeWidth={1.8} />,
+    title: 'Government',
+    desc: 'Mission-critical systems with the highest security standards.'
   },
-  { 
-    icon: <GraduationCap size={32} strokeWidth={1.8} />, 
-    title: 'Education', 
-    desc: 'E-learning platforms, student management, and LMS solutions.' 
+  {
+    icon: <GraduationCap size={32} strokeWidth={1.8} />,
+    title: 'Education',
+    desc: 'E-learning platforms, student management, and LMS solutions.'
   },
-  { 
-    icon: <ShoppingBag size={32} strokeWidth={1.8} />, 
-    title: 'Retail & E-Commerce', 
-    desc: 'Scalable online stores, POS systems, and inventory management.' 
+  {
+    icon: <ShoppingBag size={32} strokeWidth={1.8} />,
+    title: 'Retail & E-Commerce',
+    desc: 'Scalable online stores, POS systems, and inventory management.'
   },
-  { 
-    icon: <Factory size={32} strokeWidth={1.8} />, 
-    title: 'Manufacturing', 
-    desc: 'ERP systems, IoT integrations, and supply chain management.' 
+  {
+    icon: <Factory size={32} strokeWidth={1.8} />,
+    title: 'Manufacturing',
+    desc: 'ERP systems, IoT integrations, and supply chain management.'
   },
 ];
 
 const stats = [
   { icon: '⚡', value: '99.9%', label: 'Uptime SLA' },
-  { icon: '🛡️', value: '100%',  label: 'OWASP Audited' },
-  { icon: '🔒', value: '24/7',  label: 'Threat Defense' },
-  { icon: '🌍', value: '10+',   label: 'Sectors Served' },
-  { icon: '💯', value: '100%',  label: 'NDA Protected' },
+  { icon: '🛡️', value: '100%', label: 'OWASP Audited' },
+  { icon: '🔒', value: '24/7', label: 'Threat Defense' },
+  { icon: '🌍', value: '10+', label: 'Sectors Served' },
+  { icon: '💯', value: '100%', label: 'NDA Protected' },
 ];
 
 function StatItem({ icon, value, label }) {
@@ -189,8 +189,8 @@ export default function Home() {
 
   return (
     <main>
-      <SEO 
-        title="Cybersecurity & Software Development Zimbabwe" 
+      <SEO
+        title="Cybersecurity & Software Development Zimbabwe"
         description="SecureStack delivers premium software development, cybersecurity audits, penetration testing, and secure cloud migration services in Harare, Zimbabwe."
         keywords="cybersecurity Zimbabwe, software development Harare, penetration testing Zimbabwe, cloud solutions Harare, SecureStack"
         path="/"
@@ -205,12 +205,6 @@ export default function Home() {
         </div>
         <div className="container hero-content">
           <div className="hero-text-wrapper">
-            <div className="tag" style={{ marginBottom: 28 }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--orange)' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                Cybersecurity &amp; Software Development
-              </span>
-            </div>
             <h1 className="hero-title">
               Build Faster. Stay Secure.{' '}
               <span className="gradient-text">Enterprise Software</span>{' '}
@@ -297,7 +291,7 @@ export default function Home() {
               <div className="about-card">
                 <div className="about-card-item">
                   <span className="about-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                   </span>
                   <div>
                     <strong>Proven Track Record</strong>
@@ -306,7 +300,7 @@ export default function Home() {
                 </div>
                 <div className="about-card-item">
                   <span className="about-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
                   </span>
                   <div>
                     <strong>Security-First Approach</strong>
@@ -315,7 +309,7 @@ export default function Home() {
                 </div>
                 <div className="about-card-item">
                   <span className="about-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
                   </span>
                   <div>
                     <strong>Local Expertise, Global Standards</strong>
@@ -324,7 +318,7 @@ export default function Home() {
                 </div>
                 <div className="about-card-item">
                   <span className="about-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
                   </span>
                   <div>
                     <strong>Innovation &amp; Agility</strong>
@@ -429,10 +423,10 @@ export default function Home() {
           <div className="contact-layout">
             <div className="contact-info">
               <h2 className="contact-main-title">Contact us</h2>
-              
+
               <div className="contact-timeline-section">
                 <h3 className="contact-timeline-subtitle">What happens next?</h3>
-                
+
                 <div className="contact-timeline">
                   <div className="contact-timeline-item">
                     <div className="timeline-badge">1</div>
@@ -458,15 +452,15 @@ export default function Home() {
               <div className="home-direct-contact">
                 <h4>Direct Connections</h4>
                 <a href="mailto:info@securestack.co.zw" className="home-direct-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
                   <span>info@securestack.co.zw</span>
                 </a>
                 <a href="tel:+263775634182" className="home-direct-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>
                   <span>+263 77 563 4182</span>
                 </a>
                 <div className="home-direct-item">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                   <span>Harare, Zimbabwe</span>
                 </div>
                 <div style={{ marginTop: 20 }}>

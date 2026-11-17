@@ -6,7 +6,6 @@ import Home from './pages/Home';
 import ContactModal from './components/ContactModal';
 import ScrollProgress from './components/ScrollProgress';
 import WhatsAppButton from './components/WhatsAppButton';
-import TawkChat from './components/TawkChat';
 import CookieConsent from './components/CookieConsent';
 import axios from 'axios';
 import './index.css';
@@ -118,7 +117,6 @@ export default function App() {
       </Suspense>
       <Footer />
       <WhatsAppButton phone="263775634182" message="Hi SecureStack! I would like to inquire about your cybersecurity and software development services." />
-      <TawkChat />
       <CookieConsent />
     </BrowserRouter>
   );
